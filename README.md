@@ -1,4 +1,4 @@
-# springpractice
+# tinkoff-project-2022
 
 <b> Ildar Mukhaev, Olga Martazova </b>
 
