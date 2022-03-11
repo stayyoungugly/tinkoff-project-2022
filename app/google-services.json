@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "979903158098",
+    "project_id": "checkpointapp-5cf39",
+    "storage_bucket": "checkpointapp-5cf39.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979903158098:android:a0743280479c28855ecc8b",
+        "android_client_info": {
+          "package_name": "com.itis.springpractice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "979903158098-po366erujcsc5tjtbd74qh6fc29hhohd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBry_R7UWLJhRIgJigO6lqSvivAvUa3aDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "979903158098-po366erujcsc5tjtbd74qh6fc29hhohd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
