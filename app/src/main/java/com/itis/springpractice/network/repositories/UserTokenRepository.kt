@@ -17,9 +17,24 @@ class UserTokenRepository(private var api: FirebaseTokenApi) {
         return "todo"
     }
 
+    suspend fun getRefreshToken(): String {
+        // Работа с БД
+        return "todo"
+    }
+
+    suspend fun saveRefreshToken(refreshToken: String): String {
+        // Работа с БД
+        return "todo"
+    }
+
     suspend fun refreshToken(): String {
-        val token = api.refreshToken(type, getToken()).idToken
+        val response = api.refreshToken(type, getRefreshToken())
+        val token = response.idToken
+        val refreshToken = response.refreshToken
+
         saveToken(token)
+        saveRefreshToken(refreshToken)
+
         return token
     }
 }
