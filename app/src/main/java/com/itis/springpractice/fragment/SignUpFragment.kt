@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.itis.adefault.databinding.FragmentSignUpBinding
 
-class SignUpFragment: Fragment() {
+class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
     private lateinit var signUpResponse: SignUpResponse
 
@@ -25,6 +25,16 @@ class SignUpFragment: Fragment() {
 
         val login = binding.etLogin
         val password = binding.etPassword
+
+        binding.btnLogIn.setOnClickListener {
+            signUp()
+        }
+        binding.btnSignIn.setOnClickListener {
+            findNavController().navigate(R.id.action_fragment_sign_up_to_fragment_sign_in)
+        }
+    }
+
+    private fun signUp() {
         lifecycleScope.launch {
             try {
                 signUpResponse = UserAuthRepository.register(login, password)

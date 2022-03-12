@@ -25,6 +25,14 @@ class SignInFragment: Fragment() {
 
         val login = binding.etLogin
         val password = binding.etPassword
+        binding.btnLogIn.setOnClickListener {
+            login()
+        }
+        binding.btnSignIn.setOnClickListener {
+            findNavController().navigate(R.id.action_fragment_sign_in_to_fragment_sign_up)
+        }
+    }
+    private fun login() {
         lifecycleScope.launch {
             try {
                 signInResponse = UserAuthRepository.login(login, password)
