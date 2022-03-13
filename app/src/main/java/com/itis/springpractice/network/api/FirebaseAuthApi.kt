@@ -8,7 +8,7 @@ import retrofit2.http.*
 interface FirebaseAuthApi {
 
     @FormUrlEncoded
-    @POST("accounts:signUp?")
+    @POST("accounts:signUp")
     suspend fun register(
         @Field("email") email: String,
         @Field("password") password: String,
@@ -16,7 +16,7 @@ interface FirebaseAuthApi {
     ): SignUpResponse
 
     @FormUrlEncoded
-    @POST("accounts:signInWithPassword?")
+    @POST("accounts:signInWithPassword")
     suspend fun login(
         @Field("email") email: String,
         @Field("password") password: String,

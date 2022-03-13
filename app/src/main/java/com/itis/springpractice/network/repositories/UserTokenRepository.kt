@@ -9,22 +9,20 @@ class UserTokenRepository(private var api: FirebaseTokenApi) {
     }
 
     suspend fun saveToken(idToken: String) {
-        // Работа с БД
+        //  TODO(): Nothing
     }
 
     suspend fun getToken(): String {
-        // Работа с БД
-        return "todo"
+        TODO()
     }
 
     suspend fun getRefreshToken(): String {
         // Работа с БД
-        return "todo"
+        TODO()
     }
 
     suspend fun saveRefreshToken(refreshToken: String): String {
-        // Работа с БД
-        return "todo"
+        TODO()
     }
 
     suspend fun refreshToken(): String {

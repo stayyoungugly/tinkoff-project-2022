@@ -2,6 +2,7 @@ package com.itis.springpractice.network.client
 
 import com.itis.springpractice.BuildConfig
 import com.itis.springpractice.network.api.FirebaseAuthApi
+import com.itis.springpractice.network.client.UserAuthClient.Companion.API_KEY
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -13,7 +14,7 @@ class UserAuthClient {
 
     companion object {
         private const val BASE_URL = "https://identitytoolkit.googleapis.com/v1/"
-        private const val API_KEY = "AIzaSyBry_R7UWLJhRIgJigO6lqSvivAvUa3aDo"
+        private const val API_KEY = BuildConfig.API_KEY
         private const val QUERY_API_KEY = "key"
         private const val TYPE_HEADER = "Content-Type"
         private const val JSON_TYPE = "application/json"
@@ -71,5 +72,4 @@ class UserAuthClient {
     fun returnApi(): FirebaseAuthApi {
         return api
     }
-
 }

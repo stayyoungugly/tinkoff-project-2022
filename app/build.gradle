@@ -16,6 +16,7 @@ android {
         targetSdk 31
         versionCode 1
         versionName "1.0"
+        buildConfigField "String", "API_KEY", '"AIzaSyBry_R7UWLJhRIgJigO6lqSvivAvUa3aDo"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -68,23 +69,18 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     // region Network
-    def retrofit = "2.9.0"
-    implementation "com.squareup.retrofit2:retrofit:${retrofit}"
-    implementation "com.squareup.retrofit2:converter-gson:${retrofit}"
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
 
-    def okhttp = "4.9.3"
-    implementation "com.squareup.okhttp3:okhttp:${okhttp}"
-    debugImplementation "com.squareup.okhttp3:logging-interceptor:${okhttp}"
+    implementation "com.squareup.okhttp3:okhttp:4.9.3"
+    debugImplementation "com.squareup.okhttp3:logging-interceptor:4.9.3"
     // endregion
 
     // room
-    def room_version = "2.4.2"
-
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
-
+    implementation "androidx.room:room-runtime:2.4.2"
+    implementation "androidx.room:room-ktx:2.4.2"
+    annotationProcessor "androidx.room:room-compiler:2.4.2"
+    kapt "androidx.room:room-compiler:2.4.2"
     // end room
 
     testImplementation 'junit:junit:4.13.2'

@@ -5,9 +5,11 @@ import retrofit2.http.Field
 import retrofit2.http.POST
 
 interface FirebaseTokenApi {
-    @POST("token?")
+
+    @POST("token")
     suspend fun refreshToken(
         @Field("grant_type") type: String,
         @Field("refresh_token") token: String
     ): TokenResponse
+
 }
