@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph">
 
+    
     <fragment
         android:id="@+id/signInFragment"
         android:name="com.itis.springpractice.fragments.SignInFragment"
