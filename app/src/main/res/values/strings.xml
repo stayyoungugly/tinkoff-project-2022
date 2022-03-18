@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Spring Practice</string>
-    <string name="login">login</string>
-    <string name="password">password</string>
-    <string name="log_in">log in</string>
-    <string name="sign_up">sign up</string>
+    <string name="login">Email</string>
+    <string name="password">Пароль</string>
+    <string name="log_in">Войти</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="to_sign_up">Еще нет аккаунта? Зарегистрироваться</string>
+    <string name="to_login">Уже есть аккаунт? Войти</string>
 </resources>

@@ -1,19 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/signUpFragment">
 
-    
-    <fragment
-        android:id="@+id/signInFragment"
-        android:name="com.itis.springpractice.fragments.SignInFragment"
-        android:label="SignInFragment">
+
+    <navigation android:id="@+id/navigation2"
+        app:startDestination="@id/signInFragment">
+        <fragment
+            android:id="@+id/signInFragment"
+            android:name="com.itis.springpractice.fragments.SignInFragment"
+            android:label="SignInFragment"
+            tools:layout="@layout/fragment_sign_in">
+            <action
+                android:id="@+id/action_signInFragment_to_signUpFragment"
+                app:destination="@id/signUpFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/signUpFragment"
+            android:name="com.itis.springpractice.fragments.SignUpFragment"
+            android:label="SignUpFragment"
+            tools:layout="@layout/fragment_sign_up">
+            <action
+                android:id="@+id/action_signUpFragment_to_signInFragment"
+                app:destination="@id/signInFragment" />
+        </fragment>
         <action
-            android:id="@+id/action_signInFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
-    </fragment>
+            android:id="@+id/action_global_profileFragment2"
+            app:destination="@id/profileFragment" />
+    </navigation>
     <fragment
-        android:id="@+id/signUpFragment"
-        android:name="com.itis.springpractice.fragments.SignUpFragment"
-        android:label="SignUpFragment" />
+        android:id="@+id/profileFragment"
+        android:name="com.itis.springpractice.fragments.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile"/>
 </navigation>

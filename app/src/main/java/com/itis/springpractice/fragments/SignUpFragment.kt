@@ -1,12 +1,18 @@
 package com.itis.springpractice.fragments
 
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentSignUpBinding
 import com.itis.springpractice.network.client.UserAuthClient
 import com.itis.springpractice.network.client.UserTokenClient
@@ -43,7 +49,7 @@ class SignUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val login = binding.etLogin.text.toString()
         val password = binding.etPassword.text.toString()
-
+        clickableText()
         binding.btnSignUp.setOnClickListener {
             lifecycleScope.launch {
                 try {
@@ -68,5 +74,17 @@ class SignUpFragment : Fragment() {
 
     private suspend fun register(login: String, password: String) {
         signUpResponse = userAuthRepository.register(login, password)
+    }
+
+    private fun clickableText() {
+        val clickString = SpannableString(resources.getString(R.string.to_login))
+        // Set clickable span
+        clickString[18 until clickString.length] = object: ClickableSpan(){
+            override fun onClick(view: View) {
+                findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
+            }
+        }
+        binding.tvSignIn.movementMethod = LinkMovementMethod()
+        binding.tvSignIn.text = clickString
     }
 }
