@@ -1,4 +1,4 @@
-package com.itis.springpractice.network.responses
+package com.itis.springpractice.data.response
 
 import com.google.gson.annotations.SerializedName
 

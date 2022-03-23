@@ -6,4 +6,5 @@
     <string name="sign_up">Зарегистрироваться</string>
     <string name="to_sign_up">Еще нет аккаунта? Зарегистрироваться</string>
     <string name="to_login">Уже есть аккаунт? Войти</string>
+    <string name="profile">Profile</string>
 </resources>

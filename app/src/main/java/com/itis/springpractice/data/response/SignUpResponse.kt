@@ -1,10 +1,9 @@
-package com.itis.springpractice.network.responses
+package com.itis.springpractice.data.response
+
 
 import com.google.gson.annotations.SerializedName
 
-data class SignInResponse(
-    @SerializedName("displayName")
-    val displayName: String,
+data class SignUpResponse(
     @SerializedName("email")
     val email: String,
     @SerializedName("expiresIn")
@@ -15,6 +14,6 @@ data class SignInResponse(
     val localId: String,
     @SerializedName("refreshToken")
     val refreshToken: String,
-    @SerializedName("registered")
-    val registered: Boolean
+    @SerializedName("error")
+    val error: Error
 )
