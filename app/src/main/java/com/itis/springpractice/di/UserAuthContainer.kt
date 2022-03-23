@@ -1,22 +1,20 @@
-package com.itis.springpractice.network.client
+package com.itis.springpractice.di
 
 import com.itis.springpractice.BuildConfig
-import com.itis.springpractice.network.api.FirebaseAuthApi
-import com.itis.springpractice.network.api.FirebaseTokenApi
+import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class UserTokenClient {
-    companion object {
-        private const val BASE_URL = "https://securetoken.googleapis.com/v1/"
-        private const val API_KEY = BuildConfig.API_KEY
-        private const val QUERY_API_KEY = "key"
-        private const val TYPE_HEADER = "Content-Type"
-        private const val FORM_TYPE = "application/x-www-form-urlencoded"
-    }
+private const val BASE_URL = "https://identitytoolkit.googleapis.com/v1/"
+private const val API_KEY = "AIzaSyBry_R7UWLJhRIgJigO6lqSvivAvUa3aDo"
+private const val QUERY_API_KEY = "key"
+private const val TYPE_HEADER = "Content-Type"
+private const val JSON_TYPE = "application/json"
+
+object UserAuthContainer {
 
     private val apiKeyInterceptor = Interceptor { chain ->
         val original = chain.request()
@@ -29,22 +27,22 @@ class UserTokenClient {
                 .build()
         )
     }
-
     private val typeHeaderInterceptor = Interceptor { chain ->
         val original = chain.request()
         chain.proceed(
             original.newBuilder()
                 .header(
-                    TYPE_HEADER, FORM_TYPE
+                    TYPE_HEADER, JSON_TYPE
                 )
                 .build()
         )
     }
 
+
     private val okhttp: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(apiKeyInterceptor)
-            .addInterceptor(typeHeaderInterceptor)
+            //.addInterceptor(typeHeaderInterceptor)
             .also {
                 if (BuildConfig.DEBUG) {
                     it.addInterceptor(
@@ -58,17 +56,12 @@ class UserTokenClient {
             .build()
     }
 
-    private val api: FirebaseTokenApi by lazy {
+    val api: FirebaseAuthApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okhttp)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(FirebaseTokenApi::class.java)
+            .create(FirebaseAuthApi::class.java)
     }
-
-    fun returnApi(): FirebaseTokenApi {
-        return api
-    }
-
 }
