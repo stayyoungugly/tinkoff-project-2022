@@ -17,4 +17,5 @@ data class SignInResponse(
     val refreshToken: String,
     @SerializedName("registered")
     val registered: Boolean
+
 )

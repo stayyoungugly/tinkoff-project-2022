@@ -7,12 +7,10 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 interface FirebaseTokenApi {
-
     @FormUrlEncoded
     @POST("token")
     suspend fun refreshToken(
         @Field("grant_type") type: String,
         @Field("refresh_token") token: String
     ): Response<TokenResponse>
-
 }
