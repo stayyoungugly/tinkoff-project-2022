@@ -9,20 +9,19 @@ import com.itis.springpractice.data.database.token.model.Token
 @Dao
 interface TokenDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveToken(token: Token)
+    suspend fun saveToken(idToken: String)
 
-    @Query("SELECT * FROM tokens WHERE id = :id")
-    suspend fun findTokenById(id: Int): Token
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveRefreshToken(refreshToken: String)
 
-    @Query("SELECT * FROM tokens WHERE token = :token")
+    @Query("SELECT * FROM tokens WHERE id_token = :token")
     suspend fun findToken(token: String): Token
+
+    @Query("SELECT * FROM tokens WHERE refresh_token = :token")
+    suspend fun findRefreshToken(token: String): Token
 
     @Query("SELECT * FROM tokens")
     fun findAllTokens(): List<Token>
 
-    @Query("DELETE FROM tokens WHERE id = :id")
-    fun deleteTokenById(id: Int)
 
-    @Query("DELETE FROM tokens")
-    fun deleteAllTokens()
 }

@@ -18,20 +18,20 @@ class UserTokenRepositoryImpl(
     }
 
     override suspend fun saveToken(idToken: String) {
-        tokenDao.saveToken(Token(0, idToken))
+        tokenDao.saveToken(idToken)
     }
 
     override suspend fun getToken(): String {
-        return tokenDao.findAllTokens()[0].token
+        return tokenDao.findAllTokens()[0].idToken
     }
 
     override suspend fun getRefreshToken(): String {
-        return tokenDao.findAllTokens()[0].token
+        return tokenDao.findAllTokens()[0].refreshToken
     }
 
     override suspend fun saveRefreshToken(refreshToken: String): String {
-        tokenDao.saveToken(Token(0, refreshToken))
-        return tokenDao.findAllTokens()[0].token
+        tokenDao.saveRefreshToken(refreshToken)
+        return tokenDao.findAllTokens()[0].refreshToken
     }
 
     override suspend fun refreshToken(): TokenEntity {
