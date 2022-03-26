@@ -12,4 +12,5 @@
     <string name="verify">Готово</string>
     <string name="send_again">Отправить повторно</string>
     <string name="check_amp_point"><![CDATA[Check&Point]]></string>
+    <string name="check_password">Подтвердите пароль</string>
 </resources>

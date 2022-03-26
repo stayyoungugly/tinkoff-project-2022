@@ -60,16 +60,19 @@ class SignUpFragment : Fragment() {
         binding.btnSignUp.setOnClickListener {
             val login = binding.etLogin.text.toString()
             val password = binding.etPassword.text.toString()
+            val checkPassword = binding.etPasswordCheck.text.toString()
             if (registrationValidator.isValidEmail(login) ||
                 registrationValidator.isValidPassword(password)
             ) {
-                lifecycleScope.launch {
-                    try {
-                        register(login, password)
-                    } catch (ex: HttpException) {
-                        Timber.e(ex.message.toString())
+                if (password == checkPassword) {
+                    lifecycleScope.launch {
+                        try {
+                            register(login, password)
+                        } catch (ex: HttpException) {
+                            Timber.e(ex.message.toString())
+                        }
                     }
-                }
+                } else showMessage("Пароли не совпадают")
             } else if (!registrationValidator.isValidEmail(login)) {
                 showMessage("Введите корректный Email")
             } else if (!registrationValidator.isValidPassword(password)) {
