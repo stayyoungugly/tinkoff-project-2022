@@ -15,9 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
 import com.itis.springpractice.data.api.firebase.FirebaseTokenApi
-import com.itis.springpractice.data.api.mapper.SignInMapper
-import com.itis.springpractice.data.api.mapper.SignUpMapper
-import com.itis.springpractice.data.api.mapper.TokenMapper
+import com.itis.springpractice.data.api.mapper.*
 import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
 import com.itis.springpractice.data.impl.UserTokenRepositoryImpl
 import com.itis.springpractice.databinding.FragmentSignInBinding
@@ -37,6 +35,8 @@ class SignInFragment : Fragment() {
     private lateinit var signInMapper: SignInMapper
     private lateinit var signUpMapper: SignUpMapper
     private lateinit var tokenMapper: TokenMapper
+    private lateinit var verificationMapper: VerificationMapper
+    private lateinit var errorMapper: ErrorMapper
     private lateinit var userTokenRepository: UserTokenRepository
     private lateinit var userAuthRepository: UserAuthRepository
     private lateinit var registrationValidator: RegistrationValidator
@@ -60,10 +60,7 @@ class SignInFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             val login = binding.etLogin.text.toString()
             val password = binding.etPassword.text.toString()
-            if (
-                registrationValidator.isValidEmail(login) ||
-                registrationValidator.isValidPassword(password)
-            ) {
+            if (registrationValidator.isValidEmail(login)) {
                 lifecycleScope.launch {
                     try {
                         login(login, password)
@@ -72,9 +69,7 @@ class SignInFragment : Fragment() {
                     }
                 }
             } else if (!registrationValidator.isValidEmail(login)) {
-                showMessage("Email неверный")
-            } else if (!registrationValidator.isValidPassword(password)) {
-                showMessage("Пароль неверный")
+                showMessage("Введите корректный Email")
             }
         }
     }
@@ -83,11 +78,8 @@ class SignInFragment : Fragment() {
         signInEntity = userAuthRepository.login(login, password)
         if (signInEntity.errorMessage.isNullOrEmpty()) {
             saveToken()
-            println(signInEntity.email)
-            println(signInEntity.errorMessage)
             findNavController().navigate(R.id.action_signInFragment_to_profileFragment)
-        }
-        else {
+        } else {
             when (signInEntity.errorMessage) {
                 "EMAIL_NOT_FOUND" -> showMessage("Email не найден")
                 "INVALID_PASSWORD" -> showMessage("Неверный пароль")
@@ -114,8 +106,7 @@ class SignInFragment : Fragment() {
 
     private fun clickableText() {
         val clickString = SpannableString(resources.getString(R.string.to_sign_up))
-        // Set clickable span
-        clickString[19 until clickString.length] = object : ClickableSpan() {
+        clickString[18 until clickString.length + 1] = object : ClickableSpan() {
             override fun onClick(view: View) {
                 findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
             }
@@ -128,11 +119,19 @@ class SignInFragment : Fragment() {
         signInMapper = SignInMapper()
         signUpMapper = SignUpMapper()
         tokenMapper = TokenMapper()
+        errorMapper = ErrorMapper()
+        verificationMapper = VerificationMapper()
         registrationValidator = RegistrationValidator()
         apiAuth = UserAuthContainer.api
         apiToken = UserTokenContainer.api
         userTokenRepository = UserTokenRepositoryImpl(apiToken, tokenMapper)
-        userAuthRepository = UserAuthRepositoryImpl(apiAuth, signUpMapper, signInMapper)
+        userAuthRepository = UserAuthRepositoryImpl(
+            apiAuth,
+            signUpMapper,
+            signInMapper,
+            errorMapper,
+            verificationMapper
+        )
 
     }
 }

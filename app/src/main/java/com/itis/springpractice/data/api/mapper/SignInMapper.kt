@@ -1,7 +1,10 @@
 package com.itis.springpractice.data.api.mapper
 
+import com.google.gson.Gson
+import com.itis.springpractice.data.response.ErrorResponse
 import com.itis.springpractice.data.response.SignInResponse
 import com.itis.springpractice.domain.entity.SignInEntity
+import com.itis.springpractice.domain.entity.SignUpEntity
 import retrofit2.Response
 
 class SignInMapper {
@@ -16,8 +19,12 @@ class SignInMapper {
                 expiresIn = response.body()?.expiresIn,
                 registered = response.body()?.registered
             )
-        } else SignInEntity(
-            errorMessage = response.message()
-        )
+        } else {
+            val errorResponse: ErrorResponse =
+                Gson().fromJson(response.errorBody()?.string(), ErrorResponse::class.java)
+            return SignInEntity(
+                errorMessage = errorResponse.error.message
+            )
+        }
     }
 }

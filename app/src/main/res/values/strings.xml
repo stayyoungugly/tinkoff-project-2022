@@ -7,4 +7,9 @@
     <string name="to_sign_up">Еще нет аккаунта? Зарегистрироваться</string>
     <string name="to_login">Уже есть аккаунт? Войти</string>
     <string name="profile">Profile</string>
+    <string name="verify_email">Подтвердите адрес в письме, отправленном на Вашу электронную почту.</string>
+    <string name="enter_code">Введите код</string>
+    <string name="verify">Готово</string>
+    <string name="send_again">Отправить повторно</string>
+    <string name="check_amp_point"><![CDATA[Check&Point]]></string>
 </resources>

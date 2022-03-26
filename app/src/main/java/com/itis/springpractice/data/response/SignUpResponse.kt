@@ -1,9 +1,8 @@
 package com.itis.springpractice.data.response
 
-
 import com.google.gson.annotations.SerializedName
 
-data class SignUpResponse(
+class SignUpResponse(
     @SerializedName("email")
     val email: String,
     @SerializedName("expiresIn")
@@ -14,6 +13,4 @@ data class SignUpResponse(
     val localId: String,
     @SerializedName("refreshToken")
     val refreshToken: String,
-    @SerializedName("error")
-    val error: Error
 )

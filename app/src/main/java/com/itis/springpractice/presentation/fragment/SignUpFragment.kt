@@ -11,18 +11,16 @@ import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
 import com.itis.springpractice.data.api.firebase.FirebaseTokenApi
-import com.itis.springpractice.data.api.mapper.SignInMapper
-import com.itis.springpractice.data.api.mapper.SignUpMapper
-import com.itis.springpractice.data.api.mapper.TokenMapper
+import com.itis.springpractice.data.api.mapper.*
 import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
 import com.itis.springpractice.data.impl.UserTokenRepositoryImpl
 import com.itis.springpractice.databinding.FragmentSignUpBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.domain.entity.SignInEntity
 import com.itis.springpractice.domain.entity.SignUpEntity
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import com.itis.springpractice.domain.repository.UserTokenRepository
@@ -37,6 +35,8 @@ class SignUpFragment : Fragment() {
     private lateinit var signInMapper: SignInMapper
     private lateinit var signUpMapper: SignUpMapper
     private lateinit var tokenMapper: TokenMapper
+    private lateinit var errorMapper: ErrorMapper
+    private lateinit var verificationMapper: VerificationMapper
     private lateinit var userTokenRepository: UserTokenRepository
     private lateinit var userAuthRepository: UserAuthRepository
     private lateinit var registrationValidator: RegistrationValidator
@@ -60,14 +60,79 @@ class SignUpFragment : Fragment() {
         binding.btnSignUp.setOnClickListener {
             val login = binding.etLogin.text.toString()
             val password = binding.etPassword.text.toString()
-            lifecycleScope.launch {
-                try {
-                    register(login, password)
-                } catch (ex: HttpException) {
-                    Timber.e(ex.message.toString())
+            if (registrationValidator.isValidEmail(login) ||
+                registrationValidator.isValidPassword(password)
+            ) {
+                lifecycleScope.launch {
+                    try {
+                        register(login, password)
+                    } catch (ex: HttpException) {
+                        Timber.e(ex.message.toString())
+                    }
                 }
+            } else if (!registrationValidator.isValidEmail(login)) {
+                showMessage("Введите корректный Email")
+            } else if (!registrationValidator.isValidPassword(password)) {
+                showMessage("Пароль слишком легкий. Используйте цифры и буквы")
             }
         }
+    }
+
+    private suspend fun register(login: String, password: String) {
+        signUpEntity = userAuthRepository.register(login, password)
+        if (signUpEntity.errorMessage.isNullOrEmpty()) {
+            val action = signUpEntity.idToken?.let {
+                SignUpFragmentDirections.actionSignUpFragmentToVerifyEmailFragment(
+                    it
+                )
+            }
+            if (action != null) {
+                if (sendVerification()) {
+                    findNavController().navigate(action)
+                }
+            }
+        } else {
+            when (signUpEntity.errorMessage) {
+                "EMAIL_EXISTS" -> showMessage("Пользователь с таким Email уже существует")
+                "OPERATION_NOT_ALLOWED" -> showMessage("Операция недоступна")
+                "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток, попробуйте позже")
+                else -> showMessage("Ошибка регистрации")
+            }
+        }
+    }
+
+    private fun showMessage(message: String) {
+        Snackbar.make(
+            binding.root,
+            message,
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
+    private suspend fun sendVerification(): Boolean {
+        val token = signUpEntity.idToken
+        if (token != null) {
+            val errorEntity = userAuthRepository.sendVerification(token)
+            if (errorEntity.message.equals("OK")) return true
+            when (errorEntity.message) {
+                "INVALID_ID_TOKEN" -> showMessage("Ошибка запроса, попробуйте еще раз")
+                "USER_NOT_FOUND" -> showMessage("Пользователь не найден")
+                else -> showMessage("Ошибка отправки")
+            }
+            return false
+        }
+        return false
+    }
+
+    private fun clickableText() {
+        val clickString = SpannableString(resources.getString(R.string.to_login))
+        clickString[18 until clickString.length + 1] = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
+            }
+        }
+        binding.tvSignIn.movementMethod = LinkMovementMethod()
+        binding.tvSignIn.text = clickString
     }
 
     private suspend fun saveToken() {
@@ -77,33 +142,23 @@ class SignUpFragment : Fragment() {
         }
     }
 
-    private suspend fun register(login: String, password: String) {
-        signUpEntity = userAuthRepository.register(login, password)
-        saveToken()
-        findNavController().navigate(R.id.action_signUpFragment_to_profileFragment)
-    }
-
-    private fun clickableText() {
-        val clickString = SpannableString(resources.getString(R.string.to_login))
-        // Set clickable span
-        clickString[18 until clickString.length] = object : ClickableSpan() {
-            override fun onClick(view: View) {
-                findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
-            }
-        }
-        binding.tvSignIn.movementMethod = LinkMovementMethod()
-        binding.tvSignIn.text = clickString
-    }
-
     private fun initObjects() {
         signInMapper = SignInMapper()
         signUpMapper = SignUpMapper()
         tokenMapper = TokenMapper()
+        errorMapper = ErrorMapper()
+        verificationMapper = VerificationMapper()
         registrationValidator = RegistrationValidator()
         apiAuth = UserAuthContainer.api
         apiToken = UserTokenContainer.api
         userTokenRepository = UserTokenRepositoryImpl(apiToken, tokenMapper)
-        userAuthRepository = UserAuthRepositoryImpl(apiAuth, signUpMapper, signInMapper)
+        userAuthRepository = UserAuthRepositoryImpl(
+            apiAuth,
+            signUpMapper,
+            signInMapper,
+            errorMapper,
+            verificationMapper
+        )
 
     }
 }

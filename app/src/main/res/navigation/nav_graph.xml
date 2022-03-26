@@ -25,9 +25,23 @@
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_signUpFragment_to_verifyEmailFragment"
+            app:destination="@id/verifyEmailFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.itis.springpractice.presentation.fragment.ProfileFragment"
         android:label="ProfileFragment" />
+    <fragment
+        android:id="@+id/verifyEmailFragment"
+        android:name="com.itis.springpractice.presentation.fragment.VerifyEmailFragment"
+        android:label="VerifyEmailFragment" >
+        <argument
+            android:name="idToken"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_verifyEmailFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>
