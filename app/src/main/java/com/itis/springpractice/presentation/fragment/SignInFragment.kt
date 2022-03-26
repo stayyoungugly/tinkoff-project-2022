@@ -16,6 +16,8 @@ import com.itis.springpractice.R
 import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
 import com.itis.springpractice.data.api.firebase.FirebaseTokenApi
 import com.itis.springpractice.data.api.mapper.*
+import com.itis.springpractice.data.database.token.TokenDao
+import com.itis.springpractice.data.database.token.TokenDatabase
 import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
 import com.itis.springpractice.data.impl.UserTokenRepositoryImpl
 import com.itis.springpractice.databinding.FragmentSignInBinding
@@ -37,6 +39,8 @@ class SignInFragment : Fragment() {
     private lateinit var tokenMapper: TokenMapper
     private lateinit var verificationMapper: VerificationMapper
     private lateinit var errorMapper: ErrorMapper
+    private lateinit var tokenDatabase: TokenDatabase
+    private lateinit var tokenDao: TokenDao
     private lateinit var userTokenRepository: UserTokenRepository
     private lateinit var userAuthRepository: UserAuthRepository
     private lateinit var registrationValidator: RegistrationValidator
@@ -121,10 +125,12 @@ class SignInFragment : Fragment() {
         tokenMapper = TokenMapper()
         errorMapper = ErrorMapper()
         verificationMapper = VerificationMapper()
+        tokenDatabase = TokenDatabase.getInstance(this.requireContext())
+        tokenDao = tokenDatabase.tokenDao()
         registrationValidator = RegistrationValidator()
         apiAuth = UserAuthContainer.api
         apiToken = UserTokenContainer.api
-        userTokenRepository = UserTokenRepositoryImpl(apiToken, tokenMapper)
+        userTokenRepository = UserTokenRepositoryImpl(apiToken, tokenMapper, tokenDao)
         userAuthRepository = UserAuthRepositoryImpl(
             apiAuth,
             signUpMapper,
