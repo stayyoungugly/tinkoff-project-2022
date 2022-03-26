@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,6 +85,7 @@ class SignUpFragment : Fragment() {
 
     private suspend fun register(login: String, password: String) {
         signUpEntity = userAuthRepository.register(login, password)
+        Timber.e(signUpEntity.idToken)
         if (signUpEntity.errorMessage.isNullOrEmpty()) {
             val action = signUpEntity.idToken?.let {
                 SignUpFragmentDirections.actionSignUpFragmentToVerifyEmailFragment(
@@ -140,9 +142,8 @@ class SignUpFragment : Fragment() {
     }
 
     private suspend fun saveToken() {
-        val token = signUpEntity.idToken
-        if (token != null) {
-            userTokenRepository.saveToken(token)
+        signUpEntity.idToken?.let {
+            userTokenRepository.saveToken(it)
         }
     }
 

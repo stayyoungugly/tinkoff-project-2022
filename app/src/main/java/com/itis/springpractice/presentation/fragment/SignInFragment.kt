@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,11 +28,11 @@ import com.itis.springpractice.domain.entity.SignInEntity
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import com.itis.springpractice.domain.repository.UserTokenRepository
 import com.itis.springpractice.presentation.validation.RegistrationValidator
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.HttpException
 import timber.log.Timber
 
-class SignInFragment : Fragment() {
+class SignInFragment : Fragment(), CoroutineScope by MainScope() {
     private lateinit var binding: FragmentSignInBinding
     private lateinit var signInEntity: SignInEntity
     private lateinit var signInMapper: SignInMapper
@@ -102,9 +103,9 @@ class SignInFragment : Fragment() {
     }
 
     private suspend fun saveToken() {
-        val token = signInEntity.idToken
-        if (token != null) {
-            userTokenRepository.saveToken(token)
+        signInEntity.idToken?.let {
+            userTokenRepository.saveToken(it)
+            Timber.e("token")
         }
     }
 
@@ -138,6 +139,9 @@ class SignInFragment : Fragment() {
             errorMapper,
             verificationMapper
         )
-
     }
+
+    private val scope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Default
+    )
 }
