@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/signInFragment"
-        android:name="com.itis.springpractice.presentation.fragment.SignInFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.SignInFragment"
         android:label="SignInFragment">
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.itis.springpractice.presentation.fragment.SignUpFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.SignUpFragment"
         android:label="SignUpFragment" >
         <action
             android:id="@+id/action_signUpFragment_to_profileFragment"
@@ -31,11 +31,11 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.itis.springpractice.presentation.fragment.ProfileFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.ProfileFragment"
         android:label="ProfileFragment" />
     <fragment
         android:id="@+id/verifyEmailFragment"
-        android:name="com.itis.springpractice.presentation.fragment.VerifyEmailFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.VerifyEmailFragment"
         android:label="VerifyEmailFragment" >
         <argument
             android:name="idToken"

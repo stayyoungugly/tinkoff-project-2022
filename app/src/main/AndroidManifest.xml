@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpringPractice">
         <activity
-            android:name="com.itis.springpractice.presentation.activity.MainActivity"
+            android:name="com.itis.springpractice.presentation.ui.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

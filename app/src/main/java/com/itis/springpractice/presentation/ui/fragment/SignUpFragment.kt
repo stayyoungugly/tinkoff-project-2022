@@ -1,10 +1,11 @@
-package com.itis.springpractice.presentation.fragment
+package com.itis.springpractice.presentation.ui.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,17 +18,16 @@ import com.itis.springpractice.R
 import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
 import com.itis.springpractice.data.api.firebase.FirebaseTokenApi
 import com.itis.springpractice.data.api.mapper.*
-import com.itis.springpractice.data.database.token.TokenDao
-import com.itis.springpractice.data.database.token.TokenDatabase
 import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
 import com.itis.springpractice.data.impl.UserTokenRepositoryImpl
+import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.databinding.FragmentSignUpBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.SignUpEntity
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import com.itis.springpractice.domain.repository.UserTokenRepository
-import com.itis.springpractice.presentation.validation.RegistrationValidator
+import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import timber.log.Timber
@@ -39,15 +39,14 @@ class SignUpFragment : Fragment() {
     private lateinit var signUpMapper: SignUpMapper
     private lateinit var tokenMapper: TokenMapper
     private lateinit var errorMapper: ErrorMapper
-    private lateinit var tokenDatabase: TokenDatabase
-    private lateinit var tokenDao: TokenDao
     private lateinit var verificationMapper: VerificationMapper
     private lateinit var userTokenRepository: UserTokenRepository
     private lateinit var userAuthRepository: UserAuthRepository
     private lateinit var registrationValidator: RegistrationValidator
     private lateinit var apiAuth: FirebaseAuthApi
     private lateinit var apiToken: FirebaseTokenApi
-
+    private lateinit var preferenceManager: PreferenceManager
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +59,7 @@ class SignUpFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         initObjects()
         clickableText()
         binding.btnSignUp.setOnClickListener {
@@ -156,12 +156,11 @@ class SignUpFragment : Fragment() {
         tokenMapper = TokenMapper()
         errorMapper = ErrorMapper()
         verificationMapper = VerificationMapper()
-        tokenDatabase = TokenDatabase.getInstance(this.requireContext())
-        tokenDao = tokenDatabase.tokenDao()
         registrationValidator = RegistrationValidator()
         apiAuth = UserAuthContainer.api
         apiToken = UserTokenContainer.api
-        userTokenRepository = UserTokenRepositoryImpl(apiToken, tokenMapper, tokenDao)
+        preferenceManager = PreferenceManager(sharedPreferences)
+        userTokenRepository = UserTokenRepositoryImpl(apiToken, tokenMapper, preferenceManager)
         userAuthRepository = UserAuthRepositoryImpl(
             apiAuth,
             signUpMapper,

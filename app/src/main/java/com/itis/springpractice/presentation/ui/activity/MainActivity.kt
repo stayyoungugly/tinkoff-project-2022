@@ -1,4 +1,4 @@
-package com.itis.springpractice.presentation.activity
+package com.itis.springpractice.presentation.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

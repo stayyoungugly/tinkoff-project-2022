@@ -1,4 +1,4 @@
-package com.itis.springpractice.presentation.fragment
+package com.itis.springpractice.presentation.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

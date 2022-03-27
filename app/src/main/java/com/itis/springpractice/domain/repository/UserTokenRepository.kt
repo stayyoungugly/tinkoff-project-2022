@@ -9,7 +9,7 @@ interface UserTokenRepository {
 
     suspend fun getRefreshToken(): String
 
-    suspend fun saveRefreshToken(refreshToken: String): String
+    suspend fun saveRefreshToken(refreshToken: String)
 
     suspend fun refreshToken(): TokenEntity
 }

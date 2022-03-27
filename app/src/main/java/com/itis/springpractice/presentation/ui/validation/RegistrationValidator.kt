@@ -1,4 +1,4 @@
-package com.itis.springpractice.presentation.validation
+package com.itis.springpractice.presentation.ui.validation
 
 import android.text.TextUtils
 import android.util.Patterns
