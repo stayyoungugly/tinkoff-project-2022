@@ -7,6 +7,12 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def getKey() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty("mySecretKey")
+}
+
 android {
     compileSdk 31
 
@@ -16,7 +22,7 @@ android {
         targetSdk 31
         versionCode 1
         versionName "1.0"
-        buildConfigField "String", "API_KEY", '"AIzaSyBwGQUJ8k73NqiMQVNFA38bVT2ncW8Nrng"'
+        buildConfigField "String", "API_KEY", getKey()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
