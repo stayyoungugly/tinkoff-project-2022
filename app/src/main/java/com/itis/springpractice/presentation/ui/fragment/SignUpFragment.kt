@@ -24,7 +24,7 @@ import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.databinding.FragmentSignUpBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.domain.entity.SignUpEntity
+import com.itis.springpractice.domain.entity.*
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import com.itis.springpractice.domain.repository.UserTokenRepository
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
@@ -34,7 +34,7 @@ import timber.log.Timber
 
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
-    private lateinit var signUpEntity: SignUpEntity
+    private lateinit var signUpResult: SignUpResult
     private lateinit var signInMapper: SignInMapper
     private lateinit var signUpMapper: SignUpMapper
     private lateinit var tokenMapper: TokenMapper
@@ -87,25 +87,25 @@ class SignUpFragment : Fragment() {
     }
 
     private suspend fun register(login: String, password: String) {
-        signUpEntity = userAuthRepository.register(login, password)
-        Timber.e(signUpEntity.idToken)
-        if (signUpEntity.errorMessage.isNullOrEmpty()) {
-            val action = signUpEntity.idToken?.let {
-                SignUpFragmentDirections.actionSignUpFragmentToVerifyEmailFragment(
-                    it
-                )
-            }
-            if (action != null) {
+        signUpResult = userAuthRepository.register(login, password)
+        when (signUpResult) {
+            is SignUpSuccess -> {
+                val action = (signUpResult as SignUpSuccess).idToken.let {
+                    SignUpFragmentDirections.actionSignUpFragmentToVerifyEmailFragment(
+                        it
+                    )
+                }
                 if (sendVerification()) {
                     findNavController().navigate(action)
                 }
             }
-        } else {
-            when (signUpEntity.errorMessage) {
-                "EMAIL_EXISTS" -> showMessage("Пользователь с таким Email уже существует")
-                "OPERATION_NOT_ALLOWED" -> showMessage("Операция недоступна")
-                "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток, попробуйте позже")
-                else -> showMessage("Ошибка регистрации")
+            is SignUpError -> {
+                when ((signUpResult as SignUpError).reason) {
+                    "EMAIL_EXISTS" -> showMessage("Пользователь с таким Email уже существует")
+                    "OPERATION_NOT_ALLOWED" -> showMessage("Операция недоступна")
+                    "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток, попробуйте позже")
+                    else -> showMessage("Ошибка регистрации")
+                }
             }
         }
     }
@@ -119,7 +119,7 @@ class SignUpFragment : Fragment() {
     }
 
     private suspend fun sendVerification(): Boolean {
-        val token = signUpEntity.idToken
+        val token = (signUpResult as SignUpSuccess).idToken
         if (token != null) {
             val errorEntity = userAuthRepository.sendVerification(token)
             if (errorEntity.message.equals("OK")) return true
@@ -145,7 +145,7 @@ class SignUpFragment : Fragment() {
     }
 
     private suspend fun saveToken() {
-        signUpEntity.idToken?.let {
+        (signUpResult as SignUpSuccess).idToken.let {
             userTokenRepository.saveToken(it)
         }
     }

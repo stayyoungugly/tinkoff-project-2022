@@ -17,13 +17,13 @@ interface FirebaseAuthApi {
     @POST("./accounts:signUp")
     suspend fun register(
         @Body signUpRequest: SignUpRequest
-    ): Response<SignUpResponse>
+    ): Result<SignUpResponse>
 
     @Headers("Content-type: application/json")
     @POST("./accounts:signInWithPassword")
     suspend fun login(
         @Body signInRequest: SignInRequest
-    ): Response<SignInResponse>
+    ): Result<SignInResponse>
 
     @Headers("Content-type: application/json")
     @POST("./accounts:sendOobCode")
@@ -35,7 +35,7 @@ interface FirebaseAuthApi {
     @POST("./accounts:lookup")
     suspend fun acceptVerification(
         @Body acceptVerificationRequest: AcceptVerificationRequest
-    ): Response<VerificationResponse>
+    ): Result<VerificationResponse>
 
     @Headers("Content-type: application/json")
     @POST("./accounts:delete")

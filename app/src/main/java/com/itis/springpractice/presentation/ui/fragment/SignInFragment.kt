@@ -24,7 +24,9 @@ import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.databinding.FragmentSignInBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.domain.entity.SignInEntity
+import com.itis.springpractice.domain.entity.SignInError
+import com.itis.springpractice.domain.entity.SignInResult
+import com.itis.springpractice.domain.entity.SignInSuccess
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import com.itis.springpractice.domain.repository.UserTokenRepository
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
@@ -34,7 +36,7 @@ import timber.log.Timber
 
 class SignInFragment : Fragment() {
     private lateinit var binding: FragmentSignInBinding
-    private lateinit var signInEntity: SignInEntity
+    private lateinit var signInResult: SignInResult
     private lateinit var signInMapper: SignInMapper
     private lateinit var signUpMapper: SignUpMapper
     private lateinit var tokenMapper: TokenMapper
@@ -80,16 +82,19 @@ class SignInFragment : Fragment() {
     }
 
     private suspend fun login(login: String, password: String) {
-        signInEntity = userAuthRepository.login(login, password)
-        if (signInEntity.errorMessage.isNullOrEmpty()) {
-            saveToken()
-            findNavController().navigate(R.id.action_signInFragment_to_profileFragment)
-        } else {
-            when (signInEntity.errorMessage) {
-                "EMAIL_NOT_FOUND" -> showMessage("Email не найден")
-                "INVALID_PASSWORD" -> showMessage("Неверный пароль")
-                "USER_DISABLED" -> showMessage("Доступ запрещен")
-                else -> showMessage("Ошибка входа")
+        signInResult = userAuthRepository.login(login, password)
+        when (signInResult) {
+            is SignInSuccess -> {
+                saveToken()
+                findNavController().navigate(R.id.action_signInFragment_to_profileFragment)
+            }
+            is SignInError -> {
+                when ((signInResult as SignInError).reason) {
+                    "EMAIL_NOT_FOUND" -> showMessage("Email не найден")
+                    "INVALID_PASSWORD" -> showMessage("Неверный пароль")
+                    "USER_DISABLED" -> showMessage("Доступ запрещен")
+                    else -> showMessage("Ошибка входа")
+                }
             }
         }
     }
@@ -103,9 +108,8 @@ class SignInFragment : Fragment() {
     }
 
     private suspend fun saveToken() {
-        signInEntity.idToken?.let {
+        (signInResult as SignInSuccess).idToken.let {
             userTokenRepository.saveToken(it)
-            Timber.e("token")
         }
     }
 

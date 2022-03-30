@@ -1,29 +1,22 @@
 package com.itis.springpractice.data.api.mapper
 
-import com.google.gson.Gson
-import com.itis.springpractice.data.response.ErrorResponse
 import com.itis.springpractice.data.response.VerificationResponse
-import com.itis.springpractice.domain.entity.VerificationEntity
-import retrofit2.Response
+import com.itis.springpractice.domain.entity.*
 
 class VerificationMapper {
-    fun mapToVerificationEntity(response: Response<VerificationResponse>): VerificationEntity {
-        return if (response.isSuccessful) {
-            VerificationEntity(
-                email = response.body()?.users?.get(0)?.email,
-                localId = response.body()?.users?.get(0)?.localId,
-                displayName = response.body()?.users?.get(0)?.displayName,
-                passwordHash = response.body()?.users?.get(0)?.passwordHash,
-                emailVerified = response.body()?.users?.get(0)?.emailVerified,
-                providerId = response.body()?.users?.get(0)?.providerUserInfo?.get(0)?.providerId,
-                federatedId = response.body()?.users?.get(0)?.providerUserInfo?.get(0)?.federatedId,
+    fun mapToVerificationEntity(response: Result<VerificationResponse>): VerificationResult {
+        response.fold(onSuccess = {
+            return VerificationSuccess(
+                email = it.users[0].email,
+                localId = it.users[0].localId,
+                displayName = it.users[0].displayName,
+                passwordHash = it.users[0].passwordHash,
+                emailVerified = it.users[0].emailVerified,
+                providerId = it.users[0].providerUserInfo[0].providerId,
+                federatedId = it.users[0].providerUserInfo[0].federatedId,
             )
-        } else {
-            val errorResponse: ErrorResponse =
-                Gson().fromJson(response.errorBody()?.string(), ErrorResponse::class.java)
-            return VerificationEntity(
-                errorMessage = errorResponse.error.message
-            )
-        }
+        }, onFailure = {
+            return VerificationError(it.message)
+        })
     }
 }

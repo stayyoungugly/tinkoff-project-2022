@@ -12,5 +12,5 @@ interface FirebaseTokenApi {
     suspend fun refreshToken(
         @Field("grant_type") type: String,
         @Field("refresh_token") token: String
-    ): Response<TokenResponse>
+    ): Result<TokenResponse>
 }
