@@ -17,7 +17,7 @@ interface FirebaseAuthApi {
     @POST("./accounts:signUp")
     suspend fun register(
         @Body signUpRequest: SignUpRequest
-    ): Result<SignUpResponse>
+    ): Response<SignUpResponse>
 
     @Headers("Content-type: application/json")
     @POST("./accounts:signInWithPassword")
