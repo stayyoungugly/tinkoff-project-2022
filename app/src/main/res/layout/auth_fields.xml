@@ -8,21 +8,21 @@
         android:id="@+id/tv_checkpoint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:text="@string/check_amp_point"
         android:textColor="@color/black"
         android:textSize="16pt"
-        app:layout_constraintBottom_toTopOf="@id/ti_password_check"
+        app:layout_constraintBottom_toTopOf="@id/ti_login"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ti_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/ti_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/ti_password"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed">
 
@@ -38,11 +38,11 @@
         android:id="@+id/ti_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/ti_password_check"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/ti_password_check"
-        app:layout_constraintTop_toBottomOf="@+id/ti_login"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/ti_login">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_password"
@@ -56,9 +56,10 @@
         android:id="@+id/ti_password_check"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintTop_toBottomOf="@+id/ti_password">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -73,7 +74,7 @@
         android:id="@+id/btn_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:text="@string/sign_up"
         app:layout_constraintBottom_toTopOf="@+id/tv_else"
         app:layout_constraintEnd_toEndOf="parent"

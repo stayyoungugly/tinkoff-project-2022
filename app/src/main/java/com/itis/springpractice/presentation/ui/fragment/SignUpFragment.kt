@@ -66,7 +66,7 @@ class SignUpFragment : Fragment() {
             val login = binding.authFields.etLogin.text.toString()
             val password = binding.authFields.etPassword.text.toString()
             val checkPassword = binding.authFields.etPasswordCheck.text.toString()
-            if (registrationValidator.isValidEmail(login) ||
+            if (registrationValidator.isValidEmail(login) &&
                 registrationValidator.isValidPassword(password)
             ) {
                 if (password == checkPassword) {
@@ -81,7 +81,7 @@ class SignUpFragment : Fragment() {
             } else if (!registrationValidator.isValidEmail(login)) {
                 showMessage("Введите корректный Email")
             } else if (!registrationValidator.isValidPassword(password)) {
-                showMessage("Пароль слишком легкий. Используйте цифры и буквы")
+                showMessage("Пароль должен состоять минимум из 8 символов, минимум одна буква и одна цифра")
             }
         }
     }
@@ -91,7 +91,7 @@ class SignUpFragment : Fragment() {
         when (signUpResult) {
             is SignUpSuccess -> {
                 if (sendVerification()) {
-                    findNavController().navigate(R.id.action_signUpFragment_to_profileFragment)
+                    findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
                     saveToken()
                 }
             }
