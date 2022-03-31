@@ -18,16 +18,18 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.SignUpFragment"
-        android:label="SignUpFragment" >
+        android:label="SignUpFragment">
         <action
             android:id="@+id/action_signUpFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment" />
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
         <action
             android:id="@+id/action_signUpFragment_to_verifyEmailFragment"
-            app:destination="@id/verifyEmailFragment" />
+            app:destination="@id/verifyEmailFragment"
+            app:popUpTo="@id/signInFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -36,12 +38,13 @@
     <fragment
         android:id="@+id/verifyEmailFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.VerifyEmailFragment"
-        android:label="VerifyEmailFragment" >
+        android:label="VerifyEmailFragment">
         <argument
             android:name="idToken"
             app:argType="string" />
         <action
             android:id="@+id/action_verifyEmailFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment" />
     </fragment>
 </navigation>

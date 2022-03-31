@@ -11,6 +11,7 @@
     <string name="enter_code">Введите код</string>
     <string name="verify">Готово</string>
     <string name="send_again">Отправить повторно</string>
-    <string name="check_amp_point"><![CDATA[Check&Point]]></string>
+    <string name="check_amp_point">Check&amp;Point</string>
     <string name="check_password">Подтвердите пароль</string>
+    <string name="skip">Пропустить</string>
 </resources>

@@ -7,6 +7,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 interface FirebaseTokenApi {
+
     @FormUrlEncoded
     @POST("token")
     suspend fun refreshToken(

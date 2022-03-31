@@ -4,8 +4,8 @@ import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
 import com.itis.springpractice.data.api.mapper.ErrorMapper
 import com.itis.springpractice.data.api.mapper.SignInMapper
 import com.itis.springpractice.data.api.mapper.SignUpMapper
-import com.itis.springpractice.data.api.mapper.VerificationMapper
-import com.itis.springpractice.data.request.AcceptVerificationRequest
+import com.itis.springpractice.data.api.mapper.UserInfoMapper
+import com.itis.springpractice.data.request.TokenIdRequest
 import com.itis.springpractice.data.request.SendVerificationRequest
 import com.itis.springpractice.data.request.SignInRequest
 import com.itis.springpractice.data.request.SignUpRequest
@@ -17,7 +17,7 @@ class UserAuthRepositoryImpl(
     private var registerMapper: SignUpMapper,
     private var loginMapper: SignInMapper,
     private var errorMapper: ErrorMapper,
-    private var verificationMapper: VerificationMapper
+    private var userInfoMapper: UserInfoMapper
 ) : UserAuthRepository {
     companion object {
         private const val secure = "true"
@@ -54,10 +54,10 @@ class UserAuthRepositoryImpl(
         )
     }
 
-    override suspend fun acceptVerification(idToken: String): VerificationResult {
-        return verificationMapper.mapToVerificationEntity(
-            api.acceptVerification(
-                createAcceptVerificationRequest(idToken)
+    override suspend fun getUserInfo(idToken: String): UserInfoResult {
+        return userInfoMapper.mapToVerificationEntity(
+            api.getUserInfo(
+                createTokenIdRequest(idToken)
             )
         )
     }
@@ -65,7 +65,7 @@ class UserAuthRepositoryImpl(
     override suspend fun deleteUser(idToken: String): ErrorEntity {
         return errorMapper.mapToErrorEntity(
             api.delete(
-                createAcceptVerificationRequest(idToken)
+                createTokenIdRequest(idToken)
             )
         )
     }
@@ -79,10 +79,10 @@ class UserAuthRepositoryImpl(
             idToken = token
         )
 
-    private fun createAcceptVerificationRequest(
+    private fun createTokenIdRequest(
         token: String
-    ): AcceptVerificationRequest =
-        AcceptVerificationRequest(
+    ): TokenIdRequest =
+        TokenIdRequest(
             idToken = token
         )
 

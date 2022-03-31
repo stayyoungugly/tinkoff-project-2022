@@ -39,7 +39,7 @@ class SignUpFragment : Fragment() {
     private lateinit var signUpMapper: SignUpMapper
     private lateinit var tokenMapper: TokenMapper
     private lateinit var errorMapper: ErrorMapper
-    private lateinit var verificationMapper: VerificationMapper
+    private lateinit var userInfoMapper: UserInfoMapper
     private lateinit var userTokenRepository: UserTokenRepository
     private lateinit var userAuthRepository: UserAuthRepository
     private lateinit var registrationValidator: RegistrationValidator
@@ -62,10 +62,10 @@ class SignUpFragment : Fragment() {
         sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         initObjects()
         clickableText()
-        binding.btnSignUp.setOnClickListener {
-            val login = binding.etLogin.text.toString()
-            val password = binding.etPassword.text.toString()
-            val checkPassword = binding.etPasswordCheck.text.toString()
+        binding.authFields.btnNext.setOnClickListener {
+            val login = binding.authFields.etLogin.text.toString()
+            val password = binding.authFields.etPassword.text.toString()
+            val checkPassword = binding.authFields.etPasswordCheck.text.toString()
             if (registrationValidator.isValidEmail(login) ||
                 registrationValidator.isValidPassword(password)
             ) {
@@ -90,13 +90,9 @@ class SignUpFragment : Fragment() {
         signUpResult = userAuthRepository.register(login, password)
         when (signUpResult) {
             is SignUpSuccess -> {
-                val action = (signUpResult as SignUpSuccess).idToken.let {
-                    SignUpFragmentDirections.actionSignUpFragmentToVerifyEmailFragment(
-                        it
-                    )
-                }
                 if (sendVerification()) {
-                    findNavController().navigate(action)
+                    findNavController().navigate(R.id.action_signUpFragment_to_profileFragment)
+                    saveToken()
                 }
             }
             is SignUpError -> {
@@ -120,15 +116,12 @@ class SignUpFragment : Fragment() {
 
     private suspend fun sendVerification(): Boolean {
         val token = (signUpResult as SignUpSuccess).idToken
-        if (token != null) {
-            val errorEntity = userAuthRepository.sendVerification(token)
-            if (errorEntity.message.equals("OK")) return true
-            when (errorEntity.message) {
-                "INVALID_ID_TOKEN" -> showMessage("Ошибка запроса, попробуйте еще раз")
-                "USER_NOT_FOUND" -> showMessage("Пользователь не найден")
-                else -> showMessage("Ошибка отправки")
-            }
-            return false
+        val errorEntity = userAuthRepository.sendVerification(token)
+        if (errorEntity.message == "OK") return true
+        when (errorEntity.message) {
+            "INVALID_ID_TOKEN" -> showMessage("Ошибка запроса, попробуйте еще раз")
+            "USER_NOT_FOUND" -> showMessage("Пользователь не найден")
+            else -> showMessage("Ошибка отправки")
         }
         return false
     }
@@ -140,8 +133,8 @@ class SignUpFragment : Fragment() {
                 findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
             }
         }
-        binding.tvSignIn.movementMethod = LinkMovementMethod()
-        binding.tvSignIn.text = clickString
+        binding.authFields.tvElse.movementMethod = LinkMovementMethod()
+        binding.authFields.tvElse.text = clickString
     }
 
     private suspend fun saveToken() {
@@ -155,7 +148,7 @@ class SignUpFragment : Fragment() {
         signUpMapper = SignUpMapper()
         tokenMapper = TokenMapper()
         errorMapper = ErrorMapper()
-        verificationMapper = VerificationMapper()
+        userInfoMapper = UserInfoMapper()
         registrationValidator = RegistrationValidator()
         apiAuth = UserAuthContainer.api
         apiToken = UserTokenContainer.api
@@ -166,7 +159,7 @@ class SignUpFragment : Fragment() {
             signUpMapper,
             signInMapper,
             errorMapper,
-            verificationMapper
+            userInfoMapper
         )
     }
 }

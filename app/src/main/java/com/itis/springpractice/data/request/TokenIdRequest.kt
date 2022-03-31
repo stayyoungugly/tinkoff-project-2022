@@ -1,5 +1,5 @@
 package com.itis.springpractice.data.request
 
-data class AcceptVerificationRequest(
+data class TokenIdRequest(
     val idToken: String
 )

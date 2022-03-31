@@ -3,7 +3,7 @@ package com.itis.springpractice.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class User(
+data class UserInfo(
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("customAuth")
@@ -20,14 +20,8 @@ data class User(
     val lastLoginAt: String,
     @SerializedName("localId")
     val localId: String,
-    @SerializedName("passwordHash")
-    val passwordHash: String,
     @SerializedName("passwordUpdatedAt")
     val passwordUpdatedAt: Double,
     @SerializedName("photoUrl")
     val photoUrl: String,
-    @SerializedName("providerUserInfo")
-    val providerUserInfo: List<ProviderUserInfo>,
-    @SerializedName("validSince")
-    val validSince: String
 )

@@ -40,7 +40,7 @@ class SignInFragment : Fragment() {
     private lateinit var signInMapper: SignInMapper
     private lateinit var signUpMapper: SignUpMapper
     private lateinit var tokenMapper: TokenMapper
-    private lateinit var verificationMapper: VerificationMapper
+    private lateinit var userInfoMapper: UserInfoMapper
     private lateinit var errorMapper: ErrorMapper
     private lateinit var userTokenRepository: UserTokenRepository
     private lateinit var userAuthRepository: UserAuthRepository
@@ -63,10 +63,11 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         initObjects()
+        initViewParams()
         clickableText()
-        binding.btnLogin.setOnClickListener {
-            val login = binding.etLogin.text.toString()
-            val password = binding.etPassword.text.toString()
+        binding.authFields.btnNext.setOnClickListener {
+            val login = binding.authFields.etLogin.text.toString()
+            val password = binding.authFields.etPassword.text.toString()
             if (registrationValidator.isValidEmail(login)) {
                 lifecycleScope.launch {
                     try {
@@ -120,8 +121,16 @@ class SignInFragment : Fragment() {
                 findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
             }
         }
-        binding.tvSignUp.movementMethod = LinkMovementMethod()
-        binding.tvSignUp.text = clickString
+        binding.authFields.tvElse.movementMethod = LinkMovementMethod()
+        binding.authFields.tvElse.text = clickString
+    }
+
+    private fun initViewParams() {
+        with(binding.authFields) {
+            tiPasswordCheck.visibility = View.GONE
+            btnNext.text = getString(R.string.log_in)
+            tvElse.text = getString(R.string.to_sign_up)
+        }
     }
 
     private fun initObjects() {
@@ -129,7 +138,7 @@ class SignInFragment : Fragment() {
         signUpMapper = SignUpMapper()
         tokenMapper = TokenMapper()
         errorMapper = ErrorMapper()
-        verificationMapper = VerificationMapper()
+        userInfoMapper = UserInfoMapper()
         registrationValidator = RegistrationValidator()
         apiAuth = UserAuthContainer.api
         apiToken = UserTokenContainer.api
@@ -140,7 +149,7 @@ class SignInFragment : Fragment() {
             signUpMapper,
             signInMapper,
             errorMapper,
-            verificationMapper
+            userInfoMapper
         )
     }
 }

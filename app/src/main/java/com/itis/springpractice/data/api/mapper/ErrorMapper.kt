@@ -7,12 +7,13 @@ import retrofit2.Response
 class ErrorMapper {
     fun mapToErrorEntity(errorResponse: Response<ErrorResponse>): ErrorEntity {
         return if (!errorResponse.isSuccessful) {
+            val body = requireNotNull(errorResponse.body())
             ErrorEntity(
-                code = errorResponse.body()?.error?.code,
-                message = errorResponse.body()?.error?.message
+                code = body.error.code,
+                message = body.error.message
             )
         } else ErrorEntity(
-            code = 400,
+            code = 200,
             message = "OK"
         )
     }

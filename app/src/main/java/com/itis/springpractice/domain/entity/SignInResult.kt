@@ -1,6 +1,7 @@
 package com.itis.springpractice.domain.entity
 
 sealed class SignInResult
+
 data class SignInSuccess(
     val displayName: String,
     val email: String,

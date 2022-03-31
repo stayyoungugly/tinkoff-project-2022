@@ -9,7 +9,7 @@ interface UserAuthRepository {
 
     suspend fun sendVerification(idToken: String): ErrorEntity
 
-    suspend fun acceptVerification(idToken: String): VerificationResult
+    suspend fun getUserInfo(idToken: String): UserInfoResult
 
     suspend fun deleteUser(idToken: String): ErrorEntity
 }

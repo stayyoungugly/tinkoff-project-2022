@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.itis.springpractice.data.response.ErrorResponse
 import com.itis.springpractice.data.response.SignUpResponse
 import com.itis.springpractice.domain.entity.*
-import okhttp3.internal.notifyAll
 import retrofit2.Response
 
 class SignUpMapper {

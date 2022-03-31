@@ -3,7 +3,7 @@ package com.itis.springpractice.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class VerificationResponse(
+data class UserInfoResponse(
     @SerializedName("users")
-    val users: List<User>
+    val userAccounts: List<UserInfo>
 )

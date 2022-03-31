@@ -21,9 +21,9 @@ import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.databinding.FragmentVerifyEmailBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.domain.entity.VerificationError
-import com.itis.springpractice.domain.entity.VerificationResult
-import com.itis.springpractice.domain.entity.VerificationSuccess
+import com.itis.springpractice.domain.entity.UserInfoError
+import com.itis.springpractice.domain.entity.UserInfoResult
+import com.itis.springpractice.domain.entity.UserInfoSuccess
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import com.itis.springpractice.domain.repository.UserTokenRepository
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
@@ -32,15 +32,13 @@ import retrofit2.HttpException
 import timber.log.Timber
 
 class VerifyEmailFragment : Fragment() {
-    private val args: VerifyEmailFragmentArgs by navArgs()
-    private var verifiedEmail = false
     private lateinit var binding: FragmentVerifyEmailBinding
-    private lateinit var verificationResult: VerificationResult
+    private lateinit var userInfoResult: UserInfoResult
     private lateinit var signInMapper: SignInMapper
     private lateinit var signUpMapper: SignUpMapper
     private lateinit var tokenMapper: TokenMapper
     private lateinit var errorMapper: ErrorMapper
-    private lateinit var verificationMapper: VerificationMapper
+    private lateinit var userInfoMapper: UserInfoMapper
     private lateinit var userTokenRepository: UserTokenRepository
     private lateinit var userAuthRepository: UserAuthRepository
     private lateinit var registrationValidator: RegistrationValidator
@@ -81,20 +79,22 @@ class VerifyEmailFragment : Fragment() {
                 }
             }
         }
+        binding.btnSkip.setOnClickListener {
+            findNavController().navigate(R.id.action_verifyEmailFragment_to_profileFragment)
+        }
     }
 
     private suspend fun acceptVerification() {
-        verificationResult = userAuthRepository.acceptVerification(token)
-        when (verificationResult) {
-            is VerificationSuccess -> {
-                if ((verificationResult as VerificationSuccess).emailVerified) {
-                    verifiedEmail = true
-                    saveToken()
+        token = userTokenRepository.getToken()
+        userInfoResult = userAuthRepository.getUserInfo(token)
+        when (userInfoResult) {
+            is UserInfoSuccess -> {
+                if ((userInfoResult as UserInfoSuccess).emailVerified) {
                     findNavController().navigate(R.id.action_verifyEmailFragment_to_profileFragment)
                 } else showMessage("Почта не подтверждена. Повторите попытку")
             }
-            is VerificationError -> {
-                when ((verificationResult as VerificationError).reason) {
+            is UserInfoError -> {
+                when ((userInfoResult as UserInfoError).reason) {
                     "EXPIRED_OOB_CODE" -> showMessage("Код устарел, отправьте снова")
                     "INVALID_OOB_CODE" -> showMessage("Неправильный код")
                     "USER_DISABLED" -> showMessage("Вход для данного пользователя заблокирован")
@@ -126,22 +126,12 @@ class VerifyEmailFragment : Fragment() {
         return false
     }
 
-    private suspend fun saveToken() {
-        val token = args.idToken
-        userTokenRepository.saveToken(token)
-    }
-
-    private suspend fun delete(token: String) {
-        userAuthRepository.deleteUser(token)
-    }
-
     private fun initObjects() {
-        token = args.idToken
         signInMapper = SignInMapper()
         signUpMapper = SignUpMapper()
         tokenMapper = TokenMapper()
         errorMapper = ErrorMapper()
-        verificationMapper = VerificationMapper()
+        userInfoMapper = UserInfoMapper()
         registrationValidator = RegistrationValidator()
         apiAuth = UserAuthContainer.api
         apiToken = UserTokenContainer.api
@@ -152,16 +142,7 @@ class VerifyEmailFragment : Fragment() {
             signUpMapper,
             signInMapper,
             errorMapper,
-            verificationMapper
+            userInfoMapper
         )
-    }
-
-    override fun onDestroyView() {
-        super.onPause()
-        if (!verifiedEmail)
-            lifecycleScope.launch {
-                delete(token)
-            }
-        super.onDestroyView()
     }
 }

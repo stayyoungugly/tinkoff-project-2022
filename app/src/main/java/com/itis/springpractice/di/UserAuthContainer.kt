@@ -42,7 +42,7 @@ object UserAuthContainer {
     private val okhttp: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(apiKeyInterceptor)
-            //.addInterceptor(typeHeaderInterceptor)
+            .addInterceptor(typeHeaderInterceptor)
             .also {
                 if (BuildConfig.DEBUG) {
                     it.addInterceptor(
