@@ -9,4 +9,4 @@ data class TokenSuccess(
     val tokenType: String,
     val userId: String,
 ): TokenResult()
-data class TokenError(val reason: String?): TokenResult()
+data class TokenError(val reason: String): TokenResult()

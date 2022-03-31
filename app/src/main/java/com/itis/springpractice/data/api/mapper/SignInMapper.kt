@@ -7,19 +7,23 @@ import com.itis.springpractice.domain.entity.*
 import retrofit2.Response
 
 class SignInMapper {
-    fun mapToSignIn(response: Result<SignInResponse>): SignInResult {
-        response.fold(onSuccess = {
-            return SignInSuccess(
-                email = it.email,
-                idToken = it.idToken,
-                localId = it.localId,
-                displayName = it.displayName,
-                refreshToken = it.refreshToken,
-                expiresIn = it.expiresIn,
-                registered = it.registered
+    fun mapToSignIn(response: Response<SignInResponse>): SignInResult {
+        return if (response.isSuccessful) {
+            val body = requireNotNull(response.body())
+             SignInSuccess(
+                email = body.email,
+                idToken = body.idToken,
+                localId = body.localId,
+                displayName = body.displayName,
+                refreshToken = body.refreshToken,
+                expiresIn = body.expiresIn,
+                registered = body.registered
             )
-        }, onFailure = {
-            return SignInError(it.message)
-        })
+        } else {
+            val body = requireNotNull(response.errorBody())
+            val errorResponse: ErrorResponse =
+                Gson().fromJson(body.string(), ErrorResponse::class.java)
+            return SignInError(errorResponse.error.message)
+        }
     }
 }

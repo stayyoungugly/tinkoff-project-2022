@@ -11,4 +11,4 @@ data class SignInSuccess(
     val registered: Boolean
 ) : SignInResult()
 
-data class SignInError(val reason: String?) : SignInResult()
+data class SignInError(val reason: String) : SignInResult()

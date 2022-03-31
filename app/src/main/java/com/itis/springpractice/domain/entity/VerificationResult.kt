@@ -11,4 +11,4 @@ data class VerificationSuccess(
     val providerId: String
 ) : VerificationResult()
 
-data class VerificationError(val reason: String?) : VerificationResult()
+data class VerificationError(val reason: String) : VerificationResult()
