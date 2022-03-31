@@ -3,7 +3,8 @@ package com.itis.springpractice.data.impl
 import com.itis.springpractice.data.api.firebase.FirebaseTokenApi
 import com.itis.springpractice.data.api.mapper.TokenMapper
 import com.itis.springpractice.data.database.local.PreferenceManager
-import com.itis.springpractice.domain.entity.TokenEntity
+import com.itis.springpractice.domain.entity.TokenResult
+import com.itis.springpractice.domain.entity.TokenSuccess
 import com.itis.springpractice.domain.repository.UserTokenRepository
 
 class UserTokenRepositoryImpl(
@@ -32,16 +33,12 @@ class UserTokenRepositoryImpl(
         return preferenceManager.retrieveRefreshToken() ?: ""
     }
 
-    override suspend fun refreshToken(): TokenEntity {
-        val response = mapper.mapTokenEntity(api.refreshToken(type, getRefreshToken()))
-        val token = response.idToken
+    override suspend fun refreshToken(): TokenResult {
+        val response = mapper.mapToken(api.refreshToken(type, getRefreshToken()))
+        val token = (response as TokenSuccess).idToken
         val refreshToken = response.refreshToken
-        if (token != null) {
-            saveToken(token)
-        }
-        if (refreshToken != null) {
-            saveRefreshToken(refreshToken)
-        }
+        saveToken(token)
+        saveRefreshToken(refreshToken)
         return response
     }
 }

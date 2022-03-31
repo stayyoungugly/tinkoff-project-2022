@@ -3,26 +3,28 @@ package com.itis.springpractice.data.api.mapper
 import com.google.gson.Gson
 import com.itis.springpractice.data.response.ErrorResponse
 import com.itis.springpractice.data.response.TokenResponse
-import com.itis.springpractice.domain.entity.TokenEntity
+import com.itis.springpractice.domain.entity.TokenError
+import com.itis.springpractice.domain.entity.TokenResult
+import com.itis.springpractice.domain.entity.TokenSuccess
 import retrofit2.Response
 
 class TokenMapper {
-    fun mapTokenEntity(response: Response<TokenResponse>): TokenEntity {
+    fun mapToken(response: Response<TokenResponse>): TokenResult {
         return if (response.isSuccessful) {
-            TokenEntity(
-                idToken = response.body()?.idToken,
-                refreshToken = response.body()?.refreshToken,
-                expiresIn = response.body()?.expiresIn,
-                projectId = response.body()?.projectId,
-                tokenType = response.body()?.tokenType,
-                userId = response.body()?.userId
+            val body = requireNotNull(response.body())
+             TokenSuccess(
+                idToken = body.idToken,
+                refreshToken = body.refreshToken,
+                expiresIn = body.expiresIn,
+                projectId = body.projectId,
+                tokenType = body.tokenType,
+                userId = body.userId
             )
-        } else {
+        }else {
+            val body = requireNotNull(response.errorBody())
             val errorResponse: ErrorResponse =
-                Gson().fromJson(response.errorBody()?.string(), ErrorResponse::class.java)
-            return TokenEntity(
-                errorMessage = errorResponse.error.message
-            )
+                Gson().fromJson(body.string(), ErrorResponse::class.java)
+            return TokenError(errorResponse.error.message)
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.itis.springpractice.domain.repository
 
-import com.itis.springpractice.domain.entity.TokenEntity
+import com.itis.springpractice.domain.entity.TokenResult
 
 interface UserTokenRepository {
     suspend fun saveToken(idToken: String)
@@ -11,5 +11,5 @@ interface UserTokenRepository {
 
     suspend fun saveRefreshToken(refreshToken: String)
 
-    suspend fun refreshToken(): TokenEntity
+    suspend fun refreshToken(): TokenResult
 }

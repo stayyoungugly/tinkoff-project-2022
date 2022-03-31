@@ -9,10 +9,7 @@ import com.itis.springpractice.data.request.AcceptVerificationRequest
 import com.itis.springpractice.data.request.SendVerificationRequest
 import com.itis.springpractice.data.request.SignInRequest
 import com.itis.springpractice.data.request.SignUpRequest
-import com.itis.springpractice.domain.entity.ErrorEntity
-import com.itis.springpractice.domain.entity.SignInEntity
-import com.itis.springpractice.domain.entity.SignUpEntity
-import com.itis.springpractice.domain.entity.VerificationEntity
+import com.itis.springpractice.domain.entity.*
 import com.itis.springpractice.domain.repository.UserAuthRepository
 
 class UserAuthRepositoryImpl(
@@ -27,8 +24,8 @@ class UserAuthRepositoryImpl(
         private const val requestField = "VERIFY_EMAIL"
     }
 
-    override suspend fun login(email: String, password: String): SignInEntity {
-        return loginMapper.mapToSignInEntity(
+    override suspend fun login(email: String, password: String): SignInResult {
+        return loginMapper.mapToSignIn(
             api.login(
                 createSignInRequest(
                     email,
@@ -38,8 +35,8 @@ class UserAuthRepositoryImpl(
         )
     }
 
-    override suspend fun register(email: String, password: String): SignUpEntity {
-        return registerMapper.mapToSignUpEntity(
+    override suspend fun register(email: String, password: String): SignUpResult {
+        return registerMapper.mapToSignUp(
             api.register(
                 createSignUpRequest(
                     email,
@@ -57,7 +54,7 @@ class UserAuthRepositoryImpl(
         )
     }
 
-    override suspend fun acceptVerification(idToken: String): VerificationEntity {
+    override suspend fun acceptVerification(idToken: String): VerificationResult {
         return verificationMapper.mapToVerificationEntity(
             api.acceptVerification(
                 createAcceptVerificationRequest(idToken)

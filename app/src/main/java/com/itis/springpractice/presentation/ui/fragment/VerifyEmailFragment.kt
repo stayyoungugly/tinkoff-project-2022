@@ -21,7 +21,9 @@ import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.databinding.FragmentVerifyEmailBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.domain.entity.VerificationEntity
+import com.itis.springpractice.domain.entity.VerificationError
+import com.itis.springpractice.domain.entity.VerificationResult
+import com.itis.springpractice.domain.entity.VerificationSuccess
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import com.itis.springpractice.domain.repository.UserTokenRepository
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
@@ -33,7 +35,7 @@ class VerifyEmailFragment : Fragment() {
     private val args: VerifyEmailFragmentArgs by navArgs()
     private var verifiedEmail = false
     private lateinit var binding: FragmentVerifyEmailBinding
-    private lateinit var verificationEntity: VerificationEntity
+    private lateinit var verificationResult: VerificationResult
     private lateinit var signInMapper: SignInMapper
     private lateinit var signUpMapper: SignUpMapper
     private lateinit var tokenMapper: TokenMapper
@@ -82,19 +84,24 @@ class VerifyEmailFragment : Fragment() {
     }
 
     private suspend fun acceptVerification() {
-        verificationEntity = userAuthRepository.acceptVerification(token)
-        if (verificationEntity.errorMessage.isNullOrEmpty()) {
-            if (verificationEntity.emailVerified == true) {
-                verifiedEmail = true
-                saveToken()
-                findNavController().navigate(R.id.action_verifyEmailFragment_to_profileFragment)
-            } else showMessage("Почта не подтверждена. Повторите попытку")
-        } else when (verificationEntity.errorMessage) {
-            "EXPIRED_OOB_CODE" -> showMessage("Код устарел, отправьте снова")
-            "INVALID_OOB_CODE" -> showMessage("Неправильный код")
-            "USER_DISABLED" -> showMessage("Вход для данного пользователя заблокирован")
-            "EMAIL_NOT_FOUND" -> showMessage("Такой почты не существует")
-            else -> showMessage("Ошибка регистрации")
+        verificationResult = userAuthRepository.acceptVerification(token)
+        when (verificationResult) {
+            is VerificationSuccess -> {
+                if ((verificationResult as VerificationSuccess).emailVerified) {
+                    verifiedEmail = true
+                    saveToken()
+                    findNavController().navigate(R.id.action_verifyEmailFragment_to_profileFragment)
+                } else showMessage("Почта не подтверждена. Повторите попытку")
+            }
+            is VerificationError -> {
+                when ((verificationResult as VerificationError).reason) {
+                    "EXPIRED_OOB_CODE" -> showMessage("Код устарел, отправьте снова")
+                    "INVALID_OOB_CODE" -> showMessage("Неправильный код")
+                    "USER_DISABLED" -> showMessage("Вход для данного пользователя заблокирован")
+                    "EMAIL_NOT_FOUND" -> showMessage("Такой почты не существует")
+                    else -> showMessage("Ошибка регистрации")
+                }
+            }
         }
     }
 
@@ -108,7 +115,7 @@ class VerifyEmailFragment : Fragment() {
 
     private suspend fun sendVerification(): Boolean {
         val errorEntity = userAuthRepository.sendVerification(token)
-        if (errorEntity.message.equals("OK")) {
+        if (errorEntity.message == "OK") {
             return true
         }
         when (errorEntity.message) {
