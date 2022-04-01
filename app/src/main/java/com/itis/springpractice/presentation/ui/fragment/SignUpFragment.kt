@@ -82,7 +82,10 @@ class SignUpFragment : Fragment() {
             result.fold(onSuccess = {
                 when (it) {
                     is SignUpSuccess -> {
-                        findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
+                        val bundle = Bundle().apply {
+                            putString("idToken", it.idToken)
+                        }
+                        findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment, bundle)
                         signUpViewModel.onSaveTokenClick(it.idToken)
                     }
                     is SignUpError -> {

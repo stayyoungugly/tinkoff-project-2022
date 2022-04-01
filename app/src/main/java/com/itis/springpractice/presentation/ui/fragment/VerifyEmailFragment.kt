@@ -41,6 +41,7 @@ class VerifyEmailFragment : Fragment() {
         initObjects()
         initObservers()
         //before click the button
+        token = arguments?.getString("idToken").toString()
         verifyEmailViewModel.onGetTokenClick()
         verifyEmailViewModel.onSendVerificationClick(token)
 
