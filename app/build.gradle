@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId "com.itis.springpractice"
-        minSdk 26
+        minSdk 23
         targetSdk 31
         versionCode 1
         versionName "1.0"

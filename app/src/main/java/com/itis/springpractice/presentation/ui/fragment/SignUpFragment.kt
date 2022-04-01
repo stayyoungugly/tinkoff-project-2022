@@ -81,7 +81,7 @@ class SignUpFragment : Fragment() {
             } else if (!registrationValidator.isValidEmail(login)) {
                 showMessage("Введите корректный Email")
             } else if (!registrationValidator.isValidPassword(password)) {
-                showMessage("Пароль должен состоять минимум из 8 символов, минимум одна буква и одна цифра")
+                showMessage("Пароль должен состоять из 6 символов, иметь одну букву и одну цифру")
             }
         }
     }

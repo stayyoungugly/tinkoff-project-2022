@@ -56,7 +56,7 @@ object UserTokenContainer {
             .build()
     }
 
-    public val api: FirebaseTokenApi by lazy {
+    val api: FirebaseTokenApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okhttp)
