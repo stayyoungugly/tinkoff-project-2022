@@ -38,6 +38,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
+        freeCompilerArgs = ['-Xjvm-default=enable']
         jvmTarget = '1.8'
     }
     buildFeatures {

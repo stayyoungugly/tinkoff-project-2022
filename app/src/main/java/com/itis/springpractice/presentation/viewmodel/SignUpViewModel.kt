@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 
 class SignUpViewModel(
     private val registerUseCase: RegisterUseCase,
-    private val sendVerificationUseCase: SendVerificationUseCase,
     private val saveTokenUseCase: SaveTokenUseCase
 ) : ViewModel() {
     private var _signUpResult: MutableLiveData<Result<SignUpResult>> = MutableLiveData()
@@ -26,20 +25,6 @@ class SignUpViewModel(
                 _signUpResult.value = Result.success(signInResult)
             } catch (ex: Exception) {
                 _signUpResult.value = Result.failure(ex)
-            }
-        }
-    }
-
-    private var _errorEntity: MutableLiveData<Result<ErrorEntity>> = MutableLiveData()
-    val errorEntity: LiveData<Result<ErrorEntity>> = _errorEntity
-
-    fun onSendVerificationClick(idToken: String) {
-        viewModelScope.launch {
-            try {
-                val errorEntity = sendVerificationUseCase(idToken)
-                _errorEntity.value = Result.success(errorEntity)
-            } catch (ex: Exception) {
-                _errorEntity.value = Result.failure(ex)
             }
         }
     }

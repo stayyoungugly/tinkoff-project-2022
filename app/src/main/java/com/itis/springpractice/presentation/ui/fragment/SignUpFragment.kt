@@ -12,36 +12,26 @@ import android.view.ViewGroup
 import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
-import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
-import com.itis.springpractice.data.api.firebase.FirebaseTokenApi
-import com.itis.springpractice.data.api.mapper.*
-import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
-import com.itis.springpractice.data.impl.UserTokenRepositoryImpl
-import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.databinding.FragmentSignUpBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.*
-import com.itis.springpractice.domain.repository.UserAuthRepository
-import com.itis.springpractice.domain.repository.UserTokenRepository
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
-import com.itis.springpractice.presentation.viewmodel.SignInViewModel
 import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import timber.log.Timber
 
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
-    private lateinit var registrationValidator: RegistrationValidator
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var signUpViewModel: SignUpViewModel
-    private var sendVerification: Boolean = false
+
+    private val registrationValidator by lazy {
+        RegistrationValidator()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,7 +71,7 @@ class SignUpFragment : Fragment() {
             UserAuthContainer,
             UserTokenContainer(sharedPreferences)
         )
-        ViewModelProvider(
+        signUpViewModel = ViewModelProvider(
             this,
             factory
         )[SignUpViewModel::class.java]
@@ -92,11 +82,8 @@ class SignUpFragment : Fragment() {
             result.fold(onSuccess = {
                 when (it) {
                     is SignUpSuccess -> {
-                        signUpViewModel.onSendVerificationClick(it.idToken)
-                        if (sendVerification) {
-                            findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
-                            signUpViewModel.onSaveTokenClick(it.idToken)
-                        }
+                        findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
+                        signUpViewModel.onSaveTokenClick(it.idToken)
                     }
                     is SignUpError -> {
                         when (it.reason) {
@@ -112,18 +99,7 @@ class SignUpFragment : Fragment() {
             })
         }
 
-        signUpViewModel.errorEntity.observe(viewLifecycleOwner) { result ->
-            result.fold(onSuccess = {
-                sendVerification = (it.message == "OK")
-                when (it.message) {
-                    "INVALID_ID_TOKEN" -> showMessage("Ошибка запроса, попробуйте еще раз")
-                    "USER_NOT_FOUND" -> showMessage("Пользователь не найден")
-                    else -> showMessage("Ошибка отправки")
-                }
-            }, onFailure = {
-                Timber.e(it.message.toString())
-            })
-        }
+
     }
 
     private fun showMessage(message: String) {

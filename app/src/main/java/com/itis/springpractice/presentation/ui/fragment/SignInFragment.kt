@@ -19,9 +19,7 @@ import com.itis.springpractice.databinding.FragmentSignInBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.SignInError
-import com.itis.springpractice.domain.entity.SignInResult
 import com.itis.springpractice.domain.entity.SignInSuccess
-import com.itis.springpractice.domain.repository.UserTokenRepository
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
 import com.itis.springpractice.presentation.viewmodel.SignInViewModel
@@ -29,9 +27,12 @@ import timber.log.Timber
 
 class SignInFragment : Fragment() {
     private lateinit var binding: FragmentSignInBinding
-    private lateinit var registrationValidator: RegistrationValidator
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var signInViewModel: SignInViewModel
+
+    private val registrationValidator by lazy {
+        RegistrationValidator()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,7 +66,7 @@ class SignInFragment : Fragment() {
             UserAuthContainer,
             UserTokenContainer(sharedPreferences)
         )
-        ViewModelProvider(
+        signInViewModel = ViewModelProvider(
             this,
             factory
         )[SignInViewModel::class.java]

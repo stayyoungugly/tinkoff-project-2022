@@ -6,6 +6,7 @@ import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.viewmodel.SignInViewModel
 import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
+import com.itis.springpractice.presentation.viewmodel.VerifyEmailViewModel
 
 class AuthFactory(
     private val authDi: UserAuthContainer,
@@ -21,8 +22,13 @@ class AuthFactory(
             modelClass.isAssignableFrom(SignUpViewModel::class.java) ->
                 SignUpViewModel(
                     authDi.registerUseCase,
-                    authDi.sendVerificationUseCase,
                     tokenDi.saveTokenUseCase
+                ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
+            modelClass.isAssignableFrom(VerifyEmailViewModel::class.java) ->
+                VerifyEmailViewModel(
+                    authDi.getUserInfoUseCase,
+                    tokenDi.getTokenUseCase,
+                    authDi.sendVerificationUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class")
