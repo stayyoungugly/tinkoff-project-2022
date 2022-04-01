@@ -2,6 +2,16 @@ package com.itis.springpractice.di
 
 import com.itis.springpractice.BuildConfig
 import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
+import com.itis.springpractice.data.api.mapper.ErrorMapper
+import com.itis.springpractice.data.api.mapper.SignInMapper
+import com.itis.springpractice.data.api.mapper.SignUpMapper
+import com.itis.springpractice.data.api.mapper.UserInfoMapper
+import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
+import com.itis.springpractice.data.impl.UserTokenRepositoryImpl
+import com.itis.springpractice.domain.repository.UserAuthRepository
+import com.itis.springpractice.domain.repository.UserTokenRepository
+import com.itis.springpractice.domain.usecase.auth.*
+import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -64,4 +74,36 @@ object UserAuthContainer {
             .build()
             .create(FirebaseAuthApi::class.java)
     }
+
+    private val userAuthRepository: UserAuthRepository = UserAuthRepositoryImpl(
+        api = api,
+        registerMapper = SignUpMapper(),
+        loginMapper = SignInMapper(),
+        errorMapper = ErrorMapper(),
+        userInfoMapper = UserInfoMapper()
+    )
+    val loginUseCase: LoginUseCase = LoginUseCase(
+        userAuthRepository = userAuthRepository,
+        dispatcher = Dispatchers.Default
+    )
+
+    val registerUseCase: RegisterUseCase = RegisterUseCase(
+        userAuthRepository = userAuthRepository,
+        dispatcher = Dispatchers.Default
+    )
+
+    val sendVerificationUseCase: SendVerificationUseCase = SendVerificationUseCase(
+        userAuthRepository = userAuthRepository,
+        dispatcher = Dispatchers.Default
+    )
+
+    val getUserInfoUseCase: GetUserInfoUseCase = GetUserInfoUseCase(
+        userAuthRepository = userAuthRepository,
+        dispatcher = Dispatchers.Default
+    )
+
+    val deleteUserUseCase: DeleteUserUseCase = DeleteUserUseCase(
+        userAuthRepository = userAuthRepository,
+        dispatcher = Dispatchers.Default
+    )
 }
