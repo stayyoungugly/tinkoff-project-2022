@@ -2,15 +2,24 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
+    app:launchSingleTop="true"
     app:startDestination="@id/signInFragment">
+
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.itis.springpractice.presentation.ui.activity.MainActivity"
+        android:label="MainActivity"
+        app:launchSingleTop="true" />
 
     <fragment
         android:id="@+id/signInFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.SignInFragment"
-        android:label="SignInFragment">
+        android:label="SignInFragment"
+        app:launchSingleTop="true">
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
+            app:destination="@id/signUpFragment"
+            app:popUpTo="@id/signInFragment" />
         <action
             android:id="@+id/action_signInFragment_to_profileFragment"
             app:destination="@id/profileFragment"
@@ -23,17 +32,19 @@
         android:label="SignUpFragment">
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
-            app:destination="@id/signInFragment" />
+            app:destination="@id/signInFragment"
+            app:popUpTo="@id/signUpFragment" />
         <action
             android:id="@+id/action_signUpFragment_to_verifyEmailFragment"
             app:destination="@id/verifyEmailFragment"
-            app:popUpTo="@id/signInFragment"
-            app:popUpToInclusive="true" />
+            app:launchSingleTop="true"
+            app:popUpTo="@id/signUpFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="ProfileFragment"
+        app:launchSingleTop="true" />
     <fragment
         android:id="@+id/verifyEmailFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.VerifyEmailFragment"

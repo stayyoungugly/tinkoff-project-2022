@@ -85,7 +85,7 @@ class VerifyEmailFragment : Fragment() {
     }
 
     private suspend fun acceptVerification() {
-        token = userTokenRepository.getToken()
+        getToken()
         userInfoResult = userAuthRepository.getUserInfo(token)
         when (userInfoResult) {
             is UserInfoSuccess -> {
@@ -114,6 +114,7 @@ class VerifyEmailFragment : Fragment() {
     }
 
     private suspend fun sendVerification(): Boolean {
+        getToken()
         val errorEntity = userAuthRepository.sendVerification(token)
         if (errorEntity.message == "OK") {
             return true
@@ -121,9 +122,14 @@ class VerifyEmailFragment : Fragment() {
         when (errorEntity.message) {
             "INVALID_ID_TOKEN" -> showMessage("Ошибка запроса, попробуйте еще раз")
             "USER_NOT_FOUND" -> showMessage("Пользователь не найден")
+            "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток. Попробуйте позже")
             else -> showMessage("Ошибка отправки")
         }
         return false
+    }
+
+    private suspend fun getToken() {
+        token = userTokenRepository.getToken()
     }
 
     private fun initObjects() {

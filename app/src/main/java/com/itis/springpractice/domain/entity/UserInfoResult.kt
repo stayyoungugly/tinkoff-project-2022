@@ -6,8 +6,6 @@ data class UserInfoSuccess(
     val email: String,
     val localId: String,
     val emailVerified: Boolean,
-    val displayName: String,
-    val photoUrl: String,
     val createdAt: String,
 ) : UserInfoResult()
 

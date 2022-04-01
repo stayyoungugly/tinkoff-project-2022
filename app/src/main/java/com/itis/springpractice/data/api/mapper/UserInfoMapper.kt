@@ -13,10 +13,8 @@ class UserInfoMapper {
             UserInfoSuccess(
                 email = body.userAccounts[0].email,
                 localId = body.userAccounts[0].localId,
-                displayName = body.userAccounts[0].displayName,
                 emailVerified = body.userAccounts[0].emailVerified,
                 createdAt = body.userAccounts[0].createdAt,
-                photoUrl = body.userAccounts[0].photoUrl
             )
         } else {
             val body = requireNotNull(response.errorBody())
