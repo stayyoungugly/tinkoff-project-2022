@@ -14,7 +14,6 @@ import com.itis.springpractice.databinding.FragmentProfileBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
-import com.itis.springpractice.presentation.viewmodel.MainViewModel
 import com.itis.springpractice.presentation.viewmodel.ProfileViewModel
 
 class ProfileFragment : Fragment() {
