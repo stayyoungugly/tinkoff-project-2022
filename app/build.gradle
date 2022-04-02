@@ -5,12 +5,9 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.gms.google-services'
-}
-
-def getKey() {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty("mySecretKey")
+    id 'com.google.android.gms.strict-version-matcher-plugin'
+    id 'com.google.android.gms.oss-licenses-plugin'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -22,7 +19,6 @@ android {
         targetSdk 31
         versionCode 1
         versionName "1.0"
-        buildConfigField "String", "API_KEY", getKey()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,10 +59,15 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
 
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'com.github.bumptech.glide:glide:4.13.0'
 
     implementation 'com.google.android.gms:play-services-location:19.0.1'
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
+
+    implementation 'com.google.maps.android:maps-ktx:3.2.1'
+    implementation 'com.google.maps.android:maps-utils-ktx:3.2.1'
+
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation "androidx.media:media:1.5.0"
