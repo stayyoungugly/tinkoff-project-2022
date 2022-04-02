@@ -12,4 +12,6 @@ interface UserTokenRepository {
     suspend fun saveRefreshToken(refreshToken: String)
 
     suspend fun refreshToken(): TokenResult
+
+    suspend fun deleteToken()
 }

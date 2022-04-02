@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.presentation.viewmodel.SignInViewModel
-import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
-import com.itis.springpractice.presentation.viewmodel.VerifyEmailViewModel
+import com.itis.springpractice.presentation.viewmodel.*
 
 class AuthFactory(
     private val authDi: UserAuthContainer,
@@ -29,6 +27,14 @@ class AuthFactory(
                     authDi.getUserInfoUseCase,
                     tokenDi.getTokenUseCase,
                     authDi.sendVerificationUseCase
+                ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
+            modelClass.isAssignableFrom(MainViewModel::class.java) ->
+                MainViewModel(
+                    tokenDi.getTokenUseCase
+                ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
+            modelClass.isAssignableFrom(ProfileViewModel::class.java) ->
+                ProfileViewModel(
+                    tokenDi.deleteTokenUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class")

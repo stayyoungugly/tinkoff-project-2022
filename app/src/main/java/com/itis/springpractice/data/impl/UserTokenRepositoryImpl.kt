@@ -41,4 +41,8 @@ class UserTokenRepositoryImpl(
         saveRefreshToken(refreshToken)
         return response
     }
+
+    override suspend fun deleteToken() {
+        preferenceManager.deleteToken()
+    }
 }

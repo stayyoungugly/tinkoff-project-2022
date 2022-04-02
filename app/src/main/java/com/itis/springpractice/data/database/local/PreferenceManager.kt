@@ -22,6 +22,10 @@ class PreferenceManager (
         return sharedPreferences.getString(REFRESH_TOKEN_PREF, "")
     }
 
+    fun deleteToken() {
+        sharedPreferences.edit().putString(TOKEN_PREF, "").apply()
+    }
+
     companion object {
         private const val REFRESH_TOKEN_PREF = "refresh_token"
         private const val TOKEN_PREF = "token"

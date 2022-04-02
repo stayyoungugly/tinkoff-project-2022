@@ -14,4 +14,5 @@
     <string name="check_amp_point">Check&amp;Point</string>
     <string name="check_password">Подтвердите пароль</string>
     <string name="skip">Пропустить</string>
+    <string name="sign_out">выйти</string>
 </resources>

@@ -50,7 +50,13 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true"/>
+    </fragment>
     <fragment
         android:id="@+id/verifyEmailFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.VerifyEmailFragment"

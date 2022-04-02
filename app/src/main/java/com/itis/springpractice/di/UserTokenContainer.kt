@@ -104,4 +104,9 @@ class UserTokenContainer(
         userTokenRepository = userTokenRepository,
         dispatcher = Dispatchers.Default
     )
+
+    val deleteTokenUseCase: DeleteTokenUseCase = DeleteTokenUseCase(
+        userTokenRepository = userTokenRepository,
+        dispatcher = Dispatchers.Default
+    )
 }
