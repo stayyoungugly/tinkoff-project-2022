@@ -52,8 +52,8 @@
         android:name="com.itis.springpractice.presentation.ui.fragment.ProfileFragment"
         android:label="ProfileFragment" >
         <action
-            android:id="@+id/action_profileFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
+            android:id="@+id/action_profileFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true"/>
     </fragment>

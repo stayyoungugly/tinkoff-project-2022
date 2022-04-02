@@ -37,7 +37,7 @@ class ProfileFragment : Fragment() {
         initObjects()
         binding.btnSignOut.setOnClickListener {
             profileViewModel.onDeleteTokenClick()
-            findNavController().navigate(R.id.action_profileFragment_to_mainFragment)
+            findNavController().navigate(R.id.action_profileFragment_to_signInFragment)
         }
     }
 
