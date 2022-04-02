@@ -7,9 +7,7 @@ import com.itis.springpractice.data.api.mapper.SignInMapper
 import com.itis.springpractice.data.api.mapper.SignUpMapper
 import com.itis.springpractice.data.api.mapper.UserInfoMapper
 import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
-import com.itis.springpractice.data.impl.UserTokenRepositoryImpl
 import com.itis.springpractice.domain.repository.UserAuthRepository
-import com.itis.springpractice.domain.repository.UserTokenRepository
 import com.itis.springpractice.domain.usecase.auth.*
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
@@ -19,7 +17,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 private const val BASE_URL = "https://identitytoolkit.googleapis.com/v1/"
-private const val API_KEY = BuildConfig.API_KEY
+private const val API_KEY = BuildConfig.SECRET_KEY
 private const val QUERY_API_KEY = "key"
 private const val TYPE_HEADER = "Content-Type"
 private const val JSON_TYPE = "application/json"

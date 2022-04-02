@@ -16,7 +16,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 private const val BASE_URL = "https://securetoken.googleapis.com/v1/"
-private const val API_KEY = BuildConfig.API_KEY
+private const val API_KEY = BuildConfig.SECRET_KEY
 private const val QUERY_API_KEY = "key"
 private const val TYPE_HEADER = "Content-Type"
 private const val FORM_TYPE = "application/x-www-form-urlencoded"
