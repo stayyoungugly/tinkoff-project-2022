@@ -48,21 +48,17 @@ class MainFragment : Fragment() {
         mainViewModel = ViewModelProvider(
             this,
             factory
-        )[MainViewModel::class.java]
+        ).get(MainViewModel::class.java)
     }
 
     private fun initObservers() {
-        mainViewModel.token.observe(viewLifecycleOwner) { result ->
-            result.fold(onSuccess = {
-                token = it
-                if (token.isNotEmpty()) {
-                    findNavController().navigate(R.id.action_mainFragment_to_profileFragment)
-                } else {
-                    findNavController().navigate(R.id.action_mainFragment_to_signInFragment)
-                }
-            }, onFailure = {
-                Timber.e(it.message.toString())
-            })
+        mainViewModel.token.observe(viewLifecycleOwner) {
+            token = it
+            if (token.isNotEmpty()) {
+                findNavController().navigate(R.id.action_mainFragment_to_profileFragment)
+            } else {
+                findNavController().navigate(R.id.action_mainFragment_to_signInFragment)
+            }
         }
     }
 }

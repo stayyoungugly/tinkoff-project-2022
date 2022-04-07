@@ -20,7 +20,6 @@ class UserAuthRepositoryImpl(
     private var userInfoMapper: UserInfoMapper
 ) : UserAuthRepository {
     companion object {
-        private const val secure = "true"
         private const val requestField = "VERIFY_EMAIL"
     }
 
@@ -93,7 +92,6 @@ class UserAuthRepositoryImpl(
         SignInRequest(
             email = emailField,
             password = passwordField,
-            returnSecureToken = secure
         )
 
     private fun createSignUpRequest(
@@ -103,6 +101,5 @@ class UserAuthRepositoryImpl(
         SignUpRequest(
             email = emailField,
             password = passwordField,
-            returnSecureToken = secure
         )
 }

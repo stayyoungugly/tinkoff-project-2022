@@ -10,7 +10,7 @@ class AuthFactory(
     private val authDi: UserAuthContainer,
     private val tokenDi: UserTokenContainer
 ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T =
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when {
             modelClass.isAssignableFrom(SignInViewModel::class.java) ->
                 SignInViewModel(

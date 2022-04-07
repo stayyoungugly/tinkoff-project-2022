@@ -25,6 +25,7 @@ import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.ProfileViewModel
+import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
 import timber.log.Timber
 
 
@@ -63,7 +64,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         profileViewModel = ViewModelProvider(
             this,
             factory
-        )[ProfileViewModel::class.java]
+        ).get(ProfileViewModel::class.java)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

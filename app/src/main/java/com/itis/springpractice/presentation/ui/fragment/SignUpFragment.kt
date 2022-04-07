@@ -18,11 +18,11 @@ import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentSignUpBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.domain.entity.*
+import com.itis.springpractice.domain.entity.SignUpError
+import com.itis.springpractice.domain.entity.SignUpSuccess
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
 import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
-import timber.log.Timber
 
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
@@ -74,35 +74,26 @@ class SignUpFragment : Fragment() {
         signUpViewModel = ViewModelProvider(
             this,
             factory
-        )[SignUpViewModel::class.java]
+        ).get(SignUpViewModel::class.java)
     }
 
     private fun initObservers() {
-        signUpViewModel.signUpResult.observe(viewLifecycleOwner) { result ->
-            result.fold(onSuccess = {
-                when (it) {
-                    is SignUpSuccess -> {
-                        val bundle = Bundle().apply {
-                            putString("idToken", it.idToken)
-                        }
-                        findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment, bundle)
-                        signUpViewModel.onSaveTokenClick(it.idToken)
-                    }
-                    is SignUpError -> {
-                        when (it.reason) {
-                            "EMAIL_EXISTS" -> showMessage("Пользователь с таким Email уже существует")
-                            "OPERATION_NOT_ALLOWED" -> showMessage("Операция недоступна")
-                            "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток, попробуйте позже")
-                            else -> showMessage("Ошибка регистрации")
-                        }
+        signUpViewModel.signUpResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is SignUpSuccess -> {
+                    findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
+                    signUpViewModel.onSaveTokenClick(it.idToken)
+                }
+                is SignUpError -> {
+                    when (it.reason) {
+                        "EMAIL_EXISTS" -> showMessage("Пользователь с таким Email уже существует")
+                        "OPERATION_NOT_ALLOWED" -> showMessage("Операция недоступна")
+                        "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток, попробуйте позже")
+                        else -> showMessage("Ошибка регистрации")
                     }
                 }
-            }, onFailure = {
-                Timber.e(it.message.toString())
-            })
+            }
         }
-
-
     }
 
     private fun showMessage(message: String) {

@@ -23,7 +23,6 @@ import com.itis.springpractice.domain.entity.SignInSuccess
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
 import com.itis.springpractice.presentation.viewmodel.SignInViewModel
-import timber.log.Timber
 
 class SignInFragment : Fragment() {
     private lateinit var binding: FragmentSignInBinding
@@ -69,29 +68,25 @@ class SignInFragment : Fragment() {
         signInViewModel = ViewModelProvider(
             this,
             factory
-        )[SignInViewModel::class.java]
+        ).get(SignInViewModel::class.java)
     }
 
     private fun initObservers() {
-        signInViewModel.signInResult.observe(viewLifecycleOwner) { result ->
-            result.fold(onSuccess = {
-                when (it) {
-                    is SignInSuccess -> {
-                        signInViewModel.onSaveTokenClick(it.idToken)
-                        findNavController().navigate(R.id.action_signInFragment_to_profileFragment)
-                    }
-                    is SignInError -> {
-                        when (it.reason) {
-                            "EMAIL_NOT_FOUND" -> showMessage("Email не найден")
-                            "INVALID_PASSWORD" -> showMessage("Неверный пароль")
-                            "USER_DISABLED" -> showMessage("Доступ запрещен")
-                            else -> showMessage("Ошибка входа")
-                        }
+        signInViewModel.signInResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is SignInSuccess -> {
+                    signInViewModel.onSaveTokenClick(it.idToken)
+                    findNavController().navigate(R.id.action_signInFragment_to_profileFragment)
+                }
+                is SignInError -> {
+                    when (it.reason) {
+                        "EMAIL_NOT_FOUND" -> showMessage("Email не найден")
+                        "INVALID_PASSWORD" -> showMessage("Неверный пароль")
+                        "USER_DISABLED" -> showMessage("Доступ запрещен")
+                        else -> showMessage("Ошибка входа")
                     }
                 }
-            }, onFailure = {
-                Timber.e(it.message.toString())
-            })
+            }
         }
     }
 

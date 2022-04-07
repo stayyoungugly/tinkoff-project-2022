@@ -13,17 +13,12 @@ class SignInViewModel(
     private val loginUseCase: LoginUseCase,
     private val saveTokenUseCase: SaveTokenUseCase
 ) : ViewModel() {
-    private var _signInResult: MutableLiveData<Result<SignInResult>> = MutableLiveData()
-    val signInResult: LiveData<Result<SignInResult>> = _signInResult
+    private var _signInResult: MutableLiveData<SignInResult> = MutableLiveData()
+    val signInResult: LiveData<SignInResult> = _signInResult
 
     fun onLoginClick(email: String, password: String) {
         viewModelScope.launch {
-            try {
-                val signInResult = loginUseCase(email, password)
-                _signInResult.value = Result.success(signInResult)
-            } catch (ex: Exception) {
-                _signInResult.value = Result.failure(ex)
-            }
+            _signInResult.value = loginUseCase(email, password)
         }
     }
 

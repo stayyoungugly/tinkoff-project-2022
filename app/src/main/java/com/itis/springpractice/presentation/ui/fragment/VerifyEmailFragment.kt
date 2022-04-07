@@ -22,7 +22,6 @@ import timber.log.Timber
 
 class VerifyEmailFragment : Fragment() {
     private lateinit var binding: FragmentVerifyEmailBinding
-    private lateinit var token: String
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var verifyEmailViewModel: VerifyEmailViewModel
 
@@ -40,18 +39,13 @@ class VerifyEmailFragment : Fragment() {
         sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         initObjects()
         initObservers()
-        //before click the button
-        token = arguments?.getString("idToken").toString()
-        verifyEmailViewModel.onGetTokenClick()
-        verifyEmailViewModel.onSendVerificationClick(token)
+        verifyEmailViewModel.onSendVerificationClick()
 
         binding.btnVerify.setOnClickListener {
-            verifyEmailViewModel.onGetTokenClick()
-            verifyEmailViewModel.onGetUserInfoClick(token)
+            verifyEmailViewModel.onGetUserInfoClick()
         }
         binding.btnSendAgain.setOnClickListener {
-            verifyEmailViewModel.onGetTokenClick()
-            verifyEmailViewModel.onSendVerificationClick(token)
+            verifyEmailViewModel.onSendVerificationClick()
         }
         binding.btnSkip.setOnClickListener {
             findNavController().navigate(R.id.action_verifyEmailFragment_to_profileFragment)
@@ -66,7 +60,7 @@ class VerifyEmailFragment : Fragment() {
         verifyEmailViewModel = ViewModelProvider(
             this,
             factory
-        )[VerifyEmailViewModel::class.java]
+        ).get(VerifyEmailViewModel::class.java)
     }
 
     private fun initObservers() {
@@ -78,13 +72,6 @@ class VerifyEmailFragment : Fragment() {
                     "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток. Попробуйте позже")
                     else -> showMessage("Ошибка отправки")
                 }
-            }, onFailure = {
-                Timber.e(it.message.toString())
-            })
-        }
-        verifyEmailViewModel.token.observe(viewLifecycleOwner) { result ->
-            result.fold(onSuccess = {
-                token = it
             }, onFailure = {
                 Timber.e(it.message.toString())
             })

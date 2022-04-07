@@ -15,6 +15,7 @@ class UserTokenRepositoryImpl(
 
     companion object {
         private const val type = "refresh_token"
+        private const val DEFAULT_VALUE = ""
     }
 
     override suspend fun saveToken(idToken: String) {
@@ -22,7 +23,7 @@ class UserTokenRepositoryImpl(
     }
 
     override suspend fun getToken(): String {
-        return preferenceManager.retrieveToken() ?: ""
+        return preferenceManager.retrieveToken() ?: DEFAULT_VALUE
     }
 
     override suspend fun saveRefreshToken(refreshToken: String) {
@@ -30,7 +31,7 @@ class UserTokenRepositoryImpl(
     }
 
     override suspend fun getRefreshToken(): String {
-        return preferenceManager.retrieveRefreshToken() ?: ""
+        return preferenceManager.retrieveRefreshToken() ?: DEFAULT_VALUE
     }
 
     override suspend fun refreshToken(): TokenResult {

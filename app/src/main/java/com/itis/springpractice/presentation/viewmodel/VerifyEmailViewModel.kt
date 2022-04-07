@@ -24,10 +24,9 @@ class VerifyEmailViewModel(
     private var _userInfoResult: MutableLiveData<Result<UserInfoResult>> = MutableLiveData()
     val userInfoResult: LiveData<Result<UserInfoResult>> = _userInfoResult
 
-    fun onGetUserInfoClick(
-        idToken: String
-    ) {
+    fun onGetUserInfoClick() {
         viewModelScope.launch {
+            val idToken = getToken()
             try {
                 val userInfoResult = getUserInfoUseCase(idToken)
                 _userInfoResult.value = Result.success(userInfoResult)
@@ -37,25 +36,17 @@ class VerifyEmailViewModel(
         }
     }
 
-    private var _token: MutableLiveData<Result<String>> = MutableLiveData()
-    val token: LiveData<Result<String>> = _token
-
-    fun onGetTokenClick() {
-        viewModelScope.launch {
-            try {
-                val token = getTokenUseCase()
-                _token.value = Result.success(token)
-            } catch (ex: Exception) {
-                _token.value = Result.failure(ex)
-            }
-        }
+    private var token: String? = null
+    private suspend fun getToken(): String {
+        return token ?: getTokenUseCase().also { token = it }
     }
 
     private var _errorEntity: MutableLiveData<Result<ErrorEntity>> = MutableLiveData()
     val errorEntity: LiveData<Result<ErrorEntity>> = _errorEntity
 
-    fun onSendVerificationClick(idToken: String) {
+    fun onSendVerificationClick() {
         viewModelScope.launch {
+            val idToken = getToken()
             try {
                 val errorEntity = sendVerificationUseCase(idToken)
                 _errorEntity.value = Result.success(errorEntity)
