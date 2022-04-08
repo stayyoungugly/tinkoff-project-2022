@@ -76,7 +76,7 @@ class SignInFragment : Fragment() {
             when (it) {
                 is SignInSuccess -> {
                     signInViewModel.onSaveTokenClick(it.idToken)
-                    findNavController().navigate(R.id.action_signInFragment_to_profileFragment)
+                    findNavController().navigate(R.id.action_signInFragment_to_mapFragment)
                 }
                 is SignInError -> {
                     when (it.reason) {

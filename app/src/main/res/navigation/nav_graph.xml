@@ -14,8 +14,8 @@
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_mainFragment_to_profileFragment"
-            app:destination="@id/profileFragment"
+            android:id="@+id/action_mainFragment_to_mapFragment"
+            app:destination="@id/mapFragment"
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
@@ -28,8 +28,8 @@
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
         <action
-            android:id="@+id/action_signInFragment_to_profileFragment"
-            app:destination="@id/profileFragment"
+            android:id="@+id/action_signInFragment_to_mapFragment"
+            app:destination="@id/mapFragment"
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
@@ -48,11 +48,11 @@
             app:popUpTo="@id/signInFragment" />
     </fragment>
     <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.itis.springpractice.presentation.ui.fragment.ProfileFragment"
-        android:label="ProfileFragment" >
+        android:id="@+id/mapFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.MapFragment"
+        android:label="MapFragment" >
         <action
-            android:id="@+id/action_profileFragment_to_signInFragment"
+            android:id="@+id/action_mapFragment_to_signInFragment"
             app:destination="@id/signInFragment"
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true"/>
@@ -62,8 +62,8 @@
         android:name="com.itis.springpractice.presentation.ui.fragment.VerifyEmailFragment"
         android:label="VerifyEmailFragment">
         <action
-            android:id="@+id/action_verifyEmailFragment_to_profileFragment"
-            app:destination="@id/profileFragment"
+            android:id="@+id/action_verifyEmailFragment_to_mapFragment"
+            app:destination="@id/mapFragment"
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>

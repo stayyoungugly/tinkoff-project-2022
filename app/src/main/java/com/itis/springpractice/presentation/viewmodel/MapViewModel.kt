@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.usecase.token.DeleteTokenUseCase
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(
+class MapViewModel(
     private val deleteTokenUseCase: DeleteTokenUseCase
 ) : ViewModel() {
 

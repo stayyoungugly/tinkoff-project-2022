@@ -32,8 +32,8 @@ class AuthFactory(
                 MainViewModel(
                     tokenDi.getTokenUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
-            modelClass.isAssignableFrom(ProfileViewModel::class.java) ->
-                ProfileViewModel(
+            modelClass.isAssignableFrom(MapViewModel::class.java) ->
+                MapViewModel(
                     tokenDi.deleteTokenUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->

@@ -55,7 +55,7 @@ class MainFragment : Fragment() {
         mainViewModel.token.observe(viewLifecycleOwner) {
             token = it
             if (token.isNotEmpty()) {
-                findNavController().navigate(R.id.action_mainFragment_to_profileFragment)
+                findNavController().navigate(R.id.action_mainFragment_to_mapFragment)
             } else {
                 findNavController().navigate(R.id.action_mainFragment_to_signInFragment)
             }

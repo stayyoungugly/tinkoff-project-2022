@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources.NotFoundException
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,18 +19,17 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.itis.springpractice.R
-import com.itis.springpractice.databinding.FragmentProfileBinding
+import com.itis.springpractice.databinding.FragmentMapBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
-import com.itis.springpractice.presentation.viewmodel.ProfileViewModel
-import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
+import com.itis.springpractice.presentation.viewmodel.MapViewModel
 import timber.log.Timber
 
 
-class ProfileFragment : Fragment(), OnMapReadyCallback {
-    private lateinit var binding: FragmentProfileBinding
-    private lateinit var profileViewModel: ProfileViewModel
+class MapFragment : Fragment(), OnMapReadyCallback {
+    private lateinit var binding: FragmentMapBinding
+    private lateinit var mapViewModel: MapViewModel
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
@@ -39,7 +37,7 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        binding = FragmentMapBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -48,8 +46,8 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
         sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         initObjects()
         binding.btnSignOut.setOnClickListener {
-            profileViewModel.onDeleteTokenClick()
-            findNavController().navigate(R.id.action_profileFragment_to_signInFragment)
+            mapViewModel.onDeleteTokenClick()
+            findNavController().navigate(R.id.action_mapFragment_to_signInFragment)
         }
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -61,10 +59,10 @@ class ProfileFragment : Fragment(), OnMapReadyCallback {
             UserAuthContainer,
             UserTokenContainer(sharedPreferences)
         )
-        profileViewModel = ViewModelProvider(
+        mapViewModel = ViewModelProvider(
             this,
             factory
-        ).get(ProfileViewModel::class.java)
+        ).get(MapViewModel::class.java)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
