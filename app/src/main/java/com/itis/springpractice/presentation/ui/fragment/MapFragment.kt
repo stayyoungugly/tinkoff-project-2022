@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Location
 import android.os.Bundle
@@ -41,7 +42,7 @@ class MapFragment : Fragment(),
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var location: Location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var googleMap: GoogleMap
+    private lateinit var map: GoogleMap
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,12 +61,7 @@ class MapFragment : Fragment(),
             mapViewModel.onDeleteTokenClick()
             findNavController().navigate(R.id.action_mapFragment_to_signInFragment)
         }
-        locationPermissionRequest.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        )
+        getLocationPermissions()
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -73,7 +69,7 @@ class MapFragment : Fragment(),
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
-        this.googleMap = googleMap
+        map = googleMap
         try {
             val success = googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
@@ -86,16 +82,39 @@ class MapFragment : Fragment(),
         } catch (e: Resources.NotFoundException) {
             Timber.e("Can't find style. Error: %s", e.message)
         }
-        val position = LatLng(55.78, 49.12)
-        val cameraPosition = CameraPosition.Builder()
-            .target(position)
-            .zoom(15f)
-            //.bearing(90f)
-            .tilt(10f)
-            .build()
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-        googleMap.isMyLocationEnabled = true
-        googleMap.setOnMyLocationButtonClickListener(this)
+        map.setOnMyLocationButtonClickListener(this)
+        myLocationModify()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun myLocationModify() {
+        if (!::map.isInitialized) return
+        if (checkFineLocation() || checkCoarseLocation()) {
+            map.isMyLocationEnabled = true
+            initLastLocation()
+            // modifyMap(map)
+        }
+    }
+
+    private fun getLocationPermissions() {
+        locationPermissionRequest.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+    }
+
+    private fun checkFineLocation(): Boolean {
+        val permission = Manifest.permission.ACCESS_FINE_LOCATION
+        val res = requireContext().checkCallingOrSelfPermission(permission)
+        return res == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun checkCoarseLocation(): Boolean {
+        val permission = Manifest.permission.ACCESS_COARSE_LOCATION
+        val res = requireContext().checkCallingOrSelfPermission(permission)
+        return res == PackageManager.PERMISSION_GRANTED
     }
 
     @SuppressLint("MissingPermission")
@@ -128,16 +147,21 @@ class MapFragment : Fragment(),
             }
             permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
                 // Only approximate location access granted.
-                val fusedLocationClient =
-                    LocationServices.getFusedLocationProviderClient(requireActivity())
-                fusedLocationClient.lastLocation.addOnSuccessListener {
-                    location = it
-                }
+                initLastLocation()
             }
             else -> {
                 // Only approximate location access granted.
                 showMessage("Скоро будет доступен поиск мест")
             }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun initLastLocation() {
+        val fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
+        fusedLocationClient.lastLocation.addOnSuccessListener {
+            location = it
         }
     }
 
@@ -173,7 +197,7 @@ class MapFragment : Fragment(),
     }
 
     override fun onMyLocationButtonClick(): Boolean {
-        modifyMap(googleMap)
+        modifyMap(map)
         return false
     }
 }
