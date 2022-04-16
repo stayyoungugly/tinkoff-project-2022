@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentSignInBinding
+import com.itis.springpractice.di.PlaceContainer
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.SignInError
@@ -63,7 +64,8 @@ class SignInFragment : Fragment() {
     private fun initObjects() {
         val factory = AuthFactory(
             UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
+            UserTokenContainer(sharedPreferences),
+            PlaceContainer
         )
         signInViewModel = ViewModelProvider(
             this,

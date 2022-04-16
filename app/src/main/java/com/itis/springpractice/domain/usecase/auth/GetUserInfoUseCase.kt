@@ -1,6 +1,5 @@
 package com.itis.springpractice.domain.usecase.auth
 
-import com.itis.springpractice.domain.entity.ErrorEntity
 import com.itis.springpractice.domain.entity.UserInfoResult
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import kotlinx.coroutines.CoroutineDispatcher

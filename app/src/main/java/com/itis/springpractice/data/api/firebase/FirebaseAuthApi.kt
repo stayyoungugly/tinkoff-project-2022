@@ -23,7 +23,7 @@ interface FirebaseAuthApi {
     @POST("./accounts:sendOobCode")
     suspend fun sendVerification(
         @Body sendVerificationRequest: SendVerificationRequest
-    ): Response<ErrorResponse>
+    ): Response<AuthErrorResponse>
 
     @POST("./accounts:lookup")
     suspend fun getUserInfo(
@@ -33,5 +33,5 @@ interface FirebaseAuthApi {
     @POST("./accounts:delete")
     suspend fun delete(
         @Body tokenIdRequest: TokenIdRequest
-    ): Response<ErrorResponse>
+    ): Response<AuthErrorResponse>
 }

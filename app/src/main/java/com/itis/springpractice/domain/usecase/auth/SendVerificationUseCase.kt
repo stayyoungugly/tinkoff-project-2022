@@ -1,6 +1,6 @@
 package com.itis.springpractice.domain.usecase.auth
 
-import com.itis.springpractice.domain.entity.ErrorEntity
+import com.itis.springpractice.domain.entity.AuthErrorEntity
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +12,7 @@ class SendVerificationUseCase (
 ) {
     suspend operator fun invoke(
         idToken: String
-    ): ErrorEntity {
+    ): AuthErrorEntity {
         return withContext(dispatcher) {
             userAuthRepository.sendVerification(
                 idToken

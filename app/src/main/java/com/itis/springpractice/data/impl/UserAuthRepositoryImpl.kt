@@ -5,11 +5,14 @@ import com.itis.springpractice.data.api.mapper.ErrorMapper
 import com.itis.springpractice.data.api.mapper.SignInMapper
 import com.itis.springpractice.data.api.mapper.SignUpMapper
 import com.itis.springpractice.data.api.mapper.UserInfoMapper
-import com.itis.springpractice.data.request.TokenIdRequest
 import com.itis.springpractice.data.request.SendVerificationRequest
 import com.itis.springpractice.data.request.SignInRequest
 import com.itis.springpractice.data.request.SignUpRequest
-import com.itis.springpractice.domain.entity.*
+import com.itis.springpractice.data.request.TokenIdRequest
+import com.itis.springpractice.domain.entity.AuthErrorEntity
+import com.itis.springpractice.domain.entity.SignInResult
+import com.itis.springpractice.domain.entity.SignUpResult
+import com.itis.springpractice.domain.entity.UserInfoResult
 import com.itis.springpractice.domain.repository.UserAuthRepository
 
 class UserAuthRepositoryImpl(
@@ -45,7 +48,7 @@ class UserAuthRepositoryImpl(
         )
     }
 
-    override suspend fun sendVerification(idToken: String): ErrorEntity {
+    override suspend fun sendVerification(idToken: String): AuthErrorEntity {
         return errorMapper.mapToErrorEntity(
             api.sendVerification(
                 createSendVerificationRequest(idToken)
@@ -61,7 +64,7 @@ class UserAuthRepositoryImpl(
         )
     }
 
-    override suspend fun deleteUser(idToken: String): ErrorEntity {
+    override suspend fun deleteUser(idToken: String): AuthErrorEntity {
         return errorMapper.mapToErrorEntity(
             api.delete(
                 createTokenIdRequest(idToken)

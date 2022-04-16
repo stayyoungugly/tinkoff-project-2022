@@ -11,11 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentMainBinding
+import com.itis.springpractice.di.PlaceContainer
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.MainViewModel
-import timber.log.Timber
 
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
@@ -43,7 +43,8 @@ class MainFragment : Fragment() {
     private fun initObjects() {
         val factory = AuthFactory(
             UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
+            UserTokenContainer(sharedPreferences),
+            PlaceContainer
         )
         mainViewModel = ViewModelProvider(
             this,

@@ -1,9 +1,11 @@
 package com.itis.springpractice.data.api.mapper
 
 import com.google.gson.Gson
-import com.itis.springpractice.data.response.ErrorResponse
+import com.itis.springpractice.data.response.AuthErrorResponse
 import com.itis.springpractice.data.response.SignInResponse
-import com.itis.springpractice.domain.entity.*
+import com.itis.springpractice.domain.entity.SignInError
+import com.itis.springpractice.domain.entity.SignInResult
+import com.itis.springpractice.domain.entity.SignInSuccess
 import retrofit2.Response
 
 class SignInMapper {
@@ -21,9 +23,9 @@ class SignInMapper {
             )
         } else {
             val body = requireNotNull(response.errorBody())
-            val errorResponse: ErrorResponse =
-                Gson().fromJson(body.string(), ErrorResponse::class.java)
-            return SignInError(errorResponse.error.message)
+            val authErrorResponse: AuthErrorResponse =
+                Gson().fromJson(body.string(), AuthErrorResponse::class.java)
+            return SignInError(authErrorResponse.authError.message)
         }
     }
 }

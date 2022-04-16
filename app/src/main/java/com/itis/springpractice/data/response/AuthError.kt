@@ -2,7 +2,7 @@ package com.itis.springpractice.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class Error(
+data class AuthError(
     @SerializedName("code")
     val code: Int,
     @SerializedName("errors")

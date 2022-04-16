@@ -4,15 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itis.springpractice.domain.entity.ErrorEntity
-import com.itis.springpractice.domain.entity.SignInResult
-import com.itis.springpractice.domain.entity.UserInfoError
+import com.itis.springpractice.domain.entity.AuthErrorEntity
 import com.itis.springpractice.domain.entity.UserInfoResult
 import com.itis.springpractice.domain.usecase.auth.GetUserInfoUseCase
-import com.itis.springpractice.domain.usecase.auth.LoginUseCase
 import com.itis.springpractice.domain.usecase.auth.SendVerificationUseCase
 import com.itis.springpractice.domain.usecase.token.GetTokenUseCase
-import com.itis.springpractice.domain.usecase.token.SaveTokenUseCase
 import kotlinx.coroutines.launch
 
 class VerifyEmailViewModel(
@@ -41,17 +37,17 @@ class VerifyEmailViewModel(
         return token ?: getTokenUseCase().also { token = it }
     }
 
-    private var _errorEntity: MutableLiveData<Result<ErrorEntity>> = MutableLiveData()
-    val errorEntity: LiveData<Result<ErrorEntity>> = _errorEntity
+    private var _Auth_errorEntity: MutableLiveData<Result<AuthErrorEntity>> = MutableLiveData()
+    val authErrorEntity: LiveData<Result<AuthErrorEntity>> = _Auth_errorEntity
 
     fun onSendVerificationClick() {
         viewModelScope.launch {
             val idToken = getToken()
             try {
                 val errorEntity = sendVerificationUseCase(idToken)
-                _errorEntity.value = Result.success(errorEntity)
+                _Auth_errorEntity.value = Result.success(errorEntity)
             } catch (ex: Exception) {
-                _errorEntity.value = Result.failure(ex)
+                _Auth_errorEntity.value = Result.failure(ex)
             }
         }
     }
