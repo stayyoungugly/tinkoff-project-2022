@@ -15,7 +15,6 @@ import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.MainViewModel
-import timber.log.Timber
 
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
@@ -55,7 +54,7 @@ class MainFragment : Fragment() {
         mainViewModel.token.observe(viewLifecycleOwner) {
             token = it
             if (token.isNotEmpty()) {
-                findNavController().navigate(R.id.action_mainFragment_to_mapFragment)
+                findNavController().navigate(R.id.action_mainFragment_to_authorized_nav_graph)
             } else {
                 findNavController().navigate(R.id.action_mainFragment_to_signInFragment)
             }

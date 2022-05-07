@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/authorized_nav_graph"
+    app:startDestination="@id/mapFragment">
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.MapFragment"
+        android:label="MapFragment" >
+        <action
+            android:id="@+id/action_mapFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.ProfileFragment"
+        android:label="ProfileFragment">
+    </fragment>
+
+    <fragment
+        android:id="@+id/collectionsFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.CollectionsFragment"
+        android:label="CollectionsFragment">
+    </fragment>
+</navigation>

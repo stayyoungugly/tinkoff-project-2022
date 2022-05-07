@@ -48,7 +48,7 @@ class VerifyEmailFragment : Fragment() {
             verifyEmailViewModel.onSendVerificationClick()
         }
         binding.btnSkip.setOnClickListener {
-            findNavController().navigate(R.id.action_verifyEmailFragment_to_mapFragment)
+            findNavController().navigate(R.id.action_verifyEmailFragment_to_authorized_nav_graph)
         }
     }
 
@@ -81,7 +81,7 @@ class VerifyEmailFragment : Fragment() {
                 when (it) {
                     is UserInfoSuccess -> {
                         if (it.emailVerified) {
-                            findNavController().navigate(R.id.action_verifyEmailFragment_to_mapFragment)
+                            findNavController().navigate(R.id.action_verifyEmailFragment_to_authorized_nav_graph)
                         } else showMessage("Почта не подтверждена. Повторите попытку")
                     }
                     is UserInfoError -> {

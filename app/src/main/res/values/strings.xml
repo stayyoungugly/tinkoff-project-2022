@@ -15,4 +15,6 @@
     <string name="check_password">Подтвердите пароль</string>
     <string name="skip">Пропустить</string>
     <string name="sign_out">выйти</string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
 </resources>

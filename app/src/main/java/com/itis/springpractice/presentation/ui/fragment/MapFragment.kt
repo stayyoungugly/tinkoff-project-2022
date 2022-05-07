@@ -23,6 +23,7 @@ import com.itis.springpractice.databinding.FragmentMapBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
+import com.itis.springpractice.presentation.ui.Callback
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
 import timber.log.Timber
 
@@ -31,6 +32,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentMapBinding
     private lateinit var mapViewModel: MapViewModel
     private lateinit var sharedPreferences: SharedPreferences
+
+    private lateinit var callback: Callback
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +55,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+
     }
 
     private fun initObjects() {
