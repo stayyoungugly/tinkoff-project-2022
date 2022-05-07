@@ -50,13 +50,19 @@ class SignInFragment : Fragment() {
         initViewParams()
         clickableText()
         binding.authFields.btnNext.setOnClickListener {
-            val login = binding.authFields.etLogin.text.toString()
-            val password = binding.authFields.etPassword.text.toString()
-            if (registrationValidator.isValidEmail(login)) {
-                signInViewModel.onLoginClick(login, password)
-            } else {
-                showMessage("Введите корректный Email")
-            }
+            if (signInViewModel.onCheckInternet()) {
+                login()
+            } else showMessage("Проверьте подключение к сети")
+        }
+    }
+
+    private fun login() {
+        val login = binding.authFields.etLogin.text.toString()
+        val password = binding.authFields.etPassword.text.toString()
+        if (registrationValidator.isValidEmail(login)) {
+            signInViewModel.onLoginClick(login, password)
+        } else {
+            showMessage("Введите корректный Email")
         }
     }
 

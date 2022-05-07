@@ -24,6 +24,7 @@ import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
 import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
 
+
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
     private lateinit var sharedPreferences: SharedPreferences
@@ -49,20 +50,27 @@ class SignUpFragment : Fragment() {
         initObservers()
         clickableText()
         binding.authFields.btnNext.setOnClickListener {
-            val login = binding.authFields.etLogin.text.toString()
-            val password = binding.authFields.etPassword.text.toString()
-            val checkPassword = binding.authFields.etPasswordCheck.text.toString()
-            if (registrationValidator.isValidEmail(login) &&
-                registrationValidator.isValidPassword(password)
-            ) {
-                if (password == checkPassword) {
-                    signUpViewModel.onRegisterClick(login, password)
-                } else showMessage("Пароли не совпадают")
-            } else if (!registrationValidator.isValidEmail(login)) {
-                showMessage("Введите корректный Email")
-            } else if (!registrationValidator.isValidPassword(password)) {
-                showMessage("Пароль должен состоять из 6 символов, иметь одну букву и одну цифру")
+            if (signUpViewModel.onCheckInternet()) {
+                register()
             }
+            else showMessage("Проверьте подключение к сети")
+        }
+    }
+
+    private fun register() {
+        val login = binding.authFields.etLogin.text.toString()
+        val password = binding.authFields.etPassword.text.toString()
+        val checkPassword = binding.authFields.etPasswordCheck.text.toString()
+        if (registrationValidator.isValidEmail(login) &&
+            registrationValidator.isValidPassword(password)
+        ) {
+            if (password == checkPassword) {
+                signUpViewModel.onRegisterClick(login, password)
+            } else showMessage("Пароли не совпадают")
+        } else if (!registrationValidator.isValidEmail(login)) {
+            showMessage("Введите корректный Email")
+        } else if (!registrationValidator.isValidPassword(password)) {
+            showMessage("Пароль должен состоять из 6 символов, иметь одну букву и одну цифру")
         }
     }
 

@@ -34,8 +34,6 @@ import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.map.MapType
 import com.yandex.mapkit.mapview.MapView
 
-private const val MAP_KEY = BuildConfig.MAP_KEY
-
 class MapFragment : Fragment() {
     private lateinit var binding: FragmentMapBinding
     private lateinit var mapViewModel: MapViewModel
@@ -52,7 +50,7 @@ class MapFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MapKitFactory.setApiKey(MAP_KEY)
+        MapKitFactory.initialize(context)
     }
 
     override fun onCreateView(
@@ -62,23 +60,21 @@ class MapFragment : Fragment() {
     ): View {
         binding = FragmentMapBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        MapKitFactory.initialize(context)
         sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         initObjects()
         binding.btnSignOut.setOnClickListener {
             mapViewModel.onDeleteTokenClick()
             findNavController().navigate(R.id.action_mapFragment_to_signInFragment)
         }
+
         getLocationPermissions()
         mapView = binding.mapCity
         mapInit()
         initObservers()
-
     }
 
     private fun mapInit() {
@@ -124,13 +120,15 @@ class MapFragment : Fragment() {
                     override fun onLocationResult(locationResult: LocationResult) {
                         super.onLocationResult(locationResult)
                         for (locationSuccess in locationResult.locations) {
-                            mapViewModel.onPermissionResult(locationSuccess)
+                            // TODO
                         }
                     }
                 }
-
                 fusedLocationClient =
                     LocationServices.getFusedLocationProviderClient(requireActivity())
+                fusedLocationClient.lastLocation.addOnSuccessListener {
+                    mapViewModel.onPermissionResult(it)
+                }
                 fusedLocationClient.requestLocationUpdates(
                     locationRequest,
                     locationCallback,
@@ -183,33 +181,6 @@ class MapFragment : Fragment() {
             mapView.map.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
             true
         }
-    //    override fun onMapReady(googleMap: GoogleMap) {
-//        try {
-//            val success = googleMap.setMapStyle(
-//                MapStyleOptions.loadRawResourceStyle(
-//                    requireContext(), R.raw.style_json
-//                )
-//            )
-//            if (!success) {
-//                Timber.e("Style parsing failed.")
-//            }
-//        } catch (e: NotFoundException) {
-//            Timber.e("Can't find style. Error: %s", e.message)
-//        }
-//        val positionKazan = LatLng(55.78, 49.12)
-//        val cameraPosition = CameraPosition.Builder()
-//            .target(positionKazan)
-//            .zoom(15f)
-//            //.bearing(90f)
-//            .tilt(10f)
-//            .build()
-//        googleMap.addMarker(
-//            MarkerOptions()
-//                .position(positionKazan)
-//                .title("Kazan")
-//        )
-//        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-//    }
 
     override fun onStop() {
         super.onStop()

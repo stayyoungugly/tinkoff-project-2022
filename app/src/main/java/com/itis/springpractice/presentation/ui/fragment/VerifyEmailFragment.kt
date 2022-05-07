@@ -39,6 +39,7 @@ class VerifyEmailFragment : Fragment() {
         sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         initObjects()
         initObservers()
+
         verifyEmailViewModel.onSendVerificationClick()
 
         binding.btnVerify.setOnClickListener {
