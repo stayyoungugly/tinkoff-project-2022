@@ -7,23 +7,19 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.MapFragment"
-        android:label="MapFragment" >
+        android:label="MapFragment">
         <action
-            android:id="@+id/action_mapFragment_to_signInFragment"
-            app:destination="@id/signInFragment"
-            app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true"/>
+            android:id="@+id/action_non_authorized_zone"
+            app:destination="@id/authorized_nav_graph" />
     </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.ProfileFragment"
-        android:label="ProfileFragment">
-    </fragment>
+        android:label="ProfileFragment" />
 
     <fragment
         android:id="@+id/collectionsFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.CollectionsFragment"
-        android:label="CollectionsFragment">
-    </fragment>
+        android:label="CollectionsFragment" />
 </navigation>

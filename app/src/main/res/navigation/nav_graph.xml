@@ -14,8 +14,8 @@
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_mainFragment_to_authorized_nav_graph"
-            app:destination="@id/authorized_nav_graph"
+            android:id="@+id/action_mainFragment_to_authorizedFragment"
+            app:destination="@id/authorizedFragment"
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
@@ -28,8 +28,8 @@
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
         <action
-            android:id="@+id/action_signInFragment_to_authorized_nav_graph"
-            app:destination="@id/authorized_nav_graph"
+            android:id="@+id/action_signInFragment_to_authorizedFragment"
+            app:destination="@id/authorizedFragment"
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
@@ -52,11 +52,19 @@
         android:name="com.itis.springpractice.presentation.ui.fragment.VerifyEmailFragment"
         android:label="VerifyEmailFragment">
         <action
-            android:id="@+id/action_verifyEmailFragment_to_authorized_nav_graph"
-            app:destination="@id/authorized_nav_graph"
+            android:id="@+id/action_verifyEmailFragment_to_authorizedFragment"
+            app:destination="@id/authorizedFragment"
             app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
 
-    <include app:graph="@navigation/authorized_nav_graph" />
+    <fragment
+        android:id="@+id/authorizedFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.AuthorizedFragment"
+        android:label="AuthorizedFragment" />
+    <action
+        android:id="@+id/action_authorizedFragment_to_signInFragment"
+        app:destination="@id/signInFragment"
+        app:popUpTo="@+id/nav_graph"
+        app:popUpToInclusive="true" />
 </navigation>

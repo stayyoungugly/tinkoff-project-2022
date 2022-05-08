@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -23,7 +22,6 @@ import com.itis.springpractice.databinding.FragmentMapBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
-import com.itis.springpractice.presentation.ui.Callback
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
 import timber.log.Timber
 
@@ -33,7 +31,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapViewModel: MapViewModel
     private lateinit var sharedPreferences: SharedPreferences
 
-    private lateinit var callback: Callback
+    private lateinit var callbacks: Callbacks
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,15 +46,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         initObjects()
+        val authorizedFragment = parentFragment?.parentFragment
         binding.btnSignOut.setOnClickListener {
             mapViewModel.onDeleteTokenClick()
-            findNavController().navigate(R.id.action_mapFragment_to_signInFragment)
+            (authorizedFragment as? Callbacks)?.navigateToSignIn()
         }
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
-
     }
 
     private fun initObjects() {

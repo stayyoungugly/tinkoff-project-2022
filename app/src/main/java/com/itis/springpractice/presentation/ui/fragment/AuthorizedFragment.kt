@@ -1,24 +1,27 @@
 package com.itis.springpractice.presentation.ui.fragment
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentAuthorizedBinding
 
-class AutorizedFragment : Fragment(R.layout.fragment_authorized) {
+interface Callbacks {
+    fun navigateToSignIn()
+}
+
+class AuthorizedFragment : Fragment(R.layout.fragment_authorized), Callbacks {
     private lateinit var controller: NavController
     private lateinit var binding: FragmentAuthorizedBinding
     private lateinit var drawer: DrawerLayout
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,22 +32,10 @@ class AutorizedFragment : Fragment(R.layout.fragment_authorized) {
                 .navController
 
         drawer = binding.authorizedDrawer
-        val appBarConfiguration = AppBarConfiguration(controller.graph, drawer)
+        appBarConfiguration = AppBarConfiguration(controller.graph, drawer)
         binding.authorizedToolbar.setupWithNavController(controller, appBarConfiguration)
 
         binding.navView.setupWithNavController(controller)
-        openCloseNavigationDrawer()
-
-        val toggle = ActionBarDrawerToggle(activity, drawer, binding.authorizedToolbar, R.string.drawer_open, R.string.drawer_close)
-        drawer.addDrawerListener(toggle)
-        toggle.syncState()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        controller =
-            (childFragmentManager.findFragmentById(R.id.authorized_nav_root) as NavHostFragment)
-                .navController
-        return item.onNavDestinationSelected(controller) || super.onOptionsItemSelected(item)
     }
 
     private fun openCloseNavigationDrawer() {
@@ -53,5 +44,9 @@ class AutorizedFragment : Fragment(R.layout.fragment_authorized) {
         } else {
             drawer.openDrawer(GravityCompat.START)
         }
+    }
+
+    override fun navigateToSignIn() {
+        findNavController().navigate(R.id.action_authorizedFragment_to_signInFragment)
     }
 }
