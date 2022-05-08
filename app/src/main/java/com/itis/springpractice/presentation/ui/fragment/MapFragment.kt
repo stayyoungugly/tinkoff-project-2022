@@ -15,6 +15,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
+import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentMapBinding
@@ -34,19 +40,23 @@ import com.yandex.mapkit.logo.VerticalAlignment
 import com.yandex.mapkit.map.*
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.mapkit.search.*
 import com.yandex.mapkit.user_location.UserLocationLayer
 import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
+import com.yandex.runtime.Error
 import com.yandex.runtime.image.ImageProvider
 
 
-class MapFragment : Fragment(), UserLocationObjectListener, CameraListener {
+class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Session.SearchListener {
     private lateinit var binding: FragmentMapBinding
     private lateinit var mapViewModel: MapViewModel
     private lateinit var mapView: MapView
     private lateinit var userLocationLayer: UserLocationLayer
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var mapCity: Map
+    private lateinit var searchSession: Session
+    private lateinit var glide: RequestManager
 
     private var defaultLocation = Point(0.0, 0.0)
     private var routeStartLocation: Point? = defaultLocation
@@ -80,6 +90,8 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bottomInit()
+        glide = Glide.with(this)
         sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         initObjects()
         binding.btnSignOut.setOnClickListener {
@@ -111,7 +123,7 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener {
         mapCity = mapView.map
         mapCity.mapType = MapType.VECTOR_MAP
         mapCity.setMapStyle(StyleType.V_MAP2.toString())
-        mapCity.addTapListener(mapObjectTapListener)
+        mapCity.addTapListener(geoObjectTapListener)
         mapCity.isZoomGesturesEnabled = true
         mapCity.isRotateGesturesEnabled = true
         mapCity.isFastTapEnabled = true
@@ -126,6 +138,37 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener {
         mapCity.addCameraListener(this)
         cameraUserPosition()
         permissionLocation = true
+    }
+
+    private fun bottomInit() {
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomLayout.root)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                }
+            }
+        })
+    }
+
+    private fun bottomModify(params: BusinessObjectMetadata) {
+        val options = RequestOptions()
+            .priority(Priority.HIGH)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+        val bottomBinding = binding.bottomLayout
+        with(bottomBinding) {
+            val bottomSheetBehavior = BottomSheetBehavior.from(root)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            tvName.text = params.name
+            tvDescription.text = params.address.formattedAddress
+            val url = params.advertisement?.images?.get(0)?.url
+//            glide.load(url)
+//                .apply(options)
+//                .into(ivPicture)
+        }
     }
 
     private fun modifyMap(location: Point?) {
@@ -248,12 +291,21 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener {
         ).get(MapViewModel::class.java)
     }
 
-    private val mapObjectTapListener =
+    private val geoObjectTapListener =
         GeoObjectTapListener { event ->
-            val selectionMetadata: GeoObjectSelectionMetadata = event.geoObject
+            val selectionMetadata = event.geoObject
                 .metadataContainer
                 .getItem(GeoObjectSelectionMetadata::class.java)
-            mapView.map.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
+            val point = event.geoObject.geometry[0].point
+            val searchManager = SearchFactory.getInstance().createSearchManager(
+                SearchManagerType.ONLINE
+            )
+            val options = SearchOptions()
+            options.searchTypes = 2
+            searchSession = point?.let {
+                searchManager.submit(it, 16, options, this)
+            }!!
+            mapCity.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
             true
         }
 
@@ -261,6 +313,19 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener {
         super.onStop()
         mapView.onStop()
         MapKitFactory.getInstance().onStop()
+    }
+
+    override fun onSearchResponse(response: Response) {
+        val params = response.collection.children.firstOrNull()?.obj
+            ?.metadataContainer
+            ?.getItem(BusinessObjectMetadata::class.java)
+        if (params != null) {
+            bottomModify(params)
+        }
+    }
+
+    override fun onSearchError(error: Error) {
+        showMessage(error.toString())
     }
 }
 
