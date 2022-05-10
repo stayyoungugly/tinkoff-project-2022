@@ -1,18 +1,16 @@
 package com.itis.springpractice.presentation.ui.fragment
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.text.set
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentSignInBinding
@@ -24,28 +22,26 @@ import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
 import com.itis.springpractice.presentation.viewmodel.SignInViewModel
 
-class SignInFragment : Fragment() {
-    private lateinit var binding: FragmentSignInBinding
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var signInViewModel: SignInViewModel
+class SignInFragment : Fragment(R.layout.fragment_sign_in) {
+    private val binding by viewBinding(FragmentSignInBinding::bind)
+
+    private val signInViewModel by viewModels<SignInViewModel> {
+        AuthFactory(
+            UserAuthContainer,
+            UserTokenContainer(sharedPreferences)
+        )
+    }
 
     private val registrationValidator by lazy {
         RegistrationValidator()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentSignInBinding.inflate(inflater, container, false)
-        return binding.root
+    private val sharedPreferences by lazy {
+        requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        initObjects()
         initObservers()
         initViewParams()
         clickableText()
@@ -60,23 +56,12 @@ class SignInFragment : Fragment() {
         }
     }
 
-    private fun initObjects() {
-        val factory = AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
-        )
-        signInViewModel = ViewModelProvider(
-            this,
-            factory
-        ).get(SignInViewModel::class.java)
-    }
-
     private fun initObservers() {
         signInViewModel.signInResult.observe(viewLifecycleOwner) {
             when (it) {
                 is SignInSuccess -> {
                     signInViewModel.onSaveTokenClick(it.idToken)
-                    findNavController().navigate(R.id.action_signInFragment_to_mapFragment)
+                    findNavController().navigate(R.id.action_signInFragment_to_authorizedFragment)
                 }
                 is SignInError -> {
                     when (it.reason) {

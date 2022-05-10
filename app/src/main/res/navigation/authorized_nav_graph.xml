@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/authorized_nav_graph"
+    app:startDestination="@id/mapFragment">
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.MapFragment"
+        android:label="@string/map_fragment_label">
+        <action
+            android:id="@+id/action_non_authorized_zone"
+            app:destination="@id/authorized_nav_graph" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.ProfileFragment"
+        android:label="@string/profile_title" />
+
+    <fragment
+        android:id="@+id/collectionsFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.CollectionsFragment"
+        android:label="@string/collections_title" />
+</navigation>
