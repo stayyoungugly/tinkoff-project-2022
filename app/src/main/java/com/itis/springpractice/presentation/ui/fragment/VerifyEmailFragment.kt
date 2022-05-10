@@ -1,14 +1,12 @@
 package com.itis.springpractice.presentation.ui.fragment
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentVerifyEmailBinding
@@ -20,24 +18,22 @@ import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.VerifyEmailViewModel
 import timber.log.Timber
 
-class VerifyEmailFragment : Fragment() {
-    private lateinit var binding: FragmentVerifyEmailBinding
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var verifyEmailViewModel: VerifyEmailViewModel
+class VerifyEmailFragment : Fragment(R.layout.fragment_verify_email) {
+    private val binding by viewBinding(FragmentVerifyEmailBinding::bind)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentVerifyEmailBinding.inflate(inflater, container, false)
-        return binding.root
+    private val verifyEmailViewModel by viewModels<VerifyEmailViewModel> {
+        AuthFactory(
+            UserAuthContainer,
+            UserTokenContainer(sharedPreferences)
+        )
+    }
+
+    private val sharedPreferences by lazy {
+        requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        initObjects()
         initObservers()
         verifyEmailViewModel.onSendVerificationClick()
 
@@ -50,17 +46,6 @@ class VerifyEmailFragment : Fragment() {
         binding.btnSkip.setOnClickListener {
             findNavController().navigate(R.id.action_verifyEmailFragment_to_authorizedFragment)
         }
-    }
-
-    private fun initObjects() {
-        val factory = AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
-        )
-        verifyEmailViewModel = ViewModelProvider(
-            this,
-            factory
-        ).get(VerifyEmailViewModel::class.java)
     }
 
     private fun initObservers() {

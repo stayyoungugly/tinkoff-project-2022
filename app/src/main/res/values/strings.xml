@@ -6,7 +6,6 @@
     <string name="sign_up">Зарегистрироваться</string>
     <string name="to_sign_up">Еще нет аккаунта? Зарегистрироваться</string>
     <string name="to_login">Уже есть аккаунт? Войти</string>
-    <string name="profile">Profile</string>
     <string name="verify_email">Подтвердите адрес в письме, отправленном на Вашу электронную почту.</string>
     <string name="enter_code">Введите код</string>
     <string name="verify">Готово</string>
@@ -15,6 +14,7 @@
     <string name="check_password">Подтвердите пароль</string>
     <string name="skip">Пропустить</string>
     <string name="sign_out">выйти</string>
-    <string name="drawer_open">open</string>
-    <string name="drawer_close">close</string>
+    <string name="profile_title">Профиль</string>
+    <string name="collections_title">Коллекции</string>
+    <string name="map_fragment_label">Карта</string>
 </resources>

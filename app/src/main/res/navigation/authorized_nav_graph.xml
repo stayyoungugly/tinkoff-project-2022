@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.MapFragment"
-        android:label="Карта">
+        android:label="@string/map_fragment_label">
         <action
             android:id="@+id/action_non_authorized_zone"
             app:destination="@id/authorized_nav_graph" />
@@ -16,10 +16,10 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.ProfileFragment"
-        android:label="Профиль" />
+        android:label="@string/profile_title" />
 
     <fragment
         android:id="@+id/collectionsFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.CollectionsFragment"
-        android:label="Коллекции" />
+        android:label="@string/collections_title" />
 </navigation>

@@ -1,14 +1,12 @@
 package com.itis.springpractice.presentation.ui.fragment
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.res.Resources.NotFoundException
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,49 +20,34 @@ import com.itis.springpractice.databinding.FragmentMapBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
+import com.itis.springpractice.presentation.ui.fragment.extension.findParent
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
 import timber.log.Timber
 
 
-class MapFragment : Fragment(), OnMapReadyCallback {
-    private lateinit var binding: FragmentMapBinding
-    private lateinit var mapViewModel: MapViewModel
-    private lateinit var sharedPreferences: SharedPreferences
+class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
+    private val binding by viewBinding(FragmentMapBinding::bind)
 
-    private lateinit var callbacks: Callbacks
+    private val mapViewModel by viewModels<MapViewModel> {
+        AuthFactory(
+            UserAuthContainer,
+            UserTokenContainer(sharedPreferences)
+        )
+    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentMapBinding.inflate(inflater, container, false)
-        return binding.root
+    private val sharedPreferences by lazy {
+        requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        initObjects()
-        val authorizedFragment = parentFragment?.parentFragment
         binding.btnSignOut.setOnClickListener {
             mapViewModel.onDeleteTokenClick()
-            (authorizedFragment as? Callbacks)?.navigateToSignIn()
+            (this.findParent<AuthorizedFragment>() as? Callbacks)?.navigateToSignIn()
         }
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-    }
-
-    private fun initObjects() {
-        val factory = AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
-        )
-        mapViewModel = ViewModelProvider(
-            this,
-            factory
-        ).get(MapViewModel::class.java)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
