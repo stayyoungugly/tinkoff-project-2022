@@ -50,9 +50,7 @@ class SignInFragment : Fragment() {
         initViewParams()
         clickableText()
         binding.authFields.btnNext.setOnClickListener {
-            if (signInViewModel.onCheckInternet()) {
-                login()
-            } else showMessage("Проверьте подключение к сети")
+            login()
         }
     }
 
@@ -78,21 +76,25 @@ class SignInFragment : Fragment() {
     }
 
     private fun initObservers() {
-        signInViewModel.signInResult.observe(viewLifecycleOwner) {
-            when (it) {
-                is SignInSuccess -> {
-                    signInViewModel.onSaveTokenClick(it.idToken)
-                    findNavController().navigate(R.id.action_signInFragment_to_mapFragment)
-                }
-                is SignInError -> {
-                    when (it.reason) {
-                        "EMAIL_NOT_FOUND" -> showMessage("Email не найден")
-                        "INVALID_PASSWORD" -> showMessage("Неверный пароль")
-                        "USER_DISABLED" -> showMessage("Доступ запрещен")
-                        else -> showMessage("Ошибка входа")
+        signInViewModel.signInResult.observe(viewLifecycleOwner) { result ->
+            result.fold(onSuccess = {
+                when (it) {
+                    is SignInSuccess -> {
+                        signInViewModel.onSaveTokenClick(it.idToken)
+                        findNavController().navigate(R.id.action_signInFragment_to_mapFragment)
+                    }
+                    is SignInError -> {
+                        when (it.reason) {
+                            "EMAIL_NOT_FOUND" -> showMessage("Email не найден")
+                            "INVALID_PASSWORD" -> showMessage("Неверный пароль")
+                            "USER_DISABLED" -> showMessage("Доступ запрещен")
+                            else -> showMessage("Ошибка входа")
+                        }
                     }
                 }
-            }
+            }, onFailure = {
+                showMessage("Проверьте подключение к интернету")
+            })
         }
     }
 

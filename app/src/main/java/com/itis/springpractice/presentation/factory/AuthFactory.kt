@@ -16,13 +16,11 @@ class AuthFactory(
                 SignInViewModel(
                     authDi.loginUseCase,
                     tokenDi.saveTokenUseCase,
-                    authDi.checkInternetUseCase,
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             modelClass.isAssignableFrom(SignUpViewModel::class.java) ->
                 SignUpViewModel(
                     authDi.registerUseCase,
                     tokenDi.saveTokenUseCase,
-                    authDi.checkInternetUseCase,
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             modelClass.isAssignableFrom(VerifyEmailViewModel::class.java) ->
                 VerifyEmailViewModel(
@@ -36,8 +34,8 @@ class AuthFactory(
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             modelClass.isAssignableFrom(MapViewModel::class.java) ->
                 MapViewModel(
-                    a
-                    tokenDi.deleteTokenUseCase
+                    tokenDi.deleteTokenUseCase,
+                    authDi.checkLocationPermissionUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class")

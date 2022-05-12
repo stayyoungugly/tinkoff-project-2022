@@ -96,7 +96,7 @@ class VerifyEmailFragment : Fragment() {
                     }
                 }
             }, onFailure = {
-                Timber.e(it.message.toString())
+                showMessage("Проверьте подключение к интернету")
             })
         }
     }

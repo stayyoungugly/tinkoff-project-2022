@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 class MapViewModel(
     private val deleteTokenUseCase: DeleteTokenUseCase,
     private val checkLocationPermissionUseCase: CheckLocationPermissionUseCase
-
 ) : ViewModel() {
 
     fun onDeleteTokenClick() {

@@ -50,10 +50,7 @@ class SignUpFragment : Fragment() {
         initObservers()
         clickableText()
         binding.authFields.btnNext.setOnClickListener {
-            if (signUpViewModel.onCheckInternet()) {
-                register()
-            }
-            else showMessage("Проверьте подключение к сети")
+            register()
         }
     }
 
@@ -86,21 +83,25 @@ class SignUpFragment : Fragment() {
     }
 
     private fun initObservers() {
-        signUpViewModel.signUpResult.observe(viewLifecycleOwner) {
-            when (it) {
-                is SignUpSuccess -> {
-                    findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
-                    signUpViewModel.onSaveTokenClick(it.idToken)
-                }
-                is SignUpError -> {
-                    when (it.reason) {
-                        "EMAIL_EXISTS" -> showMessage("Пользователь с таким Email уже существует")
-                        "OPERATION_NOT_ALLOWED" -> showMessage("Операция недоступна")
-                        "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток, попробуйте позже")
-                        else -> showMessage("Ошибка регистрации")
+        signUpViewModel.signUpResult.observe(viewLifecycleOwner) { result ->
+            result.fold(onSuccess = {
+                when (it) {
+                    is SignUpSuccess -> {
+                        findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
+                        signUpViewModel.onSaveTokenClick(it.idToken)
+                    }
+                    is SignUpError -> {
+                        when (it.reason) {
+                            "EMAIL_EXISTS" -> showMessage("Пользователь с таким Email уже существует")
+                            "OPERATION_NOT_ALLOWED" -> showMessage("Операция недоступна")
+                            "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток, попробуйте позже")
+                            else -> showMessage("Ошибка регистрации")
+                        }
                     }
                 }
-            }
+            }, onFailure = {
+                showMessage("Проверьте подключение к интернету")
+            })
         }
     }
 

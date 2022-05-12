@@ -5,14 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.ErrorEntity
-import com.itis.springpractice.domain.entity.SignInResult
-import com.itis.springpractice.domain.entity.UserInfoError
 import com.itis.springpractice.domain.entity.UserInfoResult
 import com.itis.springpractice.domain.usecase.auth.GetUserInfoUseCase
-import com.itis.springpractice.domain.usecase.auth.LoginUseCase
 import com.itis.springpractice.domain.usecase.auth.SendVerificationUseCase
 import com.itis.springpractice.domain.usecase.token.GetTokenUseCase
-import com.itis.springpractice.domain.usecase.token.SaveTokenUseCase
 import kotlinx.coroutines.launch
 
 class VerifyEmailViewModel(
@@ -21,7 +17,7 @@ class VerifyEmailViewModel(
     private val sendVerificationUseCase: SendVerificationUseCase
 ) : ViewModel() {
 
-    private var _userInfoResult: MutableLiveData<Result<UserInfoResult>> = MutableLiveData()
+    private var _userInfoResult: SingleLiveEvent<Result<UserInfoResult>> = SingleLiveEvent()
     val userInfoResult: LiveData<Result<UserInfoResult>> = _userInfoResult
 
     fun onGetUserInfoClick() {
