@@ -1,15 +1,16 @@
 package com.itis.springpractice.presentation.viewmodel
 
-import android.location.Location
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itis.springpractice.domain.usecase.permission.CheckLocationPermissionUseCase
 import com.itis.springpractice.domain.usecase.token.DeleteTokenUseCase
+import com.itis.springpractice.presentation.ui.fragment.MapFragment
 import kotlinx.coroutines.launch
 
 class MapViewModel(
-    private val deleteTokenUseCase: DeleteTokenUseCase
+    private val deleteTokenUseCase: DeleteTokenUseCase,
+    private val checkLocationPermissionUseCase: CheckLocationPermissionUseCase
+
 ) : ViewModel() {
 
     fun onDeleteTokenClick() {
@@ -18,10 +19,11 @@ class MapViewModel(
         }
     }
 
-    private val _location: MutableLiveData<Location> = MutableLiveData()
-    val location: LiveData<Location> = _location
-
-    fun onPermissionResult(location: Location) {
-        _location.value = location
+    fun checkLocationPermission(fragment: MapFragment): Boolean {
+        var flag = false
+        viewModelScope.launch {
+            flag = checkLocationPermissionUseCase(fragment)
+        }
+        return flag
     }
 }

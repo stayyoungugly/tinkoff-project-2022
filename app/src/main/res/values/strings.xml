@@ -15,5 +15,5 @@
     <string name="check_password">Подтвердите пароль</string>
     <string name="skip">Пропустить</string>
     <string name="sign_out">выйти</string>
-    <string name="textview">TextView</string>
+    <string name="sample_text">Sample Text</string>
 </resources>

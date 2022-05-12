@@ -10,6 +10,7 @@ import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import com.itis.springpractice.domain.usecase.auth.*
 import com.itis.springpractice.domain.usecase.network.CheckInternetUseCase
+import com.itis.springpractice.domain.usecase.permission.CheckLocationPermissionUseCase
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -102,6 +103,8 @@ object UserAuthContainer {
         userAuthRepository = userAuthRepository,
         dispatcher = Dispatchers.Default
     )
+
+    val checkLocationPermissionUseCase: CheckLocationPermissionUseCase = CheckLocationPermissionUseCase()
 
     val deleteUserUseCase: DeleteUserUseCase = DeleteUserUseCase(
         userAuthRepository = userAuthRepository,
