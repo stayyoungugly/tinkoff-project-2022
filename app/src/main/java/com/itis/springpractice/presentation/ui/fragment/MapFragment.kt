@@ -2,17 +2,15 @@ package com.itis.springpractice.presentation.ui.fragment
 
 import android.Manifest
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestManager
@@ -25,6 +23,7 @@ import com.itis.springpractice.databinding.FragmentMapBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
+import com.itis.springpractice.presentation.ui.fragment.extension.findParent
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
@@ -47,10 +46,9 @@ import com.yandex.runtime.Error
 import com.yandex.runtime.image.ImageProvider
 
 
-class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Session.SearchListener,
+class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener, CameraListener, Session.SearchListener,
     GeoObjectTapListener {
-    private lateinit var binding: FragmentMapBinding
-    private lateinit var sharedPreferences: SharedPreferences
+    private val binding by viewBinding(FragmentMapBinding::bind)
     private lateinit var searchSession: Session
 
     private val glideOptions by lazy {
@@ -64,13 +62,6 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Sess
             isVisible = true
             isHeadingEnabled = true
         }
-    }
-
-    private val mapViewModel by viewModels<MapViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
-        )
     }
 
     private val mapView: MapView by lazy {
@@ -128,19 +119,20 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Sess
         MapKitFactory.initialize(context)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentMapBinding.inflate(inflater, container, false)
-        return binding.root
+    private val mapViewModel by viewModels<MapViewModel> {
+        AuthFactory(
+            UserAuthContainer,
+            UserTokenContainer(sharedPreferences)
+        )
+    }
+
+    private val sharedPreferences by lazy {
+        requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bottomInit()
-        sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         mapCity.addTapListener(this)
         binding.btnSignOut.setOnClickListener {
             onSignOutClick()
@@ -151,7 +143,7 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Sess
 
     private fun onSignOutClick() {
         mapViewModel.onDeleteTokenClick()
-        findNavController().navigate(R.id.action_mapFragment_to_signInFragment)
+        (this.findParent<AuthorizedFragment>() as? Callbacks)?.navigateToSignIn()
     }
 
     private fun checkPermission() {

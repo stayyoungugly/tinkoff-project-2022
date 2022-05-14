@@ -1,18 +1,16 @@
 package com.itis.springpractice.presentation.ui.fragment
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.text.set
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentSignUpBinding
@@ -25,28 +23,26 @@ import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
 import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
 
 
-class SignUpFragment : Fragment() {
-    private lateinit var binding: FragmentSignUpBinding
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var signUpViewModel: SignUpViewModel
+class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
+    private val binding by viewBinding(FragmentSignUpBinding::bind)
+
+    private val signUpViewModel by viewModels<SignUpViewModel> {
+        AuthFactory(
+            UserAuthContainer,
+            UserTokenContainer(sharedPreferences)
+        )
+    }
 
     private val registrationValidator by lazy {
         RegistrationValidator()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentSignUpBinding.inflate(inflater, container, false)
-        return binding.root
+    private val sharedPreferences by lazy {
+        requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        initObjects()
         initObservers()
         clickableText()
         binding.authFields.btnNext.setOnClickListener {
@@ -69,17 +65,6 @@ class SignUpFragment : Fragment() {
         } else if (!registrationValidator.isValidPassword(password)) {
             showMessage("Пароль должен состоять из 6 символов, иметь одну букву и одну цифру")
         }
-    }
-
-    private fun initObjects() {
-        val factory = AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
-        )
-        signUpViewModel = ViewModelProvider(
-            this,
-            factory
-        ).get(SignUpViewModel::class.java)
     }
 
     private fun initObservers() {
