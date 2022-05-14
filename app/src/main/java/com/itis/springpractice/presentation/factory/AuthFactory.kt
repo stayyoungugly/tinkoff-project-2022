@@ -35,7 +35,6 @@ class AuthFactory(
             modelClass.isAssignableFrom(MapViewModel::class.java) ->
                 MapViewModel(
                     tokenDi.deleteTokenUseCase,
-                    authDi.checkLocationPermissionUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class")

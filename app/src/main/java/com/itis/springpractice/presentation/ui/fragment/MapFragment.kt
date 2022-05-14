@@ -1,12 +1,15 @@
 package com.itis.springpractice.presentation.ui.fragment
 
+import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -93,6 +96,12 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Sess
         MapKitFactory.getInstance()
     }
 
+    private val searchManager by lazy {
+        SearchFactory.getInstance().createSearchManager(
+            SearchManagerType.COMBINED
+        )
+    }
+
     private var defaultLocation = Point(0.0, 0.0)
     private var routeStartLocation: Point? = defaultLocation
 
@@ -100,12 +109,12 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Sess
     private var followUserLocation = false
 
     companion object {
-        const val zoomValue = 18.0f
+        const val zoomValue = 19.0f
         const val zeroFloatValue = 0.0f
         const val durationValue = 1f
         const val widthRatio = 0.5
         const val heightRatio = 0.83
-        const val searchTypesAmount = 2
+        const val searchType = 2
     }
 
     override fun onStart() {
@@ -132,11 +141,10 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Sess
         super.onViewCreated(view, savedInstanceState)
         bottomInit()
         sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-
+        mapCity.addTapListener(this)
         binding.btnSignOut.setOnClickListener {
             onSignOutClick()
         }
-
         checkPermission()
         userInterface()
     }
@@ -147,9 +155,35 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Sess
     }
 
     private fun checkPermission() {
-        if (mapViewModel.checkLocationPermission(this)) {
+        if (mapViewModel.isPermissionsAllowed()) {
             userLocationConfig()
-        } else showMessage("Скоро будет доступен поиск мест")
+        } else getLocationPermissions()
+    }
+
+    private fun getLocationPermissions() {
+        locationPermissionRequest.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+    }
+
+    private val locationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                userLocationConfig()
+            }
+            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                userLocationConfig()
+            }
+            else -> {
+                showMessage("Скоро будет доступен поиск мест")
+            }
+
+        }
     }
 
     private fun userLocationConfig() {
@@ -230,6 +264,7 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Sess
 
     override fun onObjectAdded(userLocationView: UserLocationView) {
         setAnchor()
+        userLocationView.accuracyCircle.fillColor = Color.TRANSPARENT
         userLocationView.pin.setIcon(ImageProvider.fromResource(context, R.drawable.arrow))
         userLocationView.arrow.setIcon(ImageProvider.fromResource(context, R.drawable.arrow))
     }
@@ -286,22 +321,18 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Sess
 
     private fun searchGeoObjectInfo(event: GeoObjectTapEvent) {
         val point = event.geoObject.geometry[0].point
-        val searchManager = SearchFactory.getInstance().createSearchManager(
-            SearchManagerType.ONLINE
-        )
         val options = SearchOptions()
-        options.searchTypes = searchTypesAmount
-        startSession(point, searchManager, options)
+        options.searchTypes = searchType
+        if (point != null) {
+            startSession(point, options)
+        } else showMessage("Информация о месте не найдена")
     }
 
     private fun startSession(
-        point: Point?,
-        searchManager: SearchManager,
+        point: Point,
         options: SearchOptions
     ) {
-        searchSession = point?.let {
-            searchManager.submit(it, 16, options, this)
-        }!!
+        searchSession = searchManager.submit(point, 16, options, this)
     }
 
     override fun onSearchResponse(response: Response) {
@@ -324,7 +355,6 @@ class MapFragment : Fragment(), UserLocationObjectListener, CameraListener, Sess
     }
 
     override fun onObjectTap(event: GeoObjectTapEvent): Boolean {
-        mapCity.addTapListener(this)
         selectionGeoObject(event)
         searchGeoObjectInfo(event)
         return true
