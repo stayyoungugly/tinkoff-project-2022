@@ -8,7 +8,7 @@
     android:maxHeight="500dp"
     app:behavior_hideable="true"
     android:padding="30dp"
-    app:behavior_peekHeight="10dp"
+    app:behavior_peekHeight="0dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <ImageView

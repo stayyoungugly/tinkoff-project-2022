@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -46,10 +45,26 @@ import com.yandex.runtime.Error
 import com.yandex.runtime.image.ImageProvider
 
 
-class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener, CameraListener, Session.SearchListener,
+class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener, CameraListener,
+    Session.SearchListener,
     GeoObjectTapListener {
-    private val binding by viewBinding(FragmentMapBinding::bind)
     private lateinit var searchSession: Session
+    private val binding by viewBinding(FragmentMapBinding::bind)
+
+    private val bottomSheetBehavior by lazy {
+        BottomSheetBehavior.from(binding.bottomLayout.root).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+            addBottomSheetCallback(object :
+                BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                        state = BottomSheetBehavior.STATE_HIDDEN
+                    }
+                }
+            })
+        }
+    }
 
     private val glideOptions by lazy {
         RequestOptions()
@@ -132,7 +147,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bottomInit()
         mapCity.addTapListener(this)
         binding.btnSignOut.setOnClickListener {
             onSignOutClick()
@@ -174,7 +188,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             else -> {
                 showMessage("Скоро будет доступен поиск мест")
             }
-
         }
     }
 
@@ -185,24 +198,9 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         userLocationLayer.setObjectListener(this)
     }
 
-    private fun bottomInit() {
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomLayout.root)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        bottomSheetBehavior.addBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                }
-            }
-        })
-    }
-
     private fun bottomModify(params: BusinessObjectMetadata) {
         val bottomBinding = binding.bottomLayout
         with(bottomBinding) {
-            val bottomSheetBehavior = BottomSheetBehavior.from(root)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             tvName.text = params.name
             tvDescription.text = params.address.formattedAddress
