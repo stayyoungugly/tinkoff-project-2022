@@ -23,7 +23,7 @@ private const val TYPE_HEADER = "Content-Type"
 private const val JSON_TYPE = "application/json"
 
 object UserAuthContainer {
-
+    
     private val apiKeyInterceptor = Interceptor { chain ->
         val original = chain.request()
         val newURL = original.url.newBuilder()

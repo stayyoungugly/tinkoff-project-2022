@@ -46,32 +46,40 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
         initViewParams()
         clickableText()
         binding.authFields.btnNext.setOnClickListener {
-            val login = binding.authFields.etLogin.text.toString()
-            val password = binding.authFields.etPassword.text.toString()
-            if (registrationValidator.isValidEmail(login)) {
-                signInViewModel.onLoginClick(login, password)
-            } else {
-                showMessage("Введите корректный Email")
-            }
+            login()
+        }
+    }
+
+    private fun login() {
+        val login = binding.authFields.etLogin.text.toString()
+        val password = binding.authFields.etPassword.text.toString()
+        if (registrationValidator.isValidEmail(login)) {
+            signInViewModel.onLoginClick(login, password)
+        } else {
+            showMessage("Введите корректный Email")
         }
     }
 
     private fun initObservers() {
-        signInViewModel.signInResult.observe(viewLifecycleOwner) {
-            when (it) {
-                is SignInSuccess -> {
-                    signInViewModel.onSaveTokenClick(it.idToken)
-                    findNavController().navigate(R.id.action_signInFragment_to_authorizedFragment)
-                }
-                is SignInError -> {
-                    when (it.reason) {
-                        "EMAIL_NOT_FOUND" -> showMessage("Email не найден")
-                        "INVALID_PASSWORD" -> showMessage("Неверный пароль")
-                        "USER_DISABLED" -> showMessage("Доступ запрещен")
-                        else -> showMessage("Ошибка входа")
+        signInViewModel.signInResult.observe(viewLifecycleOwner) { result ->
+            result.fold(onSuccess = {
+                when (it) {
+                    is SignInSuccess -> {
+                        signInViewModel.onSaveTokenClick(it.idToken)
+                        findNavController().navigate(R.id.action_signInFragment_to_authorizedFragment)
+                    }
+                    is SignInError -> {
+                        when (it.reason) {
+                            "EMAIL_NOT_FOUND" -> showMessage("Email не найден")
+                            "INVALID_PASSWORD" -> showMessage("Неверный пароль")
+                            "USER_DISABLED" -> showMessage("Доступ запрещен")
+                            else -> showMessage("Ошибка входа")
+                        }
                     }
                 }
-            }
+            }, onFailure = {
+                showMessage("Проверьте подключение к интернету")
+            })
         }
     }
 

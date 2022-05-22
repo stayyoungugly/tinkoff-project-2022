@@ -1,7 +1,6 @@
 package com.itis.springpractice.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.SignUpResult
@@ -13,12 +12,16 @@ class SignUpViewModel(
     private val registerUseCase: RegisterUseCase,
     private val saveTokenUseCase: SaveTokenUseCase
 ) : ViewModel() {
-    private var _signUpResult: MutableLiveData<SignUpResult> = MutableLiveData()
-    val signUpResult: LiveData<SignUpResult> = _signUpResult
+    private var _signUpResult: SingleLiveEvent<Result<SignUpResult>> = SingleLiveEvent()
+    val signUpResult: LiveData<Result<SignUpResult>> = _signUpResult
 
     fun onRegisterClick(email: String, password: String) {
         viewModelScope.launch {
-            _signUpResult.value = registerUseCase(email, password)
+            try {
+                _signUpResult.value = Result.success(registerUseCase(email, password))
+            } catch (ex: Exception) {
+                _signUpResult.value = Result.failure(ex)
+            }
         }
     }
 

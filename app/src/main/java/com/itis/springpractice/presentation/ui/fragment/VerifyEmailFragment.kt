@@ -35,6 +35,7 @@ class VerifyEmailFragment : Fragment(R.layout.fragment_verify_email) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
+
         verifyEmailViewModel.onSendVerificationClick()
 
         binding.btnVerify.setOnClickListener {
@@ -80,7 +81,7 @@ class VerifyEmailFragment : Fragment(R.layout.fragment_verify_email) {
                     }
                 }
             }, onFailure = {
-                Timber.e(it.message.toString())
+                showMessage("Проверьте подключение к интернету")
             })
         }
     }

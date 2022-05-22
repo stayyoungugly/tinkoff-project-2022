@@ -22,6 +22,7 @@ import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
 import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
 
+
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private val binding by viewBinding(FragmentSignUpBinding::bind)
 
@@ -45,39 +46,47 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         initObservers()
         clickableText()
         binding.authFields.btnNext.setOnClickListener {
-            val login = binding.authFields.etLogin.text.toString()
-            val password = binding.authFields.etPassword.text.toString()
-            val checkPassword = binding.authFields.etPasswordCheck.text.toString()
-            if (registrationValidator.isValidEmail(login) &&
-                registrationValidator.isValidPassword(password)
-            ) {
-                if (password == checkPassword) {
-                    signUpViewModel.onRegisterClick(login, password)
-                } else showMessage("Пароли не совпадают")
-            } else if (!registrationValidator.isValidEmail(login)) {
-                showMessage("Введите корректный Email")
-            } else if (!registrationValidator.isValidPassword(password)) {
-                showMessage("Пароль должен состоять из 6 символов, иметь одну букву и одну цифру")
-            }
+            register()
+        }
+    }
+
+    private fun register() {
+        val login = binding.authFields.etLogin.text.toString()
+        val password = binding.authFields.etPassword.text.toString()
+        val checkPassword = binding.authFields.etPasswordCheck.text.toString()
+        if (registrationValidator.isValidEmail(login) &&
+            registrationValidator.isValidPassword(password)
+        ) {
+            if (password == checkPassword) {
+                signUpViewModel.onRegisterClick(login, password)
+            } else showMessage("Пароли не совпадают")
+        } else if (!registrationValidator.isValidEmail(login)) {
+            showMessage("Введите корректный Email")
+        } else if (!registrationValidator.isValidPassword(password)) {
+            showMessage("Пароль должен состоять из 6 символов, иметь одну букву и одну цифру")
         }
     }
 
     private fun initObservers() {
-        signUpViewModel.signUpResult.observe(viewLifecycleOwner) {
-            when (it) {
-                is SignUpSuccess -> {
-                    findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
-                    signUpViewModel.onSaveTokenClick(it.idToken)
-                }
-                is SignUpError -> {
-                    when (it.reason) {
-                        "EMAIL_EXISTS" -> showMessage("Пользователь с таким Email уже существует")
-                        "OPERATION_NOT_ALLOWED" -> showMessage("Операция недоступна")
-                        "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток, попробуйте позже")
-                        else -> showMessage("Ошибка регистрации")
+        signUpViewModel.signUpResult.observe(viewLifecycleOwner) { result ->
+            result.fold(onSuccess = {
+                when (it) {
+                    is SignUpSuccess -> {
+                        findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
+                        signUpViewModel.onSaveTokenClick(it.idToken)
+                    }
+                    is SignUpError -> {
+                        when (it.reason) {
+                            "EMAIL_EXISTS" -> showMessage("Пользователь с таким Email уже существует")
+                            "OPERATION_NOT_ALLOWED" -> showMessage("Операция недоступна")
+                            "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток, попробуйте позже")
+                            else -> showMessage("Ошибка регистрации")
+                        }
                     }
                 }
-            }
+            }, onFailure = {
+                showMessage("Проверьте подключение к интернету")
+            })
         }
     }
 

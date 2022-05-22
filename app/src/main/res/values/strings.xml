@@ -14,6 +14,7 @@
     <string name="check_password">Подтвердите пароль</string>
     <string name="skip">Пропустить</string>
     <string name="sign_out">выйти</string>
+    <string name="sample_text">Sample Text</string>
     <string name="profile_title">Профиль</string>
     <string name="collections_title">Коллекции</string>
     <string name="map_fragment_label">Карта</string>
