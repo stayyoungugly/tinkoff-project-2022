@@ -51,8 +51,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     private lateinit var searchSession: Session
     private val binding by viewBinding(FragmentMapBinding::bind)
 
-    private val bottomSheetBehavior by lazy {
-        BottomSheetBehavior.from(binding.bottomLayout.root).apply {
+    private val bottomSheetBehavior
+        get() = BottomSheetBehavior.from(binding.bottomLayout.root).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
             addBottomSheetCallback(object :
                 BottomSheetBehavior.BottomSheetCallback() {
@@ -64,7 +64,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
                 }
             })
         }
-    }
 
     private val glideOptions by lazy {
         RequestOptions()
@@ -72,19 +71,13 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             .diskCacheStrategy(DiskCacheStrategy.ALL)
     }
 
-    private val userLocationLayer: UserLocationLayer by lazy {
-        mapKit.createUserLocationLayer(mapView.mapWindow).apply {
-            isVisible = true
-            isHeadingEnabled = true
-        }
-    }
+    private lateinit var userLocationLayer: UserLocationLayer
 
-    private val mapView: MapView by lazy {
-        binding.mapCity
-    }
+    private val mapView: MapView
+        get() = binding.mapCity
 
-    private val mapCity: Map by lazy {
-        mapView.map.apply {
+    private val mapCity: Map
+        get() = mapView.map.apply {
             mapType = MapType.VECTOR_MAP
             setMapStyle(StyleType.V_MAP2.toString())
             isZoomGesturesEnabled = true
@@ -92,7 +85,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             isFastTapEnabled = true
             isIndoorEnabled = true
         }
-    }
 
     private val glide: RequestManager by lazy {
         Glide.with(this)
@@ -160,6 +152,13 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         (this.findParent<AuthorizedFragment>() as? Callbacks)?.navigateToSignIn()
     }
 
+    private fun createUserLocationLayer() {
+        userLocationLayer = mapKit.createUserLocationLayer(mapView.mapWindow).apply {
+            isVisible = true
+            isHeadingEnabled = true
+        }
+    }
+
     private fun checkPermission() {
         if (mapViewModel.isPermissionsAllowed()) {
             userLocationConfig()
@@ -193,6 +192,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
 
     private fun userLocationConfig() {
         mapCity.addCameraListener(this)
+        createUserLocationLayer()
         cameraUserPosition()
         permissionLocation = true
         userLocationLayer.setObjectListener(this)
@@ -228,7 +228,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             )
         }
     }
-
 
     private fun userInterface() {
         val mapLogoAlignment = Alignment(HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM)
