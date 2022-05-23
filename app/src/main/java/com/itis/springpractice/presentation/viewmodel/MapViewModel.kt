@@ -3,6 +3,8 @@ package com.itis.springpractice.presentation.viewmodel
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.MyApplication
@@ -34,5 +36,19 @@ class MapViewModel(
             }
         }
         return flag
+    }
+
+    private var firstLaunch = true
+
+    private var _anim: MutableLiveData<Boolean> = MutableLiveData()
+    val anim: LiveData<Boolean> = _anim
+
+    fun isNeededAnimation() {
+        viewModelScope.launch {
+            _anim.value = firstLaunch
+            if (firstLaunch) {
+                firstLaunch = false
+            }
+        }
     }
 }

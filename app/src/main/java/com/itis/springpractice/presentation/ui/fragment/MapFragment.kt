@@ -143,8 +143,18 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         binding.btnSignOut.setOnClickListener {
             onSignOutClick()
         }
+        mapViewModel.isNeededAnimation()
+        observe()
         checkPermission()
         userInterface()
+    }
+
+    private fun observe(): Boolean {
+        var observed = true
+        mapViewModel.anim.observe(viewLifecycleOwner) {
+            observed = it
+        }
+        return observed
     }
 
     private fun onSignOutClick() {
@@ -205,27 +215,38 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             tvName.text = params.name
             tvDescription.text = params.address.formattedAddress
             val url = params.advertisement?.images?.get(0)?.url
-//            glide.load(url)
-//                .apply(glideOptions)
-//                .into(ivPicture)
-//            ну я потом этот код буду использовать, ладно уж
+//          glide.load(url)
+//               .apply(glideOptions)
+//               .into(ivPicture)
+//           ну я потом этот код буду использовать, ладно уж
         }
     }
 
     private fun modifyMap(location: Point?) {
         if (location != null) {
-            mapCity.move(
-                CameraPosition(
-                    Point(location.latitude, location.longitude),
-                    zoomValue,
-                    zeroFloatValue,
-                    zeroFloatValue
-                ),
-                Animation(
-                    Animation.Type.SMOOTH, durationValue
-                ),
-                null
-            )
+            if (observe()) {
+                mapCity.move(
+                    CameraPosition(
+                        Point(location.latitude, location.longitude),
+                        zoomValue,
+                        zeroFloatValue,
+                        zeroFloatValue
+                    ),
+                    Animation(
+                        Animation.Type.SMOOTH, durationValue
+                    ),
+                    null
+                )
+            } else {
+                mapCity.move(
+                    CameraPosition(
+                        Point(location.latitude, location.longitude),
+                        zoomValue,
+                        zeroFloatValue,
+                        zeroFloatValue
+                    )
+                )
+            }
         }
     }
 
