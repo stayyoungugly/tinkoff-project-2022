@@ -143,18 +143,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         binding.btnSignOut.setOnClickListener {
             onSignOutClick()
         }
-        mapViewModel.isNeededAnimation()
-        observe()
         checkPermission()
         userInterface()
-    }
-
-    private fun observe(): Boolean {
-        var observed = true
-        mapViewModel.anim.observe(viewLifecycleOwner) {
-            observed = it
-        }
-        return observed
     }
 
     private fun onSignOutClick() {
@@ -203,7 +193,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     private fun userLocationConfig() {
         mapCity.addCameraListener(this)
         createUserLocationLayer()
-        cameraUserPosition()
+        cameraUserPosition(false)
         permissionLocation = true
         userLocationLayer.setObjectListener(this)
     }
@@ -222,16 +212,17 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         }
     }
 
-    private fun modifyMap(location: Point?) {
+    private fun modifyMap(location: Point?, isAnimated: Boolean) {
         if (location != null) {
-            if (observe()) {
+            val cameraPosition = CameraPosition(
+                Point(location.latitude, location.longitude),
+                zoomValue,
+                zeroFloatValue,
+                zeroFloatValue
+            )
+            if (isAnimated) {
                 mapCity.move(
-                    CameraPosition(
-                        Point(location.latitude, location.longitude),
-                        zoomValue,
-                        zeroFloatValue,
-                        zeroFloatValue
-                    ),
+                    cameraPosition,
                     Animation(
                         Animation.Type.SMOOTH, durationValue
                     ),
@@ -239,12 +230,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
                 )
             } else {
                 mapCity.move(
-                    CameraPosition(
-                        Point(location.latitude, location.longitude),
-                        zoomValue,
-                        zeroFloatValue,
-                        zeroFloatValue
-                    )
+                    cameraPosition
                 )
             }
         }
@@ -255,7 +241,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         mapCity.logo.setAlignment(mapLogoAlignment)
         binding.userLocationFab.setOnClickListener {
             if (permissionLocation) {
-                cameraUserPosition()
+                cameraUserPosition(true)
                 followUserLocation = true
             } else {
                 checkPermission()
@@ -263,12 +249,12 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         }
     }
 
-    private fun cameraUserPosition() {
+    private fun cameraUserPosition(isAnimated: Boolean) {
         if (userLocationLayer.cameraPosition() != null) {
             routeStartLocation = userLocationLayer.cameraPosition()?.target
-            modifyMap(routeStartLocation)
+            modifyMap(routeStartLocation, isAnimated)
         } else {
-            modifyMap(defaultLocation)
+            modifyMap(defaultLocation, isAnimated)
         }
     }
 
