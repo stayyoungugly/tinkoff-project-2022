@@ -26,11 +26,11 @@ import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
 
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private val binding by viewBinding(FragmentSignUpBinding::bind)
-    private lateinit var login: String
-    private lateinit var password: String
+    private lateinit var nickname: String
     private lateinit var firstName: String
     private lateinit var lastName: String
-    private lateinit var nickname: String
+    private lateinit var password: String
+    private lateinit var login: String
 
     private val signUpViewModel by viewModels<SignUpViewModel> {
         AuthFactory(
@@ -58,37 +58,40 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     }
 
     private fun register() {
-        login = binding.authFields.etLogin.text.toString()
-        password = binding.authFields.etPassword.text.toString()
-        val checkPassword = binding.authFields.etPasswordCheck.text.toString()
-        firstName = binding.authFields.etFirstName.text.toString()
-        lastName = binding.authFields.etLastName.text.toString()
-        nickname = binding.authFields.etNickname.text.toString()
-        if (registrationValidator.isValidEmail(login) &&
-            registrationValidator.isValidPassword(password)
-        ) {
-            if (password == checkPassword) {
-                //signUpViewModel.onRegisterClick(login, password)
-                signUpViewModel.isNicknameAvailable(nickname)
-            } else showMessage("Пароли не совпадают")
-        } else if (!registrationValidator.isValidEmail(login)) {
-            showMessage("Введите корректный Email")
-        } else if (!registrationValidator.isValidPassword(password)) {
-            showMessage("Пароль должен состоять из 6 символов, иметь одну букву и одну цифру")
-        } else if (!registrationValidator.isValidName(firstName)) {
-            showMessage("Имя должно содержать от 2 до 15 символов и не иметь цифр")
-        } else if (!registrationValidator.isValidName(lastName)) {
-            showMessage("Фамилия должна содержать от 2 до 15 символов и не иметь цифр")
-        } else if (!registrationValidator.isValidNickname(nickname)) {
-            showMessage("Псевдоним должен содержать от 2 до 15 символов")
+        with(binding) {
+            login = authFields.etLogin.text.toString()
+            password = authFields.etPassword.text.toString()
+            firstName = authFields.etFirstName.text.toString()
+            lastName = authFields.etLastName.text.toString()
+            nickname = authFields.etNickname.text.toString()
+            val checkPassword = authFields.etPasswordCheck.text.toString()
+
+            if (registrationValidator.isValidEmail(login) &&
+                registrationValidator.isValidPassword(password)
+            ) {
+                if (password == checkPassword) {
+                    signUpViewModel.isNicknameAvailable(nickname)
+                } else showMessage("Пароли не совпадают")
+            } else if (!registrationValidator.isValidEmail(login)) {
+                showMessage("Введите корректный Email")
+            } else if (!registrationValidator.isValidPassword(password)) {
+                showMessage("Пароль должен состоять из 6 символов, иметь одну букву и одну цифру")
+            } else if (!registrationValidator.isValidName(firstName)) {
+                showMessage("Имя должно содержать от 2 до 15 символов и не иметь цифр")
+            } else if (!registrationValidator.isValidName(lastName)) {
+                showMessage("Фамилия должна содержать от 2 до 15 символов и не иметь цифр")
+            } else if (!registrationValidator.isValidNickname(nickname)) {
+                showMessage("Псевдоним должен содержать от 2 до 15 символов")
+            }
         }
     }
 
     private fun initObservers() {
-        signUpViewModel.nicknameResult.observe(viewLifecycleOwner) {result ->
-            if (result) {
+
+        signUpViewModel.nicknameExist.observe(viewLifecycleOwner) {
+            if (it) {
                 signUpViewModel.onRegisterClick(login, password)
-            }
+            } else showMessage("Никнейм уже существует")
         }
 
         signUpViewModel.signUpResult.observe(viewLifecycleOwner) { result ->

@@ -1,6 +1,6 @@
 package com.itis.springpractice.domain.usecase.user
 
-import com.itis.springpractice.domain.entity.User
+import com.itis.springpractice.domain.entity.UserEntity
 import com.itis.springpractice.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +11,7 @@ class AddUserUseCase(
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) {
     suspend operator fun invoke(
-        user: User
+        user: UserEntity
     ) {
         return withContext(dispatcher) {
             userRepository.addUser(user)

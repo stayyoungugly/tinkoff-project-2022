@@ -1,10 +1,11 @@
 package com.itis.springpractice.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.SignUpResult
-import com.itis.springpractice.domain.entity.User
+import com.itis.springpractice.domain.entity.UserEntity
 import com.itis.springpractice.domain.usecase.auth.RegisterUseCase
 import com.itis.springpractice.domain.usecase.token.SaveTokenUseCase
 import com.itis.springpractice.domain.usecase.user.AddUserUseCase
@@ -18,18 +19,18 @@ class SignUpViewModel(
     private val getUserByNicknameUseCase: GetUserByNicknameUseCase
 ) : ViewModel() {
 
-    private var _nicknameResult: SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val nicknameResult: LiveData<Boolean> = _nicknameResult
+    private var _nicknameExist: MutableLiveData<Boolean> = MutableLiveData()
+    val nicknameExist: LiveData<Boolean> = _nicknameExist
 
-    fun isNicknameAvailable(nickname: String): Boolean {
-        var check = true
+    fun isNicknameAvailable(nickname: String) {
         viewModelScope.launch {
-            val user: User? = getUserByNicknameUseCase(nickname)
-            user?.let {
-                check = false
+            try {
+                val user: UserEntity? = getUserByNicknameUseCase(nickname)
+                _nicknameExist.value = user == null
+            } catch (ex: Exception) {
+                _nicknameExist.value = false
             }
         }
-        return check
     }
 
     private var _signUpResult: SingleLiveEvent<Result<SignUpResult>> = SingleLiveEvent()
@@ -53,7 +54,7 @@ class SignUpViewModel(
 
     fun addNewUser(firstName: String, lastName: String, nickname: String) {
         viewModelScope.launch {
-            addUserUseCase(User(firstName, lastName, nickname))
+            addUserUseCase(UserEntity(firstName, lastName, nickname))
         }
     }
 }

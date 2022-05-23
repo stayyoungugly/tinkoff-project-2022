@@ -1,29 +1,31 @@
-package com.itis.springpractice.data.api.mapper
+package com.itis.springpractice.data.mapper
 
 import com.google.gson.Gson
 import com.itis.springpractice.data.response.ErrorResponse
-import com.itis.springpractice.data.response.SignInResponse
-import com.itis.springpractice.domain.entity.*
+import com.itis.springpractice.data.response.SignUpResponse
+import com.itis.springpractice.domain.entity.SignUpError
+import com.itis.springpractice.domain.entity.SignUpResult
+import com.itis.springpractice.domain.entity.SignUpSuccess
 import retrofit2.Response
 
-class SignInMapper {
-    fun mapToSignIn(response: Response<SignInResponse>): SignInResult {
+class SignUpMapper {
+    fun mapToSignUp(response: Response<SignUpResponse>): SignUpResult {
         return if (response.isSuccessful) {
             val body = requireNotNull(response.body())
-             SignInSuccess(
+            SignUpSuccess(
                 email = body.email,
                 idToken = body.idToken,
                 localId = body.localId,
-                displayName = body.displayName,
                 refreshToken = body.refreshToken,
-                expiresIn = body.expiresIn,
-                registered = body.registered
+                expiresIn = body.expiresIn
             )
         } else {
             val body = requireNotNull(response.errorBody())
             val errorResponse: ErrorResponse =
                 Gson().fromJson(body.string(), ErrorResponse::class.java)
-            return SignInError(errorResponse.error.message)
+            return SignUpError(errorResponse.error.message)
         }
     }
 }
+
+
