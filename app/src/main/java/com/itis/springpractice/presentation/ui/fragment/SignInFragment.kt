@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentSignInBinding
 import com.itis.springpractice.di.UserAuthContainer
+import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.SignInError
 import com.itis.springpractice.domain.entity.SignInSuccess
@@ -28,7 +29,8 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     private val signInViewModel by viewModels<SignInViewModel> {
         AuthFactory(
             UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
+            UserTokenContainer(sharedPreferences),
+            UserContainer
         )
     }
 
@@ -105,6 +107,9 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     private fun initViewParams() {
         with(binding.authFields) {
             tiPasswordCheck.visibility = View.GONE
+            tiFirstName.visibility = View.GONE
+            tiLastName.visibility = View.GONE
+            tiNickname.visibility = View.GONE
             btnNext.text = getString(R.string.log_in)
             tvElse.text = getString(R.string.to_sign_up)
         }

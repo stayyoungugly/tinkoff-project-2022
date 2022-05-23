@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentVerifyEmailBinding
 import com.itis.springpractice.di.UserAuthContainer
+import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.UserInfoError
 import com.itis.springpractice.domain.entity.UserInfoSuccess
@@ -24,7 +25,8 @@ class VerifyEmailFragment : Fragment(R.layout.fragment_verify_email) {
     private val verifyEmailViewModel by viewModels<VerifyEmailViewModel> {
         AuthFactory(
             UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
+            UserTokenContainer(sharedPreferences),
+            UserContainer
         )
     }
 

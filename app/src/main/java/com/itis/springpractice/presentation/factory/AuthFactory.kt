@@ -3,12 +3,14 @@ package com.itis.springpractice.presentation.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.itis.springpractice.di.UserAuthContainer
+import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.viewmodel.*
 
 class AuthFactory(
     private val authDi: UserAuthContainer,
-    private val tokenDi: UserTokenContainer
+    private val tokenDi: UserTokenContainer,
+    private val userDi: UserContainer
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when {
@@ -21,6 +23,8 @@ class AuthFactory(
                 SignUpViewModel(
                     authDi.registerUseCase,
                     tokenDi.saveTokenUseCase,
+                    userDi.addUserUseCase,
+                    userDi.getUserByNicknameUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             modelClass.isAssignableFrom(VerifyEmailViewModel::class.java) ->
                 VerifyEmailViewModel(

@@ -18,4 +18,7 @@
     <string name="profile_title">Профиль</string>
     <string name="collections_title">Коллекции</string>
     <string name="map_fragment_label">Карта</string>
+    <string name="firstName">Имя</string>
+    <string name="lastName">Фамилия</string>
+    <string name="nickname">Псевдоним</string>
 </resources>

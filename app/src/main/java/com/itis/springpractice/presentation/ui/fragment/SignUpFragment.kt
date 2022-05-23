@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentSignUpBinding
 import com.itis.springpractice.di.UserAuthContainer
+import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.SignUpError
 import com.itis.springpractice.domain.entity.SignUpSuccess
@@ -25,11 +26,17 @@ import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
 
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private val binding by viewBinding(FragmentSignUpBinding::bind)
+    private lateinit var login: String
+    private lateinit var password: String
+    private lateinit var firstName: String
+    private lateinit var lastName: String
+    private lateinit var nickname: String
 
     private val signUpViewModel by viewModels<SignUpViewModel> {
         AuthFactory(
             UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
+            UserTokenContainer(sharedPreferences),
+            UserContainer
         )
     }
 
@@ -51,29 +58,46 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     }
 
     private fun register() {
-        val login = binding.authFields.etLogin.text.toString()
-        val password = binding.authFields.etPassword.text.toString()
+        login = binding.authFields.etLogin.text.toString()
+        password = binding.authFields.etPassword.text.toString()
         val checkPassword = binding.authFields.etPasswordCheck.text.toString()
+        firstName = binding.authFields.etFirstName.text.toString()
+        lastName = binding.authFields.etLastName.text.toString()
+        nickname = binding.authFields.etNickname.text.toString()
         if (registrationValidator.isValidEmail(login) &&
             registrationValidator.isValidPassword(password)
         ) {
             if (password == checkPassword) {
-                signUpViewModel.onRegisterClick(login, password)
+                //signUpViewModel.onRegisterClick(login, password)
+                signUpViewModel.isNicknameAvailable(nickname)
             } else showMessage("Пароли не совпадают")
         } else if (!registrationValidator.isValidEmail(login)) {
             showMessage("Введите корректный Email")
         } else if (!registrationValidator.isValidPassword(password)) {
             showMessage("Пароль должен состоять из 6 символов, иметь одну букву и одну цифру")
+        } else if (!registrationValidator.isValidName(firstName)) {
+            showMessage("Имя должно содержать от 2 до 15 символов и не иметь цифр")
+        } else if (!registrationValidator.isValidName(lastName)) {
+            showMessage("Фамилия должна содержать от 2 до 15 символов и не иметь цифр")
+        } else if (!registrationValidator.isValidNickname(nickname)) {
+            showMessage("Псевдоним должен содержать от 2 до 15 символов")
         }
     }
 
     private fun initObservers() {
+        signUpViewModel.nicknameResult.observe(viewLifecycleOwner) {result ->
+            if (result) {
+                signUpViewModel.onRegisterClick(login, password)
+            }
+        }
+
         signUpViewModel.signUpResult.observe(viewLifecycleOwner) { result ->
             result.fold(onSuccess = {
                 when (it) {
                     is SignUpSuccess -> {
                         findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
                         signUpViewModel.onSaveTokenClick(it.idToken)
+                        signUpViewModel.addNewUser(firstName, lastName, nickname)
                     }
                     is SignUpError -> {
                         when (it.reason) {

@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentMapBinding
 import com.itis.springpractice.di.UserAuthContainer
+import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.fragment.extension.findParent
@@ -129,7 +130,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     private val mapViewModel by viewModels<MapViewModel> {
         AuthFactory(
             UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
+            UserTokenContainer(sharedPreferences),
+            UserContainer
         )
     }
 
