@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 class PreferenceManager (
     private var sharedPreferences: SharedPreferences
         ) {
-
     fun storeToken(idToken: String) {
         sharedPreferences.edit().putString(TOKEN_PREF, idToken).apply()
     }

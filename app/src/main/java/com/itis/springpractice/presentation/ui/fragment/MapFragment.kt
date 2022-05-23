@@ -42,6 +42,7 @@ import com.yandex.mapkit.user_location.UserLocationLayer
 import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
 import com.yandex.runtime.Error
+import com.yandex.runtime.i18n.I18nManagerFactory
 import com.yandex.runtime.image.ImageProvider
 
 
@@ -119,6 +120,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         super.onStart()
         mapView.onStart()
         MapKitFactory.getInstance().onStart()
+        I18nManagerFactory.setLocale("lang=ru-RU")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -204,11 +206,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             tvName.text = params.name
             tvDescription.text = params.address.formattedAddress
-            val url = params.advertisement?.images?.get(0)?.url
-//          glide.load(url)
-//               .apply(glideOptions)
-//               .into(ivPicture)
-//           ну я потом этот код буду использовать, ладно уж
         }
     }
 
@@ -319,6 +316,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         val point = event.geoObject.geometry[0].point
         val options = SearchOptions()
         options.searchTypes = searchType
+        options.snippets = Snippet.PHOTOS.value
         if (point != null) {
             startSession(point, options)
         } else showMessage("Информация о месте не найдена")
