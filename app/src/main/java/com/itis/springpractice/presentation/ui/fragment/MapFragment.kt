@@ -193,7 +193,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     private fun userLocationConfig() {
         mapCity.addCameraListener(this)
         createUserLocationLayer()
-        cameraUserPosition()
+        cameraUserPosition(false)
         permissionLocation = true
         userLocationLayer.setObjectListener(this)
     }
@@ -205,27 +205,34 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             tvName.text = params.name
             tvDescription.text = params.address.formattedAddress
             val url = params.advertisement?.images?.get(0)?.url
-//            glide.load(url)
-//                .apply(glideOptions)
-//                .into(ivPicture)
-//            ну я потом этот код буду использовать, ладно уж
+//          glide.load(url)
+//               .apply(glideOptions)
+//               .into(ivPicture)
+//           ну я потом этот код буду использовать, ладно уж
         }
     }
 
-    private fun modifyMap(location: Point?) {
+    private fun modifyMap(location: Point?, isAnimated: Boolean) {
         if (location != null) {
-            mapCity.move(
-                CameraPosition(
-                    Point(location.latitude, location.longitude),
-                    zoomValue,
-                    zeroFloatValue,
-                    zeroFloatValue
-                ),
-                Animation(
-                    Animation.Type.SMOOTH, durationValue
-                ),
-                null
+            val cameraPosition = CameraPosition(
+                Point(location.latitude, location.longitude),
+                zoomValue,
+                zeroFloatValue,
+                zeroFloatValue
             )
+            if (isAnimated) {
+                mapCity.move(
+                    cameraPosition,
+                    Animation(
+                        Animation.Type.SMOOTH, durationValue
+                    ),
+                    null
+                )
+            } else {
+                mapCity.move(
+                    cameraPosition
+                )
+            }
         }
     }
 
@@ -234,7 +241,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         mapCity.logo.setAlignment(mapLogoAlignment)
         binding.userLocationFab.setOnClickListener {
             if (permissionLocation) {
-                cameraUserPosition()
+                cameraUserPosition(true)
                 followUserLocation = true
             } else {
                 checkPermission()
@@ -242,12 +249,12 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         }
     }
 
-    private fun cameraUserPosition() {
+    private fun cameraUserPosition(isAnimated: Boolean) {
         if (userLocationLayer.cameraPosition() != null) {
             routeStartLocation = userLocationLayer.cameraPosition()?.target
-            modifyMap(routeStartLocation)
+            modifyMap(routeStartLocation, isAnimated)
         } else {
-            modifyMap(defaultLocation)
+            modifyMap(defaultLocation, isAnimated)
         }
     }
 
