@@ -19,7 +19,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         AuthFactory(
             UserAuthContainer,
             UserTokenContainer(sharedPreferences),
-            UserContainer
+            UserContainer(sharedPreferences)
         )
     }
 

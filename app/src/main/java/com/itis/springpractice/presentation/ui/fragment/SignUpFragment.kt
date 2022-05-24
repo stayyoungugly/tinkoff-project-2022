@@ -36,7 +36,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         AuthFactory(
             UserAuthContainer,
             UserTokenContainer(sharedPreferences),
-            UserContainer
+            com.itis.springpractice.di.UserContainer(sharedPreferences)
         )
     }
 
@@ -67,21 +67,21 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
             val checkPassword = authFields.etPasswordCheck.text.toString()
 
             if (registrationValidator.isValidEmail(login) &&
-                registrationValidator.isValidPassword(password)
+                registrationValidator.isValidPassword(password) &&
+                registrationValidator.isValidName(firstName) &&
+                registrationValidator.isValidName(lastName) &&
+                registrationValidator.isValidNickname(nickname)
             ) {
                 if (password == checkPassword) {
                     signUpViewModel.isNicknameAvailable(nickname)
-                } else showMessage("Пароли не совпадают")
-            } else if (!registrationValidator.isValidEmail(login)) {
-                showMessage("Введите корректный Email")
-            } else if (!registrationValidator.isValidPassword(password)) {
-                showMessage("Пароль должен состоять из 6 символов, иметь одну букву и одну цифру")
-            } else if (!registrationValidator.isValidName(firstName)) {
-                showMessage("Имя должно содержать от 2 до 15 символов и не иметь цифр")
-            } else if (!registrationValidator.isValidName(lastName)) {
-                showMessage("Фамилия должна содержать от 2 до 15 символов и не иметь цифр")
-            } else if (!registrationValidator.isValidNickname(nickname)) {
-                showMessage("Псевдоним должен содержать от 2 до 15 символов")
+                } else showMessage(resources.getString(R.string.check_password_error))
+            } else when {
+                !registrationValidator.isValidEmail(login) -> showMessage(resources.getString(R.string.email_error))
+                !registrationValidator.isValidPassword(password) -> showMessage(resources.getString(R.string.password_error))
+                !registrationValidator.isValidName(firstName) -> showMessage(resources.getString(R.string.first_name_error))
+                !registrationValidator.isValidName(lastName) -> showMessage(resources.getString(R.string.last_name_error))
+                !registrationValidator.isValidNickname(nickname) -> showMessage(resources.getString(R.string.nickname_error))
+                else -> showMessage(resources.getString(R.string.sign_up_error))
             }
         }
     }
@@ -91,7 +91,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         signUpViewModel.nicknameExist.observe(viewLifecycleOwner) {
             if (it) {
                 signUpViewModel.onRegisterClick(login, password)
-            } else showMessage("Никнейм уже существует")
+            } else showMessage(resources.getString(R.string.nickname_exists))
         }
 
         signUpViewModel.signUpResult.observe(viewLifecycleOwner) { result ->
@@ -104,15 +104,15 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
                     }
                     is SignUpError -> {
                         when (it.reason) {
-                            "EMAIL_EXISTS" -> showMessage("Пользователь с таким Email уже существует")
-                            "OPERATION_NOT_ALLOWED" -> showMessage("Операция недоступна")
-                            "TOO_MANY_ATTEMPTS_TRY_LATER" -> showMessage("Слишком много попыток, попробуйте позже")
-                            else -> showMessage("Ошибка регистрации")
+                            EMAIL_EXISTS -> showMessage(resources.getString(R.string.email_exists))
+                            OPERATION_NOT_ALLOWED -> showMessage(resources.getString(R.string.operation_not_allowed))
+                            TOO_MANY_ATTEMPTS_TRY_LATER -> showMessage(resources.getString(R.string.too_many_attempts))
+                            else -> showMessage(resources.getString(R.string.sign_up_error))
                         }
                     }
                 }
             }, onFailure = {
-                showMessage("Проверьте подключение к интернету")
+                showMessage(resources.getString(R.string.internet_error))
             })
         }
     }
@@ -134,5 +134,11 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         }
         binding.authFields.tvElse.movementMethod = LinkMovementMethod()
         binding.authFields.tvElse.text = clickString
+    }
+
+    companion object {
+        private const val EMAIL_EXISTS = "EMAIL_EXISTS"
+        private const val OPERATION_NOT_ALLOWED = "OPERATION_NOT_ALLOWED"
+        private const val TOO_MANY_ATTEMPTS_TRY_LATER = "TOO_MANY_ATTEMPTS_TRY_LATER"
     }
 }

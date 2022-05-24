@@ -23,7 +23,6 @@ class Firestore {
         await(dockRef.get()).apply {
             user = this.toObject<User>()
         }
-        println(user?.lastName)
         return user
     }
 
@@ -36,14 +35,17 @@ class Firestore {
         friendsRef.add(friendship)
     }
 
-    fun getFriends(nickname_user: String): List<User> {
+    fun getFriends(nickname_user: String): List<User?> {
         val query = friendsRef.whereEqualTo("nickname_user", nickname_user)
-        var list = ArrayList<String>()
-        query.get().addOnSuccessListener { documents ->
-            for (item in documents) {
-                val friend: String = item.data.
-                list.add()
+        var users = ArrayList<User?>()
+        await(query.get()).apply {
+            val list = this.map { snapshot ->
+                snapshot["nickname_friend"].toString()
             }
+            users = list.map { nickname ->
+                getUserByNickname(nickname)
+            } as ArrayList<User?>
         }
+        return users
     }
 }
