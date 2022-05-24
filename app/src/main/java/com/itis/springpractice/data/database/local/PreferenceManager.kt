@@ -26,9 +26,18 @@ class PreferenceManager (
         sharedPreferences.edit().putString(TOKEN_PREF, DEFAULT_VALUE).apply()
     }
 
+    fun saveNickname(nickname: String) {
+        sharedPreferences.edit().putString(USER_NICKNAME, nickname).apply()
+    }
+
+    fun getNickname(): String? {
+        return sharedPreferences.getString(USER_NICKNAME, DEFAULT_VALUE)
+    }
+
     companion object {
         private const val REFRESH_TOKEN_PREF = "refresh_token"
         private const val TOKEN_PREF = "token"
         private val DEFAULT_VALUE = null
+        private const val USER_NICKNAME = "nickname"
     }
 }

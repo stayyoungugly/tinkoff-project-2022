@@ -21,4 +21,24 @@ class Firestore {
         }
         return user
     }
+
+    private val friendsRef = db.collection("friends")
+    fun addFriend(nickname_user: String, nickname_friend: String) {
+        val friendship = hashMapOf(
+            "nickname_user" to nickname_user,
+            "nickname_friend" to nickname_friend
+        )
+        friendsRef.add(friendship)
+    }
+
+    fun getFriends(nickname_user: String): List<User> {
+        val query = friendsRef.whereEqualTo("nickname_user", nickname_user)
+        var list = ArrayList<String>()
+        query.get().addOnSuccessListener { documents ->
+            for (item in documents) {
+                val friend: String = item.data.
+                list.add()
+            }
+        }
+    }
 }
