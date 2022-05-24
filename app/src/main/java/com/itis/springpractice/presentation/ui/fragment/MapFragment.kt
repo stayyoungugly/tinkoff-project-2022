@@ -131,7 +131,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         AuthFactory(
             UserAuthContainer,
             UserTokenContainer(sharedPreferences),
-            UserContainer
+            UserContainer(sharedPreferences)
         )
     }
 

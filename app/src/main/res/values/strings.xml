@@ -21,4 +21,16 @@
     <string name="firstName">Имя</string>
     <string name="lastName">Фамилия</string>
     <string name="nickname">Псевдоним</string>
+    <string name="email_error">Введите корректный Email</string>
+    <string name="password_error">Пароль должен состоять из 6 символов, иметь одну букву и одну цифру</string>
+    <string name="first_name_error">Имя должно содержать от 2 до 15 символов и не иметь цифр</string>
+    <string name="last_name_error">Фамилия должна содержать от 2 до 15 символов и не иметь цифр</string>
+    <string name="nickname_error">Псевдоним должен содержать от 2 до 15 символов</string>
+    <string name="check_password_error">Пароли не совпадают</string>
+    <string name="sign_up_error">Ошибка регистрации</string>
+    <string name="nickname_exists">Никнейм уже существует</string>
+    <string name="email_exists">Пользователь с таким Email уже существует</string>
+    <string name="operation_not_allowed">Операция недоступна</string>
+    <string name="too_many_attempts">Слишком много попыток, попробуйте позже</string>
+    <string name="internet_error">Проверьте подключение к интернету</string>
 </resources>

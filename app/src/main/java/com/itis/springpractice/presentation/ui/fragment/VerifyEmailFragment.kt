@@ -26,7 +26,7 @@ class VerifyEmailFragment : Fragment(R.layout.fragment_verify_email) {
         AuthFactory(
             UserAuthContainer,
             UserTokenContainer(sharedPreferences),
-            UserContainer
+            UserContainer(sharedPreferences)
         )
     }
 
