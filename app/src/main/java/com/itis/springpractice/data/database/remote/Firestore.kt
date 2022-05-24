@@ -23,7 +23,6 @@ class Firestore {
         await(dockRef.get()).apply {
             user = this.toObject<User>()
         }
-        println(user?.lastName)
         return user
     }
 
