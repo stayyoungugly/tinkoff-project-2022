@@ -1,15 +1,18 @@
 package com.itis.springpractice.data.impl
 
 import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
-import com.itis.springpractice.data.api.mapper.ErrorMapper
-import com.itis.springpractice.data.api.mapper.SignInMapper
-import com.itis.springpractice.data.api.mapper.SignUpMapper
-import com.itis.springpractice.data.api.mapper.UserInfoMapper
-import com.itis.springpractice.data.request.TokenIdRequest
+import com.itis.springpractice.data.mapper.ErrorMapper
+import com.itis.springpractice.data.mapper.SignInMapper
+import com.itis.springpractice.data.mapper.SignUpMapper
+import com.itis.springpractice.data.mapper.UserInfoMapper
 import com.itis.springpractice.data.request.SendVerificationRequest
 import com.itis.springpractice.data.request.SignInRequest
 import com.itis.springpractice.data.request.SignUpRequest
-import com.itis.springpractice.domain.entity.*
+import com.itis.springpractice.data.request.TokenIdRequest
+import com.itis.springpractice.domain.entity.ErrorEntity
+import com.itis.springpractice.domain.entity.SignInResult
+import com.itis.springpractice.domain.entity.SignUpResult
+import com.itis.springpractice.domain.entity.UserInfoResult
 import com.itis.springpractice.domain.repository.UserAuthRepository
 
 class UserAuthRepositoryImpl(

@@ -1,4 +1,4 @@
-package com.itis.springpractice.data.api.mapper
+package com.itis.springpractice.data.mapper
 
 import com.google.gson.Gson
 import com.itis.springpractice.data.response.ErrorResponse

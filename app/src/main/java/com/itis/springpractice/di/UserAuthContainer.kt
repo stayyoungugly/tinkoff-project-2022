@@ -2,10 +2,10 @@ package com.itis.springpractice.di
 
 import com.itis.springpractice.BuildConfig
 import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
-import com.itis.springpractice.data.api.mapper.ErrorMapper
-import com.itis.springpractice.data.api.mapper.SignInMapper
-import com.itis.springpractice.data.api.mapper.SignUpMapper
-import com.itis.springpractice.data.api.mapper.UserInfoMapper
+import com.itis.springpractice.data.mapper.ErrorMapper
+import com.itis.springpractice.data.mapper.SignInMapper
+import com.itis.springpractice.data.mapper.SignUpMapper
+import com.itis.springpractice.data.mapper.UserInfoMapper
 import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import com.itis.springpractice.domain.usecase.auth.*
