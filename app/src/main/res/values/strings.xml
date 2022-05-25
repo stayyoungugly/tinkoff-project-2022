@@ -33,4 +33,10 @@
     <string name="operation_not_allowed">Операция недоступна</string>
     <string name="too_many_attempts">Слишком много попыток, попробуйте позже</string>
     <string name="internet_error">Проверьте подключение к интернету</string>
+    <string name="place_info_not_found">Информация о месте не найдена</string>
+    <string name="review_was_added_success">Отзыв был успешно опубликован</string>
+    <string name="review_was_added_failure">Отзыв не был опубликован. Попробуйте снова</string>
+    <string name="empty_reviews">Отзывов пока нет</string>
+    <string name="failure_get_reviews">Ошибка! Отзывы не найдены</string>
+    <string name="search_will_be_available">Скоро будет доступен поиск мест</string>
 </resources>

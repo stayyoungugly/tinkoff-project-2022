@@ -1,4 +1,4 @@
-package com.itis.springpractice.data.response
+package com.itis.springpractice.data.request
 
 data class User(
     var firstName: String? = "",

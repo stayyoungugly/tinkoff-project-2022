@@ -77,17 +77,24 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
                 } else showMessage(resources.getString(R.string.check_password_error))
             } else when {
                 !registrationValidator.isValidEmail(login) -> showMessage(resources.getString(R.string.email_error))
-                !registrationValidator.isValidPassword(password) -> showMessage(resources.getString(R.string.password_error))
+                !registrationValidator.isValidPassword(password) -> showMessage(
+                    resources.getString(
+                        R.string.password_error
+                    )
+                )
                 !registrationValidator.isValidName(firstName) -> showMessage(resources.getString(R.string.first_name_error))
                 !registrationValidator.isValidName(lastName) -> showMessage(resources.getString(R.string.last_name_error))
-                !registrationValidator.isValidNickname(nickname) -> showMessage(resources.getString(R.string.nickname_error))
+                !registrationValidator.isValidNickname(nickname) -> showMessage(
+                    resources.getString(
+                        R.string.nickname_error
+                    )
+                )
                 else -> showMessage(resources.getString(R.string.sign_up_error))
             }
         }
     }
 
     private fun initObservers() {
-
         signUpViewModel.nicknameExist.observe(viewLifecycleOwner) {
             if (it) {
                 signUpViewModel.onRegisterClick(login, password)

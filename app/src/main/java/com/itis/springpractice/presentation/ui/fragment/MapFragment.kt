@@ -39,6 +39,7 @@ import com.yandex.mapkit.map.*
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.search.*
+import com.yandex.mapkit.uri.UriObjectMetadata
 import com.yandex.mapkit.user_location.UserLocationLayer
 import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
@@ -50,29 +51,14 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     Session.SearchListener,
     GeoObjectTapListener {
     private lateinit var searchSession: Session
+    private lateinit var userLocationLayer: UserLocationLayer
     private val binding by viewBinding(FragmentMapBinding::bind)
-
-    private val bottomSheetBehavior
-        get() = BottomSheetBehavior.from(binding.bottomLayout.root).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-            addBottomSheetCallback(object :
-                BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                        state = BottomSheetBehavior.STATE_HIDDEN
-                    }
-                }
-            })
-        }
 
     private val glideOptions by lazy {
         RequestOptions()
             .priority(Priority.HIGH)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
     }
-
-    private lateinit var userLocationLayer: UserLocationLayer
 
     private val mapView: MapView
         get() = binding.mapCity
@@ -106,6 +92,20 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
 
     private var permissionLocation = false
     private var followUserLocation = false
+
+    private val bottomSheetBehavior
+        get() = BottomSheetBehavior.from(binding.bottomLayout.root).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+            addBottomSheetCallback(object :
+                BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                        state = BottomSheetBehavior.STATE_HIDDEN
+                    }
+                }
+            })
+        }
 
     companion object {
         const val zoomValue = 19.0f
@@ -145,6 +145,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         binding.btnSignOut.setOnClickListener {
             onSignOutClick()
         }
+        initObservers()
         checkPermission()
         userInterface()
     }
@@ -187,7 +188,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
                 userLocationConfig()
             }
             else -> {
-                showMessage("Скоро будет доступен поиск мест")
+                showMessage(getString(R.string.search_will_be_available))
             }
         }
     }
@@ -200,7 +201,13 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         userLocationLayer.setObjectListener(this)
     }
 
-    private fun bottomModify(params: BusinessObjectMetadata) {
+    private fun bottomModify(params: BusinessObjectMetadata, uri: String?) {
+        // testing begin
+        if (uri != null) {
+            mapViewModel.addReviewOnPlace(uri, "SUPER", 5)
+            mapViewModel.getReviewsByPlace(uri)
+        }
+        // testing end
         val bottomBinding = binding.bottomLayout
         with(bottomBinding) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -323,7 +330,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         options.searchTypes = searchType
         if (point != null) {
             startSession(point, options)
-        } else showMessage("Информация о месте не найдена")
+        } else showMessage(getString(R.string.place_info_not_found))
     }
 
     private fun startSession(
@@ -334,11 +341,17 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     override fun onSearchResponse(response: Response) {
+        val uri = response.collection.children.firstOrNull()?.obj
+            ?.metadataContainer
+            ?.getItem(UriObjectMetadata::class.java)
+            ?.uris
+            ?.firstOrNull()
+            ?.value
         val params = response.collection.children.firstOrNull()?.obj
             ?.metadataContainer
             ?.getItem(BusinessObjectMetadata::class.java)
         if (params != null) {
-            bottomModify(params)
+            bottomModify(params, uri)
         }
     }
 
@@ -356,6 +369,29 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         selectionGeoObject(event)
         searchGeoObjectInfo(event)
         return true
+    }
+
+    private fun initObservers() {
+        mapViewModel.reviewAdded.observe(viewLifecycleOwner) {
+            if (it) {
+                showMessage(getString(R.string.review_was_added_success))
+            } else showMessage(getString(R.string.review_was_added_failure))
+        }
+
+        mapViewModel.reviewList.observe(viewLifecycleOwner) { result ->
+            result.fold(onSuccess = {
+                if (it.isEmpty()) {
+                    showMessage(getString(R.string.empty_reviews))
+                } else println(it.toString())
+            }, onFailure = {
+                showMessage(getString(R.string.failure_get_reviews))
+            })
+        }
+    }
+
+    private fun generateURI(uriCode: String): String {
+        val result = "ymapsbm1://org?oid="
+        return result.plus(uriCode)
     }
 }
 
