@@ -88,7 +88,7 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
     private fun initObservers() {
 
-        signUpViewModel.nicknameExist.observe(viewLifecycleOwner) {
+        signUpViewModel.nicknameAvailable.observe(viewLifecycleOwner) {
             if (it) {
                 signUpViewModel.onRegisterClick(login, password)
             } else showMessage(resources.getString(R.string.nickname_exists))

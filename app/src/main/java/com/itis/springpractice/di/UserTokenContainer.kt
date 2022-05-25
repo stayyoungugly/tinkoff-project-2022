@@ -3,9 +3,9 @@ package com.itis.springpractice.di
 import android.content.SharedPreferences
 import com.itis.springpractice.BuildConfig
 import com.itis.springpractice.data.api.firebase.FirebaseTokenApi
-import com.itis.springpractice.data.mapper.TokenMapper
 import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.data.impl.UserTokenRepositoryImpl
+import com.itis.springpractice.data.mapper.TokenMapper
 import com.itis.springpractice.domain.repository.UserTokenRepository
 import com.itis.springpractice.domain.usecase.token.*
 import kotlinx.coroutines.Dispatchers
@@ -82,31 +82,31 @@ class UserTokenContainer(
 
     val saveTokenUseCase: SaveTokenUseCase = SaveTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 
     val getTokenUseCase: GetTokenUseCase = GetTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 
     val getRefreshTokenUseCase: GetRefreshTokenUseCase = GetRefreshTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 
     val saveRefreshTokenUseCase: SaveRefreshTokenUseCase = SaveRefreshTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 
     val refreshTokenUseCase: RefreshTokenUseCase = RefreshTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 
     val deleteTokenUseCase: DeleteTokenUseCase = DeleteTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 }

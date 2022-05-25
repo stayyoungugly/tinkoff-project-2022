@@ -2,11 +2,11 @@ package com.itis.springpractice.di
 
 import com.itis.springpractice.BuildConfig
 import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
+import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
 import com.itis.springpractice.data.mapper.ErrorMapper
 import com.itis.springpractice.data.mapper.SignInMapper
 import com.itis.springpractice.data.mapper.SignUpMapper
 import com.itis.springpractice.data.mapper.UserInfoMapper
-import com.itis.springpractice.data.impl.UserAuthRepositoryImpl
 import com.itis.springpractice.domain.repository.UserAuthRepository
 import com.itis.springpractice.domain.usecase.auth.*
 import kotlinx.coroutines.Dispatchers
@@ -82,26 +82,26 @@ object UserAuthContainer {
     )
     val loginUseCase: LoginUseCase = LoginUseCase(
         userAuthRepository = userAuthRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 
     val registerUseCase: RegisterUseCase = RegisterUseCase(
         userAuthRepository = userAuthRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 
     val sendVerificationUseCase: SendVerificationUseCase = SendVerificationUseCase(
         userAuthRepository = userAuthRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 
     val getUserInfoUseCase: GetUserInfoUseCase = GetUserInfoUseCase(
         userAuthRepository = userAuthRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 
     val deleteUserUseCase: DeleteUserUseCase = DeleteUserUseCase(
         userAuthRepository = userAuthRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 }

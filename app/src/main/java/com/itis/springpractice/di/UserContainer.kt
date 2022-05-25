@@ -21,11 +21,11 @@ class UserContainer(
 
     val addUserUseCase: AddUserUseCase = AddUserUseCase(
         userRepository = userRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 
     val getUserByNicknameUseCase: GetUserByNicknameUseCase = GetUserByNicknameUseCase(
         userRepository = userRepository,
-        dispatcher = Dispatchers.Default
+        dispatcher = Dispatchers.Main
     )
 }

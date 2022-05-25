@@ -16,11 +16,11 @@ import com.itis.springpractice.domain.entity.UserInfoResult
 import com.itis.springpractice.domain.repository.UserAuthRepository
 
 class UserAuthRepositoryImpl(
-    private var api: FirebaseAuthApi,
-    private var registerMapper: SignUpMapper,
-    private var loginMapper: SignInMapper,
-    private var errorMapper: ErrorMapper,
-    private var userInfoMapper: UserInfoMapper
+    private val api: FirebaseAuthApi,
+    private val registerMapper: SignUpMapper,
+    private val loginMapper: SignInMapper,
+    private val errorMapper: ErrorMapper,
+    private val userInfoMapper: UserInfoMapper
 ) : UserAuthRepository {
     companion object {
         private const val requestField = "VERIFY_EMAIL"
