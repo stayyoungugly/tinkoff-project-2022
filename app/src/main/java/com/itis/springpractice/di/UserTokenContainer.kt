@@ -82,31 +82,31 @@ class UserTokenContainer(
 
     val saveTokenUseCase: SaveTokenUseCase = SaveTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 
     val getTokenUseCase: GetTokenUseCase = GetTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 
     val getRefreshTokenUseCase: GetRefreshTokenUseCase = GetRefreshTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 
     val saveRefreshTokenUseCase: SaveRefreshTokenUseCase = SaveRefreshTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 
     val refreshTokenUseCase: RefreshTokenUseCase = RefreshTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 
     val deleteTokenUseCase: DeleteTokenUseCase = DeleteTokenUseCase(
         userTokenRepository = userTokenRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 }

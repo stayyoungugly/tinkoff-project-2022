@@ -82,26 +82,26 @@ object UserAuthContainer {
     )
     val loginUseCase: LoginUseCase = LoginUseCase(
         userAuthRepository = userAuthRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 
     val registerUseCase: RegisterUseCase = RegisterUseCase(
         userAuthRepository = userAuthRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 
     val sendVerificationUseCase: SendVerificationUseCase = SendVerificationUseCase(
         userAuthRepository = userAuthRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 
     val getUserInfoUseCase: GetUserInfoUseCase = GetUserInfoUseCase(
         userAuthRepository = userAuthRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 
     val deleteUserUseCase: DeleteUserUseCase = DeleteUserUseCase(
         userAuthRepository = userAuthRepository,
-        dispatcher = Dispatchers.Main
+        dispatcher = Dispatchers.Default
     )
 }
