@@ -87,7 +87,6 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     }
 
     private fun initObservers() {
-
         signUpViewModel.nicknameAvailable.observe(viewLifecycleOwner) {
             if (it) {
                 signUpViewModel.onRegisterClick(login, password)

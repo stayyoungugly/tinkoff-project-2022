@@ -28,6 +28,7 @@ class SignUpViewModel(
                 val user: User? = getUserByNicknameUseCase(nickname)
                 _nicknameAvailable.value = user == null
             } catch (ex: Exception) {
+                println(ex.message)
                 _nicknameAvailable.value = false
             }
         }
