@@ -3,9 +3,9 @@ package com.itis.springpractice.di
 import android.content.SharedPreferences
 import com.itis.springpractice.BuildConfig
 import com.itis.springpractice.data.api.firebase.FirebaseTokenApi
-import com.itis.springpractice.data.mapper.TokenMapper
 import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.data.impl.UserTokenRepositoryImpl
+import com.itis.springpractice.data.mapper.TokenMapper
 import com.itis.springpractice.domain.repository.UserTokenRepository
 import com.itis.springpractice.domain.usecase.token.*
 import kotlinx.coroutines.Dispatchers

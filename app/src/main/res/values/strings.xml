@@ -40,4 +40,6 @@
     <string name="failure_get_reviews">Ошибка! Отзывы не найдены</string>
     <string name="search_will_be_available">Скоро будет доступен поиск мест</string>
     <string name="сheck_test">Проверьте</string>
+    <string name="try_again_error">Возникла ошибка! Повторите еще раз</string>
+    <string name="place_not_found_error">Ошибка! Место не найдено</string>
 </resources>

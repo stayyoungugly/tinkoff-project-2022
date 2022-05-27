@@ -4,8 +4,8 @@ import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.itis.springpractice.data.response.ReviewResponse
 import com.itis.springpractice.data.response.UserResponse
-import com.itis.springpractice.data.request.Review
 import timber.log.Timber
 
 class Firestore {
@@ -26,7 +26,7 @@ class Firestore {
         return await(dockRef.get()).toObject<UserResponse>()
     }
 
-    fun addReviewOnPlace(placeURI: String, placeReview: Review): Boolean {
+    fun addReviewOnPlace(placeURI: String, placeReview: ReviewResponse): Boolean {
         return try {
             placeReview.authorNickname?.let {
                 placesRef.document(placeURI).collection("reviews").document(
@@ -40,14 +40,11 @@ class Firestore {
         }
     }
 
-    fun getReviewsByPlace(placeURI: String): List<Review> {
+    fun getReviewsByPlace(placeURI: String): List<ReviewResponse> {
         val placeRef = placesRef.document(placeURI)
-        var reviews = ArrayList<Review>()
-        await(placeRef.collection("reviews").get()).apply {
-            reviews = this.map { review ->
-                review.toObject<Review>()
-            } as ArrayList<Review>
+        return await(placeRef.collection("reviews").get()).map { review ->
+                review.toObject<ReviewResponse>()
+            } as ArrayList<ReviewResponse>
         }
-        return reviews
     }
-}
+

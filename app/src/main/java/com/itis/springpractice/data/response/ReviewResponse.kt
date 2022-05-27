@@ -1,6 +1,6 @@
-package com.itis.springpractice.data.request
+package com.itis.springpractice.data.response
 
-data class Review(
+data class ReviewResponse(
     var authorNickname: String? = "",
     var textReview: String? = "",
     var rating: Int? = null

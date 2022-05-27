@@ -22,6 +22,7 @@ import com.itis.springpractice.databinding.FragmentMapBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
+import com.itis.springpractice.domain.entity.Place
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.fragment.extension.findParent
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
@@ -38,19 +39,15 @@ import com.yandex.mapkit.logo.VerticalAlignment
 import com.yandex.mapkit.map.*
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
-import com.yandex.mapkit.search.*
-import com.yandex.mapkit.uri.UriObjectMetadata
 import com.yandex.mapkit.user_location.UserLocationLayer
 import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
-import com.yandex.runtime.Error
 import com.yandex.runtime.image.ImageProvider
+import timber.log.Timber
 
 
 class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener, CameraListener,
-    Session.SearchListener,
     GeoObjectTapListener {
-    private lateinit var searchSession: Session
     private lateinit var userLocationLayer: UserLocationLayer
     private val binding by viewBinding(FragmentMapBinding::bind)
 
@@ -81,12 +78,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         MapKitFactory.getInstance()
     }
 
-    private val searchManager by lazy {
-        SearchFactory.getInstance().createSearchManager(
-            SearchManagerType.COMBINED
-        )
-    }
-
     private var defaultLocation = Point(0.0, 0.0)
     private var routeStartLocation: Point? = defaultLocation
 
@@ -113,7 +104,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         const val durationValue = 1f
         const val widthRatio = 0.5
         const val heightRatio = 0.83
-        const val searchType = 2
     }
 
     override fun onStart() {
@@ -201,23 +191,20 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         userLocationLayer.setObjectListener(this)
     }
 
-    private fun bottomModify(params: BusinessObjectMetadata, uri: String?) {
+    private fun bottomModify(placeInfo: Place) {
         // testing begin
-        if (uri != null) {
-            mapViewModel.addReviewOnPlace(uri, "SUPER", 5)
-            mapViewModel.getReviewsByPlace(uri)
-        }
+        mapViewModel.addReviewOnPlace(placeInfo.uri, "SUPER", 5)
+        mapViewModel.getReviewsByPlace(placeInfo.uri)
         // testing end
         val bottomBinding = binding.bottomLayout
         with(bottomBinding) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            tvName.text = params.name
-            tvDescription.text = params.address.formattedAddress
-            val url = params.advertisement?.images?.get(0)?.url
-//          glide.load(url)
-//               .apply(glideOptions)
-//               .into(ivPicture)
-//           ну я потом этот код буду использовать, ладно уж
+            tvName.text = placeInfo.description
+            tvDescription.text = placeInfo.address
+            val url = placeInfo.photoUrl
+            glide.load(url)
+                .apply(glideOptions)
+                .into(ivPicture)
         }
     }
 
@@ -324,41 +311,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         mapCity.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
     }
 
-    private fun searchGeoObjectInfo(event: GeoObjectTapEvent) {
-        val point = event.geoObject.geometry[0].point
-        val options = SearchOptions()
-        options.searchTypes = searchType
-        if (point != null) {
-            startSession(point, options)
-        } else showMessage(getString(R.string.place_info_not_found))
-    }
-
-    private fun startSession(
-        point: Point,
-        options: SearchOptions
-    ) {
-        searchSession = searchManager.submit(point, 16, options, this)
-    }
-
-    override fun onSearchResponse(response: Response) {
-        val uri = response.collection.children.firstOrNull()?.obj
-            ?.metadataContainer
-            ?.getItem(UriObjectMetadata::class.java)
-            ?.uris
-            ?.firstOrNull()
-            ?.value
-        val params = response.collection.children.firstOrNull()?.obj
-            ?.metadataContainer
-            ?.getItem(BusinessObjectMetadata::class.java)
-        if (params != null) {
-            bottomModify(params, uri)
-        }
-    }
-
-    override fun onSearchError(error: Error) {
-        showMessage(error.toString())
-    }
-
     override fun onStop() {
         super.onStop()
         mapView.onStop()
@@ -367,7 +319,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
 
     override fun onObjectTap(event: GeoObjectTapEvent): Boolean {
         selectionGeoObject(event)
-        searchGeoObjectInfo(event)
+        mapViewModel.searchGeoObjectInfo(event)
         return true
     }
 
@@ -384,8 +336,25 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
                     showMessage(getString(R.string.empty_reviews))
                 } else println(it.toString())
             }, onFailure = {
+                Timber.e(it)
                 showMessage(getString(R.string.failure_get_reviews))
             })
+        }
+
+        mapViewModel.error.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            showMessage(getString(R.string.try_again_error))
+        }
+
+        mapViewModel.place.observe(viewLifecycleOwner) { result ->
+            result.fold(
+                onSuccess = {
+                    bottomModify(it)
+                }, onFailure = {
+                    Timber.e(it)
+                    showMessage(getString(R.string.place_not_found_error))
+                }
+            )
         }
     }
 
