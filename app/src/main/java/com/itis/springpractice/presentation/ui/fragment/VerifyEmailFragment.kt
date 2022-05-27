@@ -52,7 +52,7 @@ class VerifyEmailFragment : Fragment(R.layout.fragment_verify_email) {
     }
 
     private fun initObservers() {
-        verifyEmailViewModel.errorEntity.observe(viewLifecycleOwner) { result ->
+        verifyEmailViewModel.errorModel.observe(viewLifecycleOwner) { result ->
             result.fold(onSuccess = {
                 when (it.message) {
                     "INVALID_ID_TOKEN" -> showMessage("Ошибка запроса, попробуйте еще раз")

@@ -4,7 +4,7 @@ import com.itis.springpractice.data.response.UserResponse
 import com.itis.springpractice.domain.entity.User
 
 class UserEntityMapper {
-    fun mapToUserEntity(userResponse: UserResponse): User? {
+    fun mapToUser(userResponse: UserResponse): UserResponse): User? {
         return if (!(userResponse.firstName.isNullOrEmpty()) && (!userResponse.lastName.isNullOrEmpty()) && (!userResponse.nickname.isNullOrEmpty())) {
             User(
                 firstName = userResponse.firstName!!,
@@ -14,7 +14,7 @@ class UserEntityMapper {
         } else null
     }
 
-    fun mapToUser(user: User): UserResponse {
+    fun mapToUserResponse(user: User): UserResponse {
         return UserResponse(
             firstName = user.firstName,
             lastName = user.lastName,

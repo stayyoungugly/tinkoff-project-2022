@@ -7,21 +7,20 @@ import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.domain.repository.UserRepository
 
 class UserRepositoryImpl(
-    private var firestore: Firestore,
-    private var userEntityMapper: UserEntityMapper,
-    private var preferenceManager: PreferenceManager
+    private val firestore: Firestore,
+    private val userEntityMapper: UserEntityMapper,
+    private val preferenceManager: PreferenceManager
 ) : UserRepository {
 
     override suspend fun addUser(user: User) {
-        firestore.addUser(userEntityMapper.mapToUser(user))
+        firestore.addUser(userEntityMapper.mapToUserResponse(user))
         preferenceManager.saveNickname(user.nickname)
     }
 
     override suspend fun getUserByNickname(nickname: String): User? {
-        val user = firestore.getUserByNickname(nickname)
-        val userEntity = user?.let {
-            userEntityMapper.mapToUserEntity(it)
+        val userResponse = firestore.getUserByNickname(nickname)
+        return userResponse?.let {
+            userEntityMapper.mapToUser(it)
         }
-        return userEntity
     }
 }

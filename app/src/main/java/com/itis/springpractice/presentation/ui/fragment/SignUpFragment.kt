@@ -17,20 +17,12 @@ import com.itis.springpractice.databinding.FragmentSignUpBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.domain.entity.SignUpError
-import com.itis.springpractice.domain.entity.SignUpSuccess
 import com.itis.springpractice.presentation.factory.AuthFactory
-import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
 import com.itis.springpractice.presentation.viewmodel.SignUpViewModel
 
 
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private val binding by viewBinding(FragmentSignUpBinding::bind)
-    private lateinit var nickname: String
-    private lateinit var firstName: String
-    private lateinit var lastName: String
-    private lateinit var password: String
-    private lateinit var login: String
 
     private val signUpViewModel by viewModels<SignUpViewModel> {
         AuthFactory(
@@ -40,9 +32,6 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         )
     }
 
-    private val registrationValidator by lazy {
-        RegistrationValidator()
-    }
 
     private val sharedPreferences by lazy {
         requireActivity().getPreferences(Context.MODE_PRIVATE)
@@ -59,61 +48,23 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
     private fun register() {
         with(binding) {
-            login = authFields.etLogin.text.toString()
-            password = authFields.etPassword.text.toString()
-            firstName = authFields.etFirstName.text.toString()
-            lastName = authFields.etLastName.text.toString()
-            nickname = authFields.etNickname.text.toString()
+            val login = authFields.etLogin.text.toString()
+            val password = authFields.etPassword.text.toString()
+            val firstName = authFields.etFirstName.text.toString()
+            val lastName = authFields.etLastName.text.toString()
+            val nickname = authFields.etNickname.text.toString()
             val checkPassword = authFields.etPasswordCheck.text.toString()
-
-            if (registrationValidator.isValidEmail(login) &&
-                registrationValidator.isValidPassword(password) &&
-                registrationValidator.isValidName(firstName) &&
-                registrationValidator.isValidName(lastName) &&
-                registrationValidator.isValidNickname(nickname)
-            ) {
-                if (password == checkPassword) {
-                    signUpViewModel.isNicknameAvailable(nickname)
-                } else showMessage(resources.getString(R.string.check_password_error))
-            } else when {
-                !registrationValidator.isValidEmail(login) -> showMessage(resources.getString(R.string.email_error))
-                !registrationValidator.isValidPassword(password) -> showMessage(resources.getString(R.string.password_error))
-                !registrationValidator.isValidName(firstName) -> showMessage(resources.getString(R.string.first_name_error))
-                !registrationValidator.isValidName(lastName) -> showMessage(resources.getString(R.string.last_name_error))
-                !registrationValidator.isValidNickname(nickname) -> showMessage(resources.getString(R.string.nickname_error))
-                else -> showMessage(resources.getString(R.string.sign_up_error))
-            }
+            if (password == checkPassword) {
+                signUpViewModel.onRegisterClick(login, password, firstName, lastName, nickname)
+            } else showMessage(getString(R.string.check_password_error))
         }
     }
 
     private fun initObservers() {
-
-        signUpViewModel.nicknameExist.observe(viewLifecycleOwner) {
-            if (it) {
-                signUpViewModel.onRegisterClick(login, password)
-            } else showMessage(resources.getString(R.string.nickname_exists))
-        }
-
-        signUpViewModel.signUpResult.observe(viewLifecycleOwner) { result ->
-            result.fold(onSuccess = {
-                when (it) {
-                    is SignUpSuccess -> {
-                        findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
-                        signUpViewModel.onSaveTokenClick(it.idToken)
-                        signUpViewModel.addNewUser(firstName, lastName, nickname)
-                    }
-                    is SignUpError -> {
-                        when (it.reason) {
-                            EMAIL_EXISTS -> showMessage(resources.getString(R.string.email_exists))
-                            OPERATION_NOT_ALLOWED -> showMessage(resources.getString(R.string.operation_not_allowed))
-                            TOO_MANY_ATTEMPTS_TRY_LATER -> showMessage(resources.getString(R.string.too_many_attempts))
-                            else -> showMessage(resources.getString(R.string.sign_up_error))
-                        }
-                    }
-                }
-            }, onFailure = {
-                showMessage(resources.getString(R.string.internet_error))
-            })
+        signUpViewModel.error.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                findNavController().navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
+            } else showMessage(it)
         }
     }
 
@@ -134,11 +85,5 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         }
         binding.authFields.tvElse.movementMethod = LinkMovementMethod()
         binding.authFields.tvElse.text = clickString
-    }
-
-    companion object {
-        private const val EMAIL_EXISTS = "EMAIL_EXISTS"
-        private const val OPERATION_NOT_ALLOWED = "OPERATION_NOT_ALLOWED"
-        private const val TOO_MANY_ATTEMPTS_TRY_LATER = "TOO_MANY_ATTEMPTS_TRY_LATER"
     }
 }

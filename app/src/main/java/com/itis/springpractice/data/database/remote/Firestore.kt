@@ -18,14 +18,9 @@ class Firestore {
     }
 
     fun getUserByNickname(nickname: String): UserResponse? {
-        var user: UserResponse?
         val dockRef = usersRef.document(nickname)
-        await(dockRef.get()).apply {
-            user = this.toObject<UserResponse>()
-        }
-        return user
+        return await(dockRef.get()).toObject<UserResponse>()
     }
-
     private val friendsRef = db.collection("friends")
     fun addFriend(nickname_user: String, nickname_friend: String) {
         val friendship = hashMapOf(

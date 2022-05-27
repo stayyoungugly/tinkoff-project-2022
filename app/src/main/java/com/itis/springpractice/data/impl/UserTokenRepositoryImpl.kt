@@ -8,9 +8,9 @@ import com.itis.springpractice.domain.entity.TokenSuccess
 import com.itis.springpractice.domain.repository.UserTokenRepository
 
 class UserTokenRepositoryImpl(
-    private var api: FirebaseTokenApi,
-    private var mapper: TokenMapper,
-    private var preferenceManager: PreferenceManager
+    private val api: FirebaseTokenApi,
+    private val mapper: TokenMapper,
+    private val preferenceManager: PreferenceManager
 ) : UserTokenRepository {
 
     companion object {
