@@ -1,7 +1,7 @@
 package com.itis.springpractice.data.response
 
 data class UserResponse(
-    val firstName: String? = "",
-    val lastName: String? = "",
-    val nickname: String? = ""
+    var firstName: String? = "",
+    var lastName: String? = "",
+    var nickname: String? = ""
 )

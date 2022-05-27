@@ -1,11 +1,12 @@
 package com.itis.springpractice.data.mapper
 
-import com.itis.springpractice.domain.entity.UserEntity
+import com.itis.springpractice.data.response.UserResponse
+import com.itis.springpractice.domain.entity.User
 
 class UserEntityMapper {
-    fun mapToUserEntity(user: User): UserEntity? {
-        return if (!user.firstName.isNullOrEmpty() && (!user.lastName.isNullOrEmpty()) && (!user.nickname.isNullOrEmpty())) {
-            UserEntity(
+    fun mapToUser(user: UserResponse): User? {
+        return if (!(user.firstName.isNullOrEmpty()) && (!user.lastName.isNullOrEmpty()) && (!user.nickname.isNullOrEmpty())) {
+            User(
                 firstName = user.firstName!!,
                 lastName = user.lastName!!,
                 nickname = user.nickname!!
@@ -13,11 +14,11 @@ class UserEntityMapper {
         } else null
     }
 
-    fun mapToUser(userEntity: UserEntity): User {
-        return User(
-            firstName = userEntity.firstName,
-            lastName = userEntity.lastName,
-            nickname = userEntity.nickname
+    fun mapToUserResponse(user: User): UserResponse {
+        return UserResponse(
+            firstName = user.firstName,
+            lastName = user.lastName,
+            nickname = user.nickname
         )
     }
 }
