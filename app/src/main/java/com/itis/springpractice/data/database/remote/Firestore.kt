@@ -5,7 +5,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.itis.springpractice.data.request.Review
-import com.itis.springpractice.data.request.User
 import timber.log.Timber
 
 class Firestore {

@@ -1,6 +1,5 @@
 package com.itis.springpractice.data.mapper
 
-import com.itis.springpractice.data.request.User
 import com.itis.springpractice.domain.entity.UserEntity
 
 class UserEntityMapper {
