@@ -3,7 +3,7 @@ package com.itis.springpractice.data.impl
 import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.data.database.remote.Firestore
 import com.itis.springpractice.data.mapper.UserEntityMapper
-import com.itis.springpractice.domain.entity.UserEntity
+import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.domain.repository.FriendsRepository
 
 class FriendsRepositoryImpl(
@@ -21,9 +21,9 @@ class FriendsRepositoryImpl(
         firestore.addFriend(userNickname, nickname)
     }
 
-    override suspend fun getAllFriendsByNickname(): List<UserEntity> {
+    override suspend fun getAllFriendsByNickname(): List<User> {
         val users = firestore.getFriends(userNickname)
-        val userEntities: List<UserEntity?> = users.map {
+        val userEntities: List<User?> = users.map {
             it?.let { user ->
                 userEntityMapper.mapToUserEntity(user)
             }

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.SignUpResult
-import com.itis.springpractice.domain.entity.UserEntity
+import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.domain.usecase.auth.RegisterUseCase
 import com.itis.springpractice.domain.usecase.token.SaveTokenUseCase
 import com.itis.springpractice.domain.usecase.user.AddUserUseCase
@@ -25,7 +25,7 @@ class SignUpViewModel(
     fun isNicknameAvailable(nickname: String) {
         viewModelScope.launch {
             try {
-                val user: UserEntity? = getUserByNicknameUseCase(nickname)
+                val user: User? = getUserByNicknameUseCase(nickname)
                 _nicknameExist.value = user == null
             } catch (ex: Exception) {
                 _nicknameExist.value = false
@@ -54,7 +54,7 @@ class SignUpViewModel(
 
     fun addNewUser(firstName: String, lastName: String, nickname: String) {
         viewModelScope.launch {
-            addUserUseCase(UserEntity(firstName, lastName, nickname))
+            addUserUseCase(User(firstName, lastName, nickname))
         }
     }
 }
