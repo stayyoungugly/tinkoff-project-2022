@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.data.database.remote.Firestore
 import com.itis.springpractice.data.impl.UserRepositoryImpl
-import com.itis.springpractice.data.mapper.UserEntityMapper
+import com.itis.springpractice.data.mapper.UserModelMapper
 import com.itis.springpractice.domain.repository.UserRepository
 import com.itis.springpractice.domain.usecase.user.AddUserUseCase
 import com.itis.springpractice.domain.usecase.user.GetUserByNicknameUseCase
@@ -15,7 +15,7 @@ class UserContainer(
 ) {
     private val userRepository: UserRepository = UserRepositoryImpl(
         firestore = Firestore(),
-        userEntityMapper = UserEntityMapper(),
+        userModelMapper = UserModelMapper(),
         preferenceManager = PreferenceManager(sharedPreferences)
     )
 

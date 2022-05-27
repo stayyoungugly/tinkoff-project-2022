@@ -2,13 +2,13 @@ package com.itis.springpractice.data.impl
 
 import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.data.database.remote.Firestore
-import com.itis.springpractice.data.mapper.UserEntityMapper
+import com.itis.springpractice.data.mapper.UserModelMapper
 import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.domain.repository.FriendsRepository
 
 class FriendsRepositoryImpl(
     private var firestore: Firestore,
-    private var userEntityMapper: UserEntityMapper,
+    private var userModelMapper: UserModelMapper,
     private var preferenceManager: PreferenceManager
 ) : FriendsRepository {
 
@@ -17,6 +17,7 @@ class FriendsRepositoryImpl(
     }
 
     private val userNickname = preferenceManager.getNickname() ?: DEFAULT_VALUE
+
     override suspend fun addFriend(nickname: String) {
         firestore.addFriend(userNickname, nickname)
     }
@@ -25,7 +26,7 @@ class FriendsRepositoryImpl(
         val users = firestore.getFriends(userNickname)
         val userEntities: List<User?> = users.map {
             it?.let { user ->
-                userEntityMapper.mapToUserEntity(user)
+                userModelMapper.mapToUser(user)
             }
         }
         return userEntities.filterNotNull()

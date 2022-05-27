@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.SignUpError
 import com.itis.springpractice.domain.entity.SignUpSuccess
 import com.itis.springpractice.domain.entity.User
-import com.itis.springpractice.domain.entity.SignUpResult
-import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.domain.usecase.auth.RegisterUseCase
 import com.itis.springpractice.domain.usecase.token.SaveTokenUseCase
 import com.itis.springpractice.domain.usecase.user.AddUserUseCase

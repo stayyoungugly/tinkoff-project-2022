@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import com.itis.springpractice.data.database.local.PreferenceManager
 import com.itis.springpractice.data.database.remote.Firestore
 import com.itis.springpractice.data.impl.FriendsRepositoryImpl
-import com.itis.springpractice.data.mapper.UserEntityMapper
+import com.itis.springpractice.data.mapper.UserModelMapper
 import com.itis.springpractice.domain.repository.FriendsRepository
 import com.itis.springpractice.domain.usecase.friends.AddFriendUseCase
 import com.itis.springpractice.domain.usecase.friends.GetAllFriendsByNicknameUseCase
@@ -15,7 +15,7 @@ class FriendContainer(
 ) {
     private val friendsRepository: FriendsRepository = FriendsRepositoryImpl(
         firestore = Firestore(),
-        userEntityMapper = UserEntityMapper(),
+        userModelMapper = UserModelMapper(),
         preferenceManager = PreferenceManager(sharedPreferences)
     )
 
