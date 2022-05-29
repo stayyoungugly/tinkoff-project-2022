@@ -34,4 +34,9 @@
     <string name="too_many_attempts">Слишком много попыток, попробуйте позже</string>
     <string name="internet_error">Проверьте подключение к интернету</string>
     <string name="сheck_test">Проверьте</string>
+    <string name="full_name">Имя Фамилия</string>
+    <string name="friends">Друзья</string>
+    <string name="zero_friends">Пора завести друзей</string>
+    <string name="add_friend">Добавить друга</string>
+    <string name="friend_nickname">Псевдоним друга</string>
 </resources>
