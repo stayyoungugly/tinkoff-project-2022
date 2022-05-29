@@ -15,7 +15,7 @@ import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentMapBinding
@@ -51,6 +51,10 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     private lateinit var userLocationLayer: UserLocationLayer
     private val binding by viewBinding(FragmentMapBinding::bind)
 
+    private val bottomSheetDialogFragment: BottomSheetDialogFragment by lazy {
+        BottomSheetFragment()
+    }
+
     private val glideOptions by lazy {
         RequestOptions()
             .priority(Priority.HIGH)
@@ -83,20 +87,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
 
     private var permissionLocation = false
     private var followUserLocation = false
-
-    private val bottomSheetBehavior
-        get() = BottomSheetBehavior.from(binding.bottomLayout.root).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-            addBottomSheetCallback(object :
-                BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                        state = BottomSheetBehavior.STATE_HIDDEN
-                    }
-                }
-            })
-        }
 
     companion object {
         const val zoomValue = 19.0f
@@ -196,16 +186,18 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         mapViewModel.addReviewOnPlace(placeInfo.uri, "SUPER", 5)
         mapViewModel.getReviewsByPlace(placeInfo.uri)
         // testing end
-        val bottomBinding = binding.bottomLayout
-        with(bottomBinding) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            tvName.text = placeInfo.description
-            tvDescription.text = placeInfo.address
-            val url = placeInfo.photoUrl
-            glide.load(url)
-                .apply(glideOptions)
-                .into(ivPicture)
-        }
+
+//        with(bottomBinding) {
+//            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+//            tvName.text = placeInfo.description
+//            tvDescription.text = placeInfo.address
+//            val url = placeInfo.photoUrl
+//            glide.load(url)
+//                .apply(glideOptions)
+//                .into(ivPicture)
+//        }
+
+        bottomSheetDialogFragment.show(parentFragmentManager, bottomSheetDialogFragment.tag)
     }
 
     private fun modifyMap(location: Point?, isAnimated: Boolean) {

@@ -33,8 +33,4 @@
         app:elevation="8dp"
         app:srcCompat="@drawable/ic_location_disabled_black"
         tools:ignore="ContentDescription" />
-
-    <include layout="@layout/bottom_place_info"
-        android:id="@+id/bottom_layout"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
