@@ -35,20 +35,30 @@ class Firestore {
         friendsRef.add(friendship).await()
     }
 
+    private suspend fun friendsNames(nickname_user: String): List<String> {
+        return friendsRef
+            .whereEqualTo("nickname_user", nickname_user)
+            .get()
+            .await()
+            .map { it["nickname_friend"].toString() }
+    }
+
     suspend fun getFriends(nickname_user: String): List<UserResponse?> {
         return try {
-            val friendsNames = friendsRef
-                .whereEqualTo("nickname_user", nickname_user)
-                .get()
-                .await()
-                .map { it["nickname_friend"].toString() }
             usersRef
-                .whereIn("nickname", friendsNames)
+                .whereIn("nickname", friendsNames(nickname_user))
                 .get()
                 .await()
                 .map { it.toObject() }
         } catch (e: Exception) {
             ArrayList()
         }
+    }
+
+    suspend fun isUserFriend(nickname_user: String, nickname_friend: String): Boolean {
+        if (friendsNames(nickname_user).contains(nickname_friend)) {
+            return true
+        }
+        return false
     }
 }

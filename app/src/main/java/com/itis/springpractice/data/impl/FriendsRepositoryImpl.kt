@@ -31,4 +31,8 @@ class FriendsRepositoryImpl(
         }
         return userEntities.filterNotNull()
     }
+
+    override suspend fun isUserFriend(nickname: String): Boolean {
+        return firestore.isUserFriend(userNickname, nickname)
+    }
 }

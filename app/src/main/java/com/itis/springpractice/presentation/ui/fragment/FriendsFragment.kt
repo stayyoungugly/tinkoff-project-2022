@@ -1,5 +1,6 @@
 package com.itis.springpractice.presentation.ui.fragment
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
+import com.itis.springpractice.databinding.DialogAddFriendBinding
 import com.itis.springpractice.databinding.FragmentFriendsBinding
 import com.itis.springpractice.di.FriendContainer
 import com.itis.springpractice.di.UserAuthContainer
@@ -21,6 +23,7 @@ import com.itis.springpractice.presentation.viewmodel.FriendsViewModel
 
 class FriendsFragment : Fragment(R.layout.fragment_friends) {
     private val binding by viewBinding(FragmentFriendsBinding::bind)
+    private lateinit var dialogBinding: DialogAddFriendBinding
 
     private val friendsViewModel by viewModels<FriendsViewModel> {
         AuthFactory(
@@ -37,11 +40,11 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initObservers()
         friendsViewModel.onGetFriends()
         binding.fabAddFriend.setOnClickListener {
             navigateToAddFriend()
         }
-        initObservers()
     }
 
     private fun initObservers() {
@@ -73,9 +76,29 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
     }
 
     private fun navigateToAddFriend() {
-        AddFriendDialog.show(
-            childFragmentManager
-        )
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Добавить новый")
+            .setView(DialogAddFriendBinding.inflate(layoutInflater).let {
+                dialogBinding = it
+                it.root
+            })
+            .setPositiveButton("Добавить", null)
+            .setNegativeButton("Закрыть") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            friendsViewModel.message.observe(viewLifecycleOwner) {
+                if (it.equals("OK")) {
+                    dialog.dismiss()
+                }
+                else {
+                    dialogBinding.etNickname.error = it
+                }
+            }
+            friendsViewModel.onAddFriend(dialogBinding.etNickname.text.toString())
+        }
     }
 
     private fun navigateToFriendInfo(friendNickname: String) {
