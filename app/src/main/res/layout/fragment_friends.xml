@@ -33,7 +33,7 @@
         android:text="@string/zero_friends"
         android:layout_margin="16dp"
         android:gravity="center"
-        tools:visibility="gone"
+        android:visibility="gone"
         android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

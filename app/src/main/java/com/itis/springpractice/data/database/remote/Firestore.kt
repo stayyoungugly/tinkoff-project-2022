@@ -11,35 +11,44 @@ class Firestore {
 
     private val usersRef = db.collection("users")
 
-    fun addUser(user: UserResponse) {
+    suspend fun addUser(user: UserResponse) {
         user.nickname?.let {
-            usersRef.document(it).set(user)
+            usersRef.document(it).set(user).await()
         }
     }
 
     suspend fun getUserByNickname(nickname: String): UserResponse? {
-        return usersRef.document(nickname).get().await().toObject()
+        //return usersRef.document(nickname).get().await().toObject()
+        return try {
+            usersRef.document(nickname).get().await().toObject()
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private val friendsRef = db.collection("friends")
-    fun addFriend(nickname_user: String, nickname_friend: String) {
+    suspend fun addFriend(nickname_user: String, nickname_friend: String) {
         val friendship = hashMapOf(
             "nickname_user" to nickname_user,
             "nickname_friend" to nickname_friend
         )
-        friendsRef.add(friendship)
+        friendsRef.add(friendship).await()
     }
 
     suspend fun getFriends(nickname_user: String): List<UserResponse?> {
-        val friendsNames = friendsRef
-            .whereEqualTo("nickname_user", nickname_user)
-            .get()
-            .await()
-            .map { it["nickname_friend"].toString() }
-        return usersRef
-            .whereIn("nickname", friendsNames)
-            .get()
-            .await()
-            .map { it.toObject() }
+        return try {
+            val friendsNames = friendsRef
+                .whereEqualTo("nickname_user", nickname_user)
+                .get()
+                .await()
+                .map { it["nickname_friend"].toString() }
+            usersRef
+                .whereIn("nickname", friendsNames)
+                .get()
+                .await()
+                .map { it.toObject() }
+        } catch (e: Exception) {
+            ArrayList()
+        }
     }
 }

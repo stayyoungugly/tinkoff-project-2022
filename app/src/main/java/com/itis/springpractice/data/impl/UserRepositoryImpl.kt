@@ -12,6 +12,10 @@ class UserRepositoryImpl(
     private val preferenceManager: PreferenceManager
 ) : UserRepository {
 
+    companion object {
+        private const val DEFAULT_VALUE = ""
+    }
+
     override suspend fun addUser(user: User) {
         firestore.addUser(userModelMapper.mapToUserResponse(user))
         preferenceManager.saveNickname(user.nickname)
@@ -22,5 +26,9 @@ class UserRepositoryImpl(
         return userResponse?.let {
             userModelMapper.mapToUser(it)
         }
+    }
+
+    override suspend fun getUserNickname(): String {
+        return preferenceManager.getNickname() ?: DEFAULT_VALUE
     }
 }

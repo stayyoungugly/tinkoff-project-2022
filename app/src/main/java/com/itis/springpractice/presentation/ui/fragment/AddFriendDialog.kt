@@ -17,7 +17,6 @@ import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.AddFriendViewModel
 
 class AddFriendDialog : DialogFragment(R.layout.dialog_add_friend) {
-    //private val binding: DialogAddFriendBinding by viewBinding(createMethod = CreateMethod.INFLATE)
     private lateinit var binding: DialogAddFriendBinding
 
     private val addFriendViewModel by viewModels<AddFriendViewModel> {
@@ -32,9 +31,6 @@ class AddFriendDialog : DialogFragment(R.layout.dialog_add_friend) {
     private val sharedPreferences by lazy {
         requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
-
-    private lateinit var positiveCallback: (String) -> Unit
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         AlertDialog.Builder(requireContext())
             .setView(DialogAddFriendBinding.inflate(layoutInflater).let {
@@ -44,7 +40,7 @@ class AddFriendDialog : DialogFragment(R.layout.dialog_add_friend) {
             .setPositiveButton("Добавить") { _, _ ->
                 addFriendViewModel.onAddFriend(binding.etNickname.text.toString())
                 addFriendViewModel.message.observe(this) {
-                    positiveCallback.invoke(it)
+                    binding.etNickname.error = it
                 }
             }
             .setNegativeButton("Закрыть") { dialog, _ ->
@@ -54,11 +50,9 @@ class AddFriendDialog : DialogFragment(R.layout.dialog_add_friend) {
 
     companion object {
         fun show(
-            fragmentManager: FragmentManager,
-            positive: (String) -> Unit
+            fragmentManager: FragmentManager
         ) {
             AddFriendDialog().apply {
-                positiveCallback = positive
                 show(fragmentManager, AddFriendDialog::class.java.name)
             }
         }

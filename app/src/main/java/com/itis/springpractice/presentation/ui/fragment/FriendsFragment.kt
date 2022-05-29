@@ -74,11 +74,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
 
     private fun navigateToAddFriend() {
         AddFriendDialog.show(
-            childFragmentManager,
-            positive = {
-                showMessage(it)
-                TODO("Update rv")
-            }
+            childFragmentManager
         )
     }
 

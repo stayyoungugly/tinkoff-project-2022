@@ -7,9 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.domain.usecase.friends.AddFriendUseCase
 import com.itis.springpractice.domain.usecase.user.GetUserByNicknameUseCase
+import com.itis.springpractice.domain.usecase.user.GetUserNicknameUseCase
 import kotlinx.coroutines.launch
 
 class AddFriendViewModel(
+    private val getUserNicknameUseCase: GetUserNicknameUseCase,
     private val getUserByNicknameUseCase: GetUserByNicknameUseCase,
     private val addFriendUseCase: AddFriendUseCase
 ) : ViewModel() {
@@ -19,13 +21,17 @@ class AddFriendViewModel(
     fun onAddFriend(nickname: String) {
         viewModelScope.launch {
             try {
-                val user: User? = getUserByNicknameUseCase(nickname)
-                if (user == null) {
-                    _message.value = "Пользователя с таким псевдонимом не существует"
+                if (nickname == getUserNicknameUseCase()) {
+                    _message.value = "Нельзя дружить с самим собой"
                 }
                 else {
-                    addFriendUseCase(nickname)
-                    _message.value = "Добавлен новый друг"
+                    val user: User? = getUserByNicknameUseCase(nickname)
+                    if (user == null) {
+                        _message.value = "Пользователя с таким псевдонимом не существует"
+                    }
+                    else {
+                        addFriendUseCase(nickname)
+                    }
                 }
             } catch (ex: Exception) {
                 _message.value = "Произошла ошибка"
