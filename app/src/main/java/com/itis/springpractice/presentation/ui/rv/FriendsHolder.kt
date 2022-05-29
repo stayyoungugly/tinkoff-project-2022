@@ -1,5 +1,6 @@
 package com.itis.springpractice.presentation.ui.rv
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,14 @@ class FriendsHolder(
         with(binding) {
             tvNickname.text = item.nickname
             tvFullName.text = "${item.firstName} ${item.lastName}"
+        }
+    }
+
+    fun updateFields(bundle: Bundle) {
+        bundle.run {
+            getString("NICKNAME")?.also {
+                binding.tvNickname.text = it
+            }
         }
     }
 

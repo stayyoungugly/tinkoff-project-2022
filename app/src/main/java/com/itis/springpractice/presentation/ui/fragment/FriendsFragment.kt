@@ -25,6 +25,8 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
     private val binding by viewBinding(FragmentFriendsBinding::bind)
     private lateinit var dialogBinding: DialogAddFriendBinding
 
+    private lateinit var friendsAdapter: FriendsAdapter
+
     private val friendsViewModel by viewModels<FriendsViewModel> {
         AuthFactory(
             UserAuthContainer,
@@ -56,10 +58,11 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
                 } else {
                     binding.tvZeroFriends.visibility = GONE
                     binding.rvFriends.visibility = VISIBLE
-                    val friendsAdapter = FriendsAdapter(it) { friendNickname ->
+                    friendsAdapter = FriendsAdapter { friendNickname ->
                         navigateToFriendInfo(friendNickname)
                     }
                     binding.rvFriends.adapter = friendsAdapter
+                    friendsAdapter.submitList(it.toMutableList())
                 }
             }, onFailure = {
                 showMessage("Проверьте подключение к интернету")
@@ -92,8 +95,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
             friendsViewModel.message.observe(viewLifecycleOwner) {
                 if (it.equals("OK")) {
                     dialog.dismiss()
-                }
-                else {
+                } else {
                     dialogBinding.etNickname.error = it
                 }
             }
