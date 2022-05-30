@@ -22,10 +22,10 @@ import com.itis.springpractice.databinding.FragmentMapBinding
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.domain.entity.Place
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.fragment.extension.findParent
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
+import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.StyleType
@@ -42,6 +42,7 @@ import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.user_location.UserLocationLayer
 import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
+import com.yandex.runtime.i18n.I18nManagerFactory
 import com.yandex.runtime.image.ImageProvider
 import timber.log.Timber
 
@@ -50,6 +51,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     GeoObjectTapListener {
     private lateinit var userLocationLayer: UserLocationLayer
     private val binding by viewBinding(FragmentMapBinding::bind)
+
+    private var isShowing = false
 
     private val bottomSheetDialogFragment: BottomSheetDialogFragment by lazy {
         BottomSheetFragment()
@@ -78,9 +81,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         Glide.with(this)
     }
 
-    private val mapKit by lazy {
-        MapKitFactory.getInstance()
-    }
+    private val mapKit
+        get() = MapKitFactory.getInstance()
 
     private var defaultLocation = Point(0.0, 0.0)
     private var routeStartLocation: Point? = defaultLocation
@@ -100,6 +102,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         super.onStart()
         mapView.onStart()
         MapKitFactory.getInstance().onStart()
+        I18nManagerFactory.setLocale("ru_RU")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,6 +118,14 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         )
     }
 
+    private val placeInfoViewModel by viewModels<PlaceInfoViewModel> {
+        AuthFactory(
+            UserAuthContainer,
+            UserTokenContainer(sharedPreferences),
+            UserContainer(sharedPreferences)
+        )
+    }
+
     private val sharedPreferences by lazy {
         requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
@@ -122,12 +133,27 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapCity.addTapListener(this)
+        setMapClickListener()
         binding.btnSignOut.setOnClickListener {
             onSignOutClick()
         }
         initObservers()
         checkPermission()
         userInterface()
+
+    }
+
+    private fun setMapClickListener() {
+        val listener = object : InputListener {
+            override fun onMapTap(map: Map, point: Point) {
+                if (isShowing) {
+                    bottomSheetDialogFragment.dismiss()
+                }
+            }
+
+            override fun onMapLongTap(map: Map, point: Point) {}
+        }
+        mapCity.addInputListener(listener)
     }
 
     private fun onSignOutClick() {
@@ -181,22 +207,12 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         userLocationLayer.setObjectListener(this)
     }
 
-    private fun bottomModify(placeInfo: Place) {
-        // testing begin
-        mapViewModel.addReviewOnPlace(placeInfo.uri, "SUPER", 5)
-        mapViewModel.getReviewsByPlace(placeInfo.uri)
-        // testing end
-
-//        with(bottomBinding) {
-//            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-//            tvName.text = placeInfo.description
-//            tvDescription.text = placeInfo.address
-//            val url = placeInfo.photoUrl
+    private fun bottomModify() {
 //            glide.load(url)
 //                .apply(glideOptions)
 //                .into(ivPicture)
-//        }
-
+//
+        isShowing = true
         bottomSheetDialogFragment.show(parentFragmentManager, bottomSheetDialogFragment.tag)
     }
 
@@ -310,43 +326,26 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     override fun onObjectTap(event: GeoObjectTapEvent): Boolean {
+        if (isShowing) {
+            bottomSheetDialogFragment.dismiss()
+        }
         selectionGeoObject(event)
-        mapViewModel.searchGeoObjectInfo(event)
+        placeInfoViewModel.searchGeoObjectInfo(event)
         return true
     }
 
     private fun initObservers() {
-        mapViewModel.reviewAdded.observe(viewLifecycleOwner) {
-            if (it) {
-                showMessage(getString(R.string.review_was_added_success))
-            } else showMessage(getString(R.string.review_was_added_failure))
-        }
-
-        mapViewModel.reviewList.observe(viewLifecycleOwner) { result ->
-            result.fold(onSuccess = {
-                if (it.isEmpty()) {
-                    showMessage(getString(R.string.empty_reviews))
-                } else println(it.toString())
-            }, onFailure = {
-                Timber.e(it)
-                showMessage(getString(R.string.failure_get_reviews))
-            })
-        }
-
         mapViewModel.error.observe(viewLifecycleOwner) {
             Timber.e(it)
             showMessage(getString(R.string.try_again_error))
         }
 
-        mapViewModel.place.observe(viewLifecycleOwner) { result ->
-            result.fold(
-                onSuccess = {
-                    bottomModify(it)
-                }, onFailure = {
-                    Timber.e(it)
-                    showMessage(getString(R.string.place_not_found_error))
-                }
-            )
+        placeInfoViewModel.place.observe(viewLifecycleOwner) { result ->
+            result.fold(onSuccess = {
+                bottomModify()
+            }, onFailure = {
+                Timber.e(it)
+            })
         }
     }
 

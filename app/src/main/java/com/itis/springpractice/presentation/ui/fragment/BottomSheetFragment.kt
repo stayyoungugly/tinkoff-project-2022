@@ -5,10 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentBottomDialogBinding
+import com.itis.springpractice.presentation.ui.fragment.utils.ParentFragmentPagerAdapter
 
 class BottomSheetFragment : BottomSheetDialogFragment() {
 
@@ -34,7 +38,8 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        val density = requireContext().resources.displayMetrics.density
+        setViewPager()
+        // val density = requireContext().resources.displayMetrics.density
         dialog?.let {
             val bottomSheet =
                 it.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
@@ -53,6 +58,20 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
                 })
             }
         }
+    }
+
+    private fun setViewPager() {
+        val viewPager: ViewPager2 = binding.viewPager
+        val tabLayout: TabLayout = binding.tabLayout
+
+        val pagerAdapter = ParentFragmentPagerAdapter(this)
+        viewPager.adapter = pagerAdapter
+        viewPager.isSaveEnabled = false
+
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            val tabNames = listOf("Инфо", "Отзывы")
+            tab.text = tabNames[position]
+        }.attach()
     }
 
     fun changeStateToHidden() {
