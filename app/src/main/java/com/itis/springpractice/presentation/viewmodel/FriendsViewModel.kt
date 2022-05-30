@@ -48,6 +48,8 @@ class FriendsViewModel(
                         "Пользователя с таким псевдонимом не существует"
                     else -> {
                         addFriendUseCase(nickname)
+                        val list = getAllFriendsByNicknameUseCase()
+                        _friends.value = Result.success(list)
                         _message.value = "OK"
                     }
                 }

@@ -8,4 +8,6 @@ interface UserRepository {
     suspend fun getUserByNickname(nickname: String): User?
 
     suspend fun getUserNickname(): String
+
+    suspend fun deleteNickname()
 }

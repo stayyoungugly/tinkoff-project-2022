@@ -31,4 +31,8 @@ class UserRepositoryImpl(
     override suspend fun getUserNickname(): String {
         return preferenceManager.getNickname() ?: DEFAULT_VALUE
     }
+
+    override suspend fun deleteNickname() {
+        preferenceManager.deleteNickname()
+    }
 }

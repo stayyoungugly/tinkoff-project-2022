@@ -152,7 +152,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     private fun onSignOutClick() {
-        mapViewModel.onDeleteTokenClick()
+        mapViewModel.onDeleteClick()
         (this.findParent<AuthorizedFragment>() as? Callbacks)?.navigateToSignIn()
     }
 

@@ -80,7 +80,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
 
     private fun navigateToAddFriend() {
         val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Добавить новый")
+            .setTitle("Поиск друзей")
             .setView(DialogAddFriendBinding.inflate(layoutInflater).let {
                 dialogBinding = it
                 it.root

@@ -41,6 +41,7 @@ class AuthFactory(
             modelClass.isAssignableFrom(MapViewModel::class.java) ->
                 MapViewModel(
                     tokenDi.deleteTokenUseCase,
+                    userDi.deleteNicknameUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             modelClass.isAssignableFrom(FriendsViewModel::class.java) ->
                 FriendsViewModel(
