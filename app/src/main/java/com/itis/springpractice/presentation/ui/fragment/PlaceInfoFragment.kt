@@ -9,9 +9,6 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentPlaceInfoBinding
-import com.itis.springpractice.di.UserAuthContainer
-import com.itis.springpractice.di.UserContainer
-import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.Place
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
@@ -22,9 +19,6 @@ class PlaceInfoFragment : Fragment(R.layout.fragment_place_info) {
 
     private val placeInfoViewModel by viewModels<PlaceInfoViewModel> {
         AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences)
         )
     }
 

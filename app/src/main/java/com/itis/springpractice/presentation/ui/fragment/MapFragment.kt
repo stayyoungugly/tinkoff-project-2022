@@ -19,11 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentMapBinding
-import com.itis.springpractice.di.UserAuthContainer
-import com.itis.springpractice.di.UserContainer
-import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
-import com.itis.springpractice.presentation.ui.fragment.extension.findParent
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
 import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
 import com.yandex.mapkit.Animation
@@ -111,19 +107,11 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     private val mapViewModel by viewModels<MapViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences)
-        )
+        AuthFactory()
     }
 
     private val placeInfoViewModel by viewModels<PlaceInfoViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences)
-        )
+        AuthFactory()
     }
 
     private val sharedPreferences by lazy {
@@ -134,9 +122,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         super.onViewCreated(view, savedInstanceState)
         mapCity.addTapListener(this)
         setMapClickListener()
-        binding.btnSignOut.setOnClickListener {
-            onSignOutClick()
-        }
         initObservers()
         checkPermission()
         userInterface()
@@ -156,10 +141,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         mapCity.addInputListener(listener)
     }
 
-    private fun onSignOutClick() {
-        mapViewModel.onDeleteTokenClick()
-        (this.findParent<AuthorizedFragment>() as? Callbacks)?.navigateToSignIn()
-    }
 
     private fun createUserLocationLayer() {
         userLocationLayer = mapKit.createUserLocationLayer(mapView.mapWindow).apply {

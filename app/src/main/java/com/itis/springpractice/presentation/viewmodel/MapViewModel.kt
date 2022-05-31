@@ -8,25 +8,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.MyApplication
-import com.itis.springpractice.domain.usecase.token.DeleteTokenUseCase
 import kotlinx.coroutines.launch
 
 class MapViewModel(
-    private val deleteTokenUseCase: DeleteTokenUseCase,
 ) : ViewModel() {
 
     private val _error: MutableLiveData<Throwable> = MutableLiveData()
     val error: LiveData<Throwable> = _error
-
-    fun onDeleteTokenClick() {
-        viewModelScope.launch {
-            try {
-                deleteTokenUseCase()
-            } catch (ex: Exception) {
-                _error.value = ex
-            }
-        }
-    }
 
     fun isPermissionsAllowed(): Boolean {
         var flag = false

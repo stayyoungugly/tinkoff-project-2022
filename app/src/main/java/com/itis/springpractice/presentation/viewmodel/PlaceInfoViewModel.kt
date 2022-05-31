@@ -30,7 +30,6 @@ class PlaceInfoViewModel(
         val options = SearchOptions()
         options.snippets = Snippet.PHOTOS.value
         options.snippets = Snippet.BUSINESS_IMAGES.value
-        options.snippets = Snippet.ENCYCLOPEDIA.value
 
         try {
             uri =
