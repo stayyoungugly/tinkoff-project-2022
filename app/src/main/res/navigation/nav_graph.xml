@@ -7,64 +7,13 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.MainFragment"
-        android:label="MainFragment">
+        android:label="MainFragment" >
         <action
-            android:id="@+id/action_mainFragment_to_signInFragment"
-            app:destination="@id/signInFragment"
-            app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_mainFragment_to_authorizedFragment"
-            app:destination="@id/authorizedFragment"
-            app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/signInFragment"
-        android:name="com.itis.springpractice.presentation.ui.fragment.SignInFragment"
-        android:label="SignInFragment">
-        <action
-            android:id="@+id/action_signInFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
-        <action
-            android:id="@+id/action_signInFragment_to_authorizedFragment"
-            app:destination="@id/authorizedFragment"
-            app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_mainFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
-        android:id="@+id/signUpFragment"
-        android:name="com.itis.springpractice.presentation.ui.fragment.SignUpFragment"
-        android:label="SignUpFragment">
-        <action
-            android:id="@+id/action_signUpFragment_to_signInFragment"
-            app:destination="@id/signInFragment"
-            app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_signUpFragment_to_verifyEmailFragment"
-            app:destination="@id/verifyEmailFragment"
-            app:popUpTo="@id/signInFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/verifyEmailFragment"
-        android:name="com.itis.springpractice.presentation.ui.fragment.VerifyEmailFragment"
-        android:label="VerifyEmailFragment">
-        <action
-            android:id="@+id/action_verifyEmailFragment_to_authorizedFragment"
-            app:destination="@id/authorizedFragment"
-            app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/authorizedFragment"
-        android:name="com.itis.springpractice.presentation.ui.fragment.AuthorizedFragment"
-        android:label="AuthorizedFragment" />
-    <action
-        android:id="@+id/action_authorizedFragment_to_signInFragment"
-        app:destination="@id/signInFragment"
-        app:popUpTo="@+id/nav_graph"
-        app:popUpToInclusive="true" />
+        android:id="@+id/mapFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.MapFragment"
+        android:label="MapFragment" />
 </navigation>
