@@ -18,7 +18,6 @@ class Firestore {
     }
 
     suspend fun getUserByNickname(nickname: String): UserResponse? {
-        //return usersRef.document(nickname).get().await().toObject()
         return try {
             usersRef.document(nickname).get().await().toObject()
         } catch (e: Exception) {
@@ -27,26 +26,26 @@ class Firestore {
     }
 
     private val friendsRef = db.collection("friends")
-    suspend fun addFriend(nickname_user: String, nickname_friend: String) {
+    suspend fun addFriend(userNickname: String, nicknameFriend: String) {
         val friendship = hashMapOf(
-            "nickname_user" to nickname_user,
-            "nickname_friend" to nickname_friend
+            "nickname_user" to userNickname,
+            "nickname_friend" to nicknameFriend
         )
         friendsRef.add(friendship).await()
     }
 
-    private suspend fun friendsNames(nickname_user: String): List<String> {
+    private suspend fun friendsNames(userNickname: String): List<String> {
         return friendsRef
-            .whereEqualTo("nickname_user", nickname_user)
+            .whereEqualTo("nickname_user", userNickname)
             .get()
             .await()
             .map { it["nickname_friend"].toString() }
     }
 
-    suspend fun getFriends(nickname_user: String): List<UserResponse?> {
+    suspend fun getFriends(userNickname: String): List<UserResponse?> {
         return try {
             usersRef
-                .whereIn("nickname", friendsNames(nickname_user))
+                .whereIn("nickname", friendsNames(userNickname))
                 .get()
                 .await()
                 .map { it.toObject() }
@@ -55,10 +54,7 @@ class Firestore {
         }
     }
 
-    suspend fun isUserFriend(nickname_user: String, nickname_friend: String): Boolean {
-        if (friendsNames(nickname_user).contains(nickname_friend)) {
-            return true
-        }
-        return false
+    suspend fun isUserFriend(userNickname: String, friendNickname: String): Boolean {
+        return friendsNames(userNickname).contains(friendNickname)
     }
 }
