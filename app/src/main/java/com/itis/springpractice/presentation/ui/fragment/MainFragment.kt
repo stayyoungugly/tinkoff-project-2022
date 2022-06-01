@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.itis.springpractice.R
+import com.itis.springpractice.di.FriendContainer
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
@@ -19,7 +20,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         AuthFactory(
             UserAuthContainer,
             UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences)
+            UserContainer(sharedPreferences),
+            FriendContainer(sharedPreferences)
         )
     }
 

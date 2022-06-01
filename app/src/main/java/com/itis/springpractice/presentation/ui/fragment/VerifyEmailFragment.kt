@@ -10,6 +10,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentVerifyEmailBinding
+import com.itis.springpractice.di.FriendContainer
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
@@ -26,7 +27,8 @@ class VerifyEmailFragment : Fragment(R.layout.fragment_verify_email) {
         AuthFactory(
             UserAuthContainer,
             UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences)
+            UserContainer(sharedPreferences),
+            FriendContainer(sharedPreferences)
         )
     }
 

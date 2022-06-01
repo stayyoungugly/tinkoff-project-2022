@@ -14,6 +14,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentSignInBinding
+import com.itis.springpractice.di.FriendContainer
 import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
@@ -30,7 +31,8 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
         AuthFactory(
             UserAuthContainer,
             UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences)
+            UserContainer(sharedPreferences),
+            FriendContainer(sharedPreferences)
         )
     }
 

@@ -7,15 +7,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.MyApplication
 import com.itis.springpractice.domain.usecase.token.DeleteTokenUseCase
+import com.itis.springpractice.domain.usecase.user.DeleteNicknameUseCase
 import kotlinx.coroutines.launch
 
 class MapViewModel(
     private val deleteTokenUseCase: DeleteTokenUseCase,
+    private val deleteNicknameUseCase: DeleteNicknameUseCase
 ) : ViewModel() {
 
-    fun onDeleteTokenClick() {
+    fun onDeleteClick() {
         viewModelScope.launch {
             deleteTokenUseCase()
+            deleteNicknameUseCase()
         }
     }
 

@@ -6,4 +6,8 @@ interface UserRepository {
     suspend fun addUser(user: User)
 
     suspend fun getUserByNickname(nickname: String): User?
+
+    suspend fun getUserNickname(): String
+
+    suspend fun deleteNickname()
 }

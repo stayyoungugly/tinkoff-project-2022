@@ -54,6 +54,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0"
 
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
@@ -73,8 +74,8 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     implementation platform('com.google.firebase:firebase-bom:30.0.1')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.0.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.1.2'
 
     // region Network
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
@@ -99,8 +100,9 @@ dependencies {
 
     implementation 'com.yandex.android:maps.mobile:4.0.0-full'
 
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.5.6'
     // To use only without reflection variants of viewBinding
-    implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.3'
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.6'
 }
 detekt {
     source = files(projectDir)

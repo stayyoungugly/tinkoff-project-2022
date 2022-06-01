@@ -22,4 +22,9 @@
         android:id="@+id/collectionsFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.CollectionsFragment"
         android:label="@string/collections_title" />
+
+    <fragment
+        android:id="@+id/friendsFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.FriendsFragment"
+        android:label="@string/friends" />
 </navigation>
