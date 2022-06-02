@@ -17,7 +17,10 @@ import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
 import timber.log.Timber
 
-class PlaceInfoFragment : Fragment(R.layout.fragment_place_info) {
+class PlaceInfoFragment(uri: String) : Fragment(R.layout.fragment_place_info) {
+
+    private val uriPlace = uri
+
     private val binding by viewBinding(FragmentPlaceInfoBinding::bind)
 
     private val placeInfoViewModel by viewModels<PlaceInfoViewModel> {
@@ -35,6 +38,7 @@ class PlaceInfoFragment : Fragment(R.layout.fragment_place_info) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
+        placeInfoViewModel.searchGeoObjectInfo(uriPlace)
     }
 
     private fun initObservers() {
@@ -53,6 +57,7 @@ class PlaceInfoFragment : Fragment(R.layout.fragment_place_info) {
     }
 
     private fun setPlaceInfo(place: Place) {
+        binding.textView.text = place.name
     }
 
     private fun showMessage(message: String) {

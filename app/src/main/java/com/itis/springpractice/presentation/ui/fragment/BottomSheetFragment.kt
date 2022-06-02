@@ -14,7 +14,9 @@ import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentBottomDialogBinding
 import com.itis.springpractice.presentation.ui.fragment.utils.ParentFragmentPagerAdapter
 
-class BottomSheetFragment : BottomSheetDialogFragment() {
+class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
+
+    private val uriPlace = uri
 
     private lateinit var binding: FragmentBottomDialogBinding
 
@@ -39,7 +41,6 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     override fun onStart() {
         super.onStart()
         setViewPager()
-        // val density = requireContext().resources.displayMetrics.density
         dialog?.let {
             val bottomSheet =
                 it.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
@@ -64,7 +65,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
 
-        val pagerAdapter = ParentFragmentPagerAdapter(this)
+        val pagerAdapter = ParentFragmentPagerAdapter(this, uriPlace)
         viewPager.adapter = pagerAdapter
         viewPager.isSaveEnabled = false
 
@@ -72,13 +73,5 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             val tabNames = listOf("Инфо", "Отзывы")
             tab.text = tabNames[position]
         }.attach()
-    }
-
-    fun changeStateToHidden() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
-    fun changeStateToExpanded() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 }

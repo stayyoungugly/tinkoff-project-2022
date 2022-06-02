@@ -25,7 +25,6 @@ import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.fragment.extension.findParent
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
-import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.StyleType
@@ -39,6 +38,7 @@ import com.yandex.mapkit.logo.VerticalAlignment
 import com.yandex.mapkit.map.*
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.mapkit.uri.UriObjectMetadata
 import com.yandex.mapkit.user_location.UserLocationLayer
 import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
@@ -51,12 +51,12 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     GeoObjectTapListener {
     private lateinit var userLocationLayer: UserLocationLayer
     private val binding by viewBinding(FragmentMapBinding::bind)
+    private lateinit var uri: String
 
     private var isShowing = false
 
-    private val bottomSheetDialogFragment: BottomSheetDialogFragment by lazy {
-        BottomSheetFragment()
-    }
+    private val bottomSheetDialogFragment: BottomSheetDialogFragment
+        get() = BottomSheetFragment(uri)
 
     private val glideOptions by lazy {
         RequestOptions()
@@ -118,14 +118,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         )
     }
 
-    private val placeInfoViewModel by viewModels<PlaceInfoViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences)
-        )
-    }
-
     private val sharedPreferences by lazy {
         requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
@@ -133,7 +125,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapCity.addTapListener(this)
-        setMapClickListener()
         binding.btnSignOut.setOnClickListener {
             onSignOutClick()
         }
@@ -141,19 +132,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         checkPermission()
         userInterface()
 
-    }
-
-    private fun setMapClickListener() {
-        val listener = object : InputListener {
-            override fun onMapTap(map: Map, point: Point) {
-                if (isShowing) {
-                    bottomSheetDialogFragment.dismiss()
-                }
-            }
-
-            override fun onMapLongTap(map: Map, point: Point) {}
-        }
-        mapCity.addInputListener(listener)
     }
 
     private fun onSignOutClick() {
@@ -326,11 +304,12 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     override fun onObjectTap(event: GeoObjectTapEvent): Boolean {
-        if (isShowing) {
-            bottomSheetDialogFragment.dismiss()
-        }
         selectionGeoObject(event)
-        placeInfoViewModel.searchGeoObjectInfo(event)
+        uri =
+            event.geoObject.metadataContainer.getItem(UriObjectMetadata::class.java)?.uris?.first()?.value.toString()
+        if (uri.isNotEmpty()) {
+            bottomModify()
+        }
         return true
     }
 
@@ -338,14 +317,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         mapViewModel.error.observe(viewLifecycleOwner) {
             Timber.e(it)
             showMessage(getString(R.string.try_again_error))
-        }
-
-        placeInfoViewModel.place.observe(viewLifecycleOwner) { result ->
-            result.fold(onSuccess = {
-                bottomModify()
-            }, onFailure = {
-                Timber.e(it)
-            })
         }
     }
 

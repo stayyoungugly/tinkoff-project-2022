@@ -6,14 +6,17 @@ import com.itis.springpractice.presentation.ui.fragment.PlaceInfoFragment
 import com.itis.springpractice.presentation.ui.fragment.PlaceReviewFragment
 
 class ParentFragmentPagerAdapter(
-    fragment: Fragment
+    fragment: Fragment,
+    uri: String
 ) : FragmentStateAdapter(fragment) {
+
+    private val uriPlace = uri
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> PlaceInfoFragment()
-            1 -> PlaceReviewFragment()
-            else -> PlaceInfoFragment()
+            0 -> PlaceInfoFragment(uriPlace)
+            1 -> PlaceReviewFragment(uriPlace)
+            else -> PlaceInfoFragment(uriPlace)
         }
     }
 

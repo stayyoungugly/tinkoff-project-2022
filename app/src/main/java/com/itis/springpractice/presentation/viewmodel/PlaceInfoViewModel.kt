@@ -4,13 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.itis.springpractice.domain.entity.Place
-import com.yandex.mapkit.layers.GeoObjectTapEvent
 import com.yandex.mapkit.search.*
-import com.yandex.mapkit.uri.UriObjectMetadata
 import com.yandex.runtime.Error
 
-class PlaceInfoViewModel(
-) : ViewModel(), Session.SearchListener {
+class PlaceInfoViewModel : ViewModel(), Session.SearchListener {
     private lateinit var searchSession: Session
     private lateinit var uri: String
 
@@ -26,15 +23,14 @@ class PlaceInfoViewModel(
     private val _place: MutableLiveData<Result<Place>> = MutableLiveData()
     val place: LiveData<Result<Place>> = _place
 
-    fun searchGeoObjectInfo(event: GeoObjectTapEvent) {
+    fun searchGeoObjectInfo(uriPlace: String) {
+        uri = uriPlace
         val options = SearchOptions()
         options.snippets = Snippet.PHOTOS.value
         options.snippets = Snippet.BUSINESS_IMAGES.value
         options.snippets = Snippet.ENCYCLOPEDIA.value
 
         try {
-            uri =
-                event.geoObject.metadataContainer.getItem(UriObjectMetadata::class.java).uris.first().value
             startSession(options, uri)
         } catch (ex: Exception) {
             _error.value = ex
@@ -69,7 +65,7 @@ class PlaceInfoViewModel(
         if (params.closed?.name == "UNKNOWN") {
             closed = false
         }
-        val place = Place(
+        return Place(
             uri = uri,
             name = params.name,
             workingHours = params.workingHours?.text,
@@ -80,7 +76,6 @@ class PlaceInfoViewModel(
             photoUrl = params.advertisement?.images?.get(1)?.url,
             description = params.advertisement?.about
         )
-        return place
     }
 
     override fun onSearchError(error: Error) {

@@ -12,7 +12,7 @@ class GetReviewsByPlaceUseCase(
 ) {
     suspend operator fun invoke(
         placeURI: String
-    ): List<Review?> {
+    ): List<Review> {
         return withContext(dispatcher) {
             reviewRepository.getReviewsByPlace(placeURI.takeLast(10))
         }

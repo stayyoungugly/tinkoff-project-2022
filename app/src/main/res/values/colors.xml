@@ -12,4 +12,5 @@
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="colorNull">#fafafa</color>
+    <color name="gold">#EDC843</color>
 </resources>

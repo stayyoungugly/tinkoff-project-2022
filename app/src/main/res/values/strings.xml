@@ -43,4 +43,12 @@
     <string name="try_again_error">Возникла ошибка! Повторите еще раз</string>
     <string name="place_not_found_error">Ошибка! Место не найдено</string>
     <string name="info_not_found">Информация не найдена!</string>
+    <string name="friends_opinion">Мнение ваших друзей:</string>
+    <string name="leave_review">Оставить отзыв</string>
+    <string name="full_name">Имя Фамилия</string>
+    <string name="dd_yyyy">DD месяц YYYY</string>
+    <string name="comment">Комментарий:</string>
+    <string name="your_rating">Оцените это место:</string>
+    <string name="your_review">Ваш отзыв</string>
+    <string name="no_reviews">Отзывов пока нет! Будьте первым</string>
 </resources>

@@ -46,8 +46,12 @@ class AuthFactory(
             modelClass.isAssignableFrom(PlaceReviewViewModel::class.java) ->
                 PlaceReviewViewModel(
                     userDi.getReviewsByPlaceUseCase,
-                    userDi.addReviewOnPlaceUseCase
-                ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
+                    userDi.addReviewOnPlaceUseCase,
+                    userDi.getUserNickname,
+                    userDi.getUserByNicknameUseCase,
+
+
+                    ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class")
         }

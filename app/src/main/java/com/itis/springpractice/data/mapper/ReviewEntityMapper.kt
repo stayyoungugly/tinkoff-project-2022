@@ -15,7 +15,8 @@ class ReviewEntityMapper(
                 Review(
                     author = it,
                     textReview = review.textReview!!,
-                    rating = review.rating!!
+                    rating = review.rating!!,
+                    created = review.created!!
                 )
             }
         } else null
@@ -24,10 +25,11 @@ class ReviewEntityMapper(
     suspend fun mapToReviewList(list: List<ReviewResponse>): List<Review?> =
         list.map { review -> mapToReview(review) }
 
-    fun mapToReviewResponse(textReviewValue: String, ratingValue: Int) =
+    fun mapToReviewResponse(review: Review) =
         ReviewResponse(
-            authorNickname = preferenceManager.getNickname(),
-            textReview = textReviewValue,
-            rating = ratingValue
+            authorNickname = review.author.nickname,
+            textReview = review.textReview,
+            rating = review.rating,
+            created = review.created
         )
 }
