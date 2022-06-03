@@ -47,7 +47,7 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
         )
     }
 
-    private var liked = true
+    private var liked = false
 
     private val sharedPreferences by lazy {
         requireActivity().getPreferences(Context.MODE_PRIVATE)
@@ -71,8 +71,8 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
-        placeInfoViewModel.searchGeoObjectInfo(uriPlace)
         placeInfoViewModel.isPlaceLiked(uriPlace)
+        placeInfoViewModel.searchGeoObjectInfo(uriPlace)
         binding.btnDown.setOnClickListener {
             onButtonClick()
         }
@@ -80,7 +80,7 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
 
     private fun setMenuButtons() {
         with(binding) {
-            if (liked == true) {
+            if (liked) {
                 btnLike.setImageIcon(Icon.createWithResource(context, R.drawable.ic_liked))
             }
             btnCancel.setOnClickListener {
@@ -88,7 +88,7 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
             }
             btnAdd.setOnClickListener {}
             btnLike.setOnClickListener {
-                liked = if (liked == true) {
+                liked = if (liked) {
                     btnLike.setImageIcon(Icon.createWithResource(context, R.drawable.ic_not_liked))
                     placeInfoViewModel.deleteLike(uriPlace)
                     false
