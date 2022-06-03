@@ -63,4 +63,5 @@
     <string name="zero_friends">Пора завести друзей</string>
     <string name="add_friend">Добавить друга</string>
     <string name="friend_nickname">Псевдоним друга</string>
+    <string name="not_found">Информация не найдена</string>
 </resources>

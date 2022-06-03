@@ -7,7 +7,7 @@
     android:background="@color/white"
     app:behavior_hideable="true"
     app:behavior_peekHeight="110dp"
-    android:paddingBottom="20dp"
+    android:paddingBottom="16dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,7 +31,7 @@
             android:maxLines="2"
             android:layout_marginEnd="24dp"
             android:textColor="@android:color/white"
-            android:textSize="24sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/tv_category"
             app:layout_constraintEnd_toStartOf="@id/btn_down"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" />
@@ -40,7 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
-            android:maxLines="2"
+            android:maxLines="1"
             android:text="@string/category"
             android:textColor="@color/secondary_text"
             android:textSize="18sp"
@@ -73,7 +73,6 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         app:layout_constraintBottom_toTopOf="@id/view_pager"
-        android:layout_marginBottom="4dp"
         app:layout_constraintTop_toBottomOf="@id/bottom_sheet_header"
         app:tabIndicatorAnimationMode="fade"
         app:tabIndicatorColor="@color/black"

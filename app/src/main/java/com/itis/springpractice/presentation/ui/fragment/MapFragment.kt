@@ -21,6 +21,7 @@ import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.fragment.extension.findParent
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
+import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.StyleType
@@ -95,6 +96,15 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     private val mapViewModel by viewModels<MapViewModel> {
+        AuthFactory(
+            UserAuthContainer,
+            UserTokenContainer(sharedPreferences),
+            UserContainer(sharedPreferences),
+            FriendContainer(sharedPreferences)
+        )
+    }
+
+    private val placeInfoViewModel by viewModels<PlaceInfoViewModel> {
         AuthFactory(
             UserAuthContainer,
             UserTokenContainer(sharedPreferences),
@@ -289,8 +299,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             event.geoObject.metadataContainer.getItem(UriObjectMetadata::class.java)?.uris?.first()?.value
         if (!uriLink.isNullOrEmpty()) {
             uri = uriLink
-            println(uri)
-            bottomModify()
+            placeInfoViewModel.searchGeoObjectInfo(uri)
         }
         return true
     }
@@ -299,6 +308,16 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         mapViewModel.error.observe(viewLifecycleOwner) {
             Timber.e(it)
             showMessage(getString(R.string.try_again_error))
+        }
+
+        placeInfoViewModel.place.observe(viewLifecycleOwner) { result ->
+            result.fold(onSuccess = {
+                if (it.address.isNotEmpty()) {
+                    bottomModify()
+                }
+            }, onFailure = {
+                showMessage(getString(R.string.not_found))
+            })
         }
     }
 }
