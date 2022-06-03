@@ -10,12 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Priority
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentMapBinding
@@ -39,41 +34,23 @@ import com.yandex.mapkit.logo.VerticalAlignment
 import com.yandex.mapkit.map.*
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
-import com.yandex.mapkit.search.*
+import com.yandex.mapkit.uri.UriObjectMetadata
 import com.yandex.mapkit.user_location.UserLocationLayer
 import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
-import com.yandex.runtime.Error
+import com.yandex.runtime.i18n.I18nManagerFactory
 import com.yandex.runtime.image.ImageProvider
+import timber.log.Timber
 
 
 class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener, CameraListener,
-    Session.SearchListener,
     GeoObjectTapListener {
-    private lateinit var searchSession: Session
-    private val binding by viewBinding(FragmentMapBinding::bind)
-
-    private val bottomSheetBehavior
-        get() = BottomSheetBehavior.from(binding.bottomLayout.root).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-            addBottomSheetCallback(object :
-                BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                        state = BottomSheetBehavior.STATE_HIDDEN
-                    }
-                }
-            })
-        }
-
-    private val glideOptions by lazy {
-        RequestOptions()
-            .priority(Priority.HIGH)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-    }
-
     private lateinit var userLocationLayer: UserLocationLayer
+    private val binding by viewBinding(FragmentMapBinding::bind)
+    private lateinit var uri: String
+
+    private val bottomSheetDialogFragment: BottomSheetDialogFragment
+        get() = BottomSheetFragment(uri)
 
     private val mapView: MapView
         get() = binding.mapCity
@@ -88,19 +65,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             isIndoorEnabled = true
         }
 
-    private val glide: RequestManager by lazy {
-        Glide.with(this)
-    }
-
-    private val mapKit by lazy {
-        MapKitFactory.getInstance()
-    }
-
-    private val searchManager by lazy {
-        SearchFactory.getInstance().createSearchManager(
-            SearchManagerType.COMBINED
-        )
-    }
+    private val mapKit
+        get() = MapKitFactory.getInstance()
 
     private var defaultLocation = Point(0.0, 0.0)
     private var routeStartLocation: Point? = defaultLocation
@@ -114,13 +80,13 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         const val durationValue = 1f
         const val widthRatio = 0.5
         const val heightRatio = 0.83
-        const val searchType = 2
     }
 
     override fun onStart() {
         super.onStart()
         mapView.onStart()
         MapKitFactory.getInstance().onStart()
+        I18nManagerFactory.setLocale("ru_RU")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -147,8 +113,10 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         binding.btnSignOut.setOnClickListener {
             onSignOutClick()
         }
+        initObservers()
         checkPermission()
         userInterface()
+
     }
 
     private fun onSignOutClick() {
@@ -189,7 +157,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
                 userLocationConfig()
             }
             else -> {
-                showMessage("Скоро будет доступен поиск мест")
+                showMessage(getString(R.string.search_will_be_available))
             }
         }
     }
@@ -202,18 +170,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         userLocationLayer.setObjectListener(this)
     }
 
-    private fun bottomModify(params: BusinessObjectMetadata) {
-        val bottomBinding = binding.bottomLayout
-        with(bottomBinding) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            tvName.text = params.name
-            tvDescription.text = params.address.formattedAddress
-            val url = params.advertisement?.images?.get(0)?.url
-//          glide.load(url)
-//               .apply(glideOptions)
-//               .into(ivPicture)
-//           ну я потом этот код буду использовать, ладно уж
-        }
+    private fun bottomModify() {
+        bottomSheetDialogFragment.show(parentFragmentManager, bottomSheetDialogFragment.tag)
     }
 
     private fun modifyMap(location: Point?, isAnimated: Boolean) {
@@ -319,35 +277,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         mapCity.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
     }
 
-    private fun searchGeoObjectInfo(event: GeoObjectTapEvent) {
-        val point = event.geoObject.geometry[0].point
-        val options = SearchOptions()
-        options.searchTypes = searchType
-        if (point != null) {
-            startSession(point, options)
-        } else showMessage("Информация о месте не найдена")
-    }
-
-    private fun startSession(
-        point: Point,
-        options: SearchOptions
-    ) {
-        searchSession = searchManager.submit(point, 16, options, this)
-    }
-
-    override fun onSearchResponse(response: Response) {
-        val params = response.collection.children.firstOrNull()?.obj
-            ?.metadataContainer
-            ?.getItem(BusinessObjectMetadata::class.java)
-        if (params != null) {
-            bottomModify(params)
-        }
-    }
-
-    override fun onSearchError(error: Error) {
-        showMessage(error.toString())
-    }
-
     override fun onStop() {
         super.onStop()
         mapView.onStop()
@@ -356,8 +285,21 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
 
     override fun onObjectTap(event: GeoObjectTapEvent): Boolean {
         selectionGeoObject(event)
-        searchGeoObjectInfo(event)
+        val uriLink =
+            event.geoObject.metadataContainer.getItem(UriObjectMetadata::class.java)?.uris?.first()?.value
+        if (!uriLink.isNullOrEmpty()) {
+            uri = uriLink
+            println(uri)
+            bottomModify()
+        }
         return true
+    }
+
+    private fun initObservers() {
+        mapViewModel.error.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            showMessage(getString(R.string.try_again_error))
+        }
     }
 }
 

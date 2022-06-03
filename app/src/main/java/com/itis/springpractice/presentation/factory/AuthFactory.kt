@@ -46,11 +46,27 @@ class AuthFactory(
             modelClass.isAssignableFrom(FriendsViewModel::class.java) ->
                 FriendsViewModel(
                     friendDi.getAllFriendsByNicknameUseCase,
-                    userDi.getUserNickname,
+                    userDi.getUserNicknameUseCase,
                     userDi.getUserByNicknameUseCase,
                     friendDi.addFriendUseCase,
                     friendDi.isUserFriendUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
+            modelClass.isAssignableFrom(PlaceInfoViewModel::class.java) ->
+                PlaceInfoViewModel(
+                    userDi.getUserNicknameUseCase,
+                    userDi.addUserLikeUseCase,
+                    userDi.deleteUserLikeUseCase,
+                    userDi.isPlaceLikedUseCase
+                ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
+            modelClass.isAssignableFrom(PlaceReviewViewModel::class.java) ->
+                PlaceReviewViewModel(
+                    userDi.getReviewsByPlaceUseCase,
+                    userDi.addReviewOnPlaceUseCase,
+                    userDi.getUserNicknameUseCase,
+                    userDi.getUserByNicknameUseCase,
+
+
+                    ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class")
         }

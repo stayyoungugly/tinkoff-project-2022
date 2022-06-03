@@ -7,7 +7,13 @@ interface UserRepository {
 
     suspend fun getUserByNickname(nickname: String): User?
 
+    suspend fun deleteNickname()
+
     suspend fun getUserNickname(): String
 
-    suspend fun deleteNickname()
+    suspend fun addUserLike(nickname: String, uri: String)
+
+    suspend fun deleteUserLike(nickname: String, uri: String)
+
+    suspend fun isPlaceLiked(nickname: String, uri: String): String?
 }
