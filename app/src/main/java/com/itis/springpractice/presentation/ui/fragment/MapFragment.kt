@@ -48,8 +48,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     private val binding by viewBinding(FragmentMapBinding::bind)
     private lateinit var uri: String
 
-    private var isShowing = false
-
     private val bottomSheetDialogFragment: BottomSheetDialogFragment
         get() = BottomSheetFragment(uri)
 
@@ -171,7 +169,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     private fun bottomModify() {
-        isShowing = true
         bottomSheetDialogFragment.show(parentFragmentManager, bottomSheetDialogFragment.tag)
     }
 
@@ -290,6 +287,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             event.geoObject.metadataContainer.getItem(UriObjectMetadata::class.java)?.uris?.first()?.value
         if (!uriLink.isNullOrEmpty()) {
             uri = uriLink
+            println(uri)
             bottomModify()
         }
         return true

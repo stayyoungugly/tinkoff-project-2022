@@ -15,5 +15,5 @@ interface UserRepository {
 
     suspend fun deleteUserLike(nickname: String, uri: String)
 
-    suspend fun isPlaceLiked(nickname: String, uri: String): Boolean
+    suspend fun isPlaceLiked(nickname: String, uri: String): String?
 }

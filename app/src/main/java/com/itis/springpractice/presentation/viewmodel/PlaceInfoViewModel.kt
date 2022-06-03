@@ -74,12 +74,16 @@ class PlaceInfoViewModel(
     private fun generatePlaceModel(uri: String, params: BusinessObjectMetadata): Place {
         var closed = false
         if (params.closed?.name == "PERMANENT" || params.closed?.name == "TEMPORARY") {
-            closed = false
+            closed = true
+        }
+        var hours = "Нет данных"
+        if (params.workingHours != null) {
+            hours = params.workingHours?.text.toString()
         }
         return Place(
             uri = uri,
             name = params.name,
-            workingHours = params.workingHours?.text,
+            workingHours = hours,
             closed = closed,
             category = params.categories[0].name,
             phones = params.phones[0].formattedNumber,
@@ -90,8 +94,8 @@ class PlaceInfoViewModel(
 
     }
 
-    private val _isPlaceLiked: MutableLiveData<Boolean> = MutableLiveData()
-    val isPlaceLiked: LiveData<Boolean> = _isPlaceLiked
+    private val _isPlaceLiked: MutableLiveData<String> = MutableLiveData()
+    var isPlaceLiked: LiveData<String> = _isPlaceLiked
 
     fun isPlaceLiked(uri: String) {
         try {

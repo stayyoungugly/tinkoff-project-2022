@@ -8,9 +8,9 @@ class IsPlaceLikedUseCase(
     private val userRepository: UserRepository,
     private val dispatcher: CoroutineDispatcher
 ) {
-    suspend operator fun invoke(nickname: String, uri: String): Boolean {
+    suspend operator fun invoke(nickname: String, uri: String): String? {
         return withContext(dispatcher) {
-            userRepository.isPlaceLiked(nickname, uri.takeLast(10),)
+            userRepository.isPlaceLiked(nickname, uri.takeLast(10))
         }
     }
 }

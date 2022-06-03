@@ -71,7 +71,6 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
-        placeInfoViewModel.isPlaceLiked(uriPlace)
         placeInfoViewModel.searchGeoObjectInfo(uriPlace)
         binding.btnDown.setOnClickListener {
             onButtonClick()
@@ -80,9 +79,6 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
 
     private fun setMenuButtons() {
         with(binding) {
-            if (liked) {
-                btnLike.setImageIcon(Icon.createWithResource(context, R.drawable.ic_liked))
-            }
             btnCancel.setOnClickListener {
                 dialog?.dismiss()
             }
@@ -111,7 +107,10 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
         }
 
         placeInfoViewModel.isPlaceLiked.observe(viewLifecycleOwner) {
-            liked = it
+            if (!it.isNullOrEmpty()) {
+                binding.btnLike.setImageIcon(Icon.createWithResource(context, R.drawable.ic_liked))
+                liked = true
+            }
         }
 
         placeInfoViewModel.error.observe(viewLifecycleOwner) {
@@ -121,6 +120,7 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
     }
 
     private fun setPlaceInfo(place: Place) {
+        placeInfoViewModel.isPlaceLiked(uriPlace)
         with(binding) {
             tvCategory.text = place.category
             tvName.text = place.name
