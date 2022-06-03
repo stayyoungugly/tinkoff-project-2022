@@ -10,7 +10,7 @@ class AddUserLikeUseCase(
 ) {
     suspend operator fun invoke(nickname: String, uri: String) {
         return withContext(dispatcher) {
-            userRepository.addUserLike(nickname, uri)
+            userRepository.addUserLike(nickname, uri.takeLast(10),)
         }
     }
 }

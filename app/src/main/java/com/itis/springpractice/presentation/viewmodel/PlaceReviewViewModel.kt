@@ -21,7 +21,6 @@ class PlaceReviewViewModel(
     private val getUserByNicknameUseCase: GetUserByNicknameUseCase
 ) : ViewModel() {
 
-
     private val _error: MutableLiveData<Throwable> = MutableLiveData()
     val error: LiveData<Throwable> = _error
 
@@ -45,7 +44,7 @@ class PlaceReviewViewModel(
                 }
                 else -> {
                     try {
-                        if (generateReview(textReview, rating)?.let {
+                        if (generateReview(uri, textReview, rating)?.let {
                                 addReviewOnPlaceUseCase(
                                     uri,
                                     it
@@ -65,7 +64,7 @@ class PlaceReviewViewModel(
         }
     }
 
-    private suspend fun generateReview(textReview: String, rating: Float): Review? {
+    private suspend fun generateReview(uri: String, textReview: String, rating: Float): Review? {
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
         val formatted = current.format(formatter)
@@ -76,7 +75,7 @@ class PlaceReviewViewModel(
             _error.value = ex
             println(ex.message)
         }
-        return author?.let { Review(it, textReview, rating, formatted) }
+        return author?.let { Review(uri.takeLast(10), it, textReview, rating, formatted) }
     }
 
     private val _reviewList: MutableLiveData<Result<List<Review>>> = MutableLiveData()

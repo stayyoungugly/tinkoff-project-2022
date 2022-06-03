@@ -10,5 +10,4 @@ data class Place(
     val address: String,
     val photoUrl: String?,
     val description: String?,
-    val isLiked: Boolean
 )

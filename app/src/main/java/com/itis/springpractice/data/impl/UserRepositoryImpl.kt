@@ -37,7 +37,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun isPlaceLiked(nickname: String, uri: String): Boolean {
-        return firestore.isPlaceLiked(nickname, uri).isNotEmpty()
+        return (!firestore.isPlaceLiked(nickname, uri)?.uri.isNullOrEmpty())
     }
 
     override suspend fun deleteUserLike(nickname: String, uri: String) {

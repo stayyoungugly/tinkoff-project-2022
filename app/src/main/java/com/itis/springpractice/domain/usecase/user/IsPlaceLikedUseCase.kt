@@ -10,7 +10,7 @@ class IsPlaceLikedUseCase(
 ) {
     suspend operator fun invoke(nickname: String, uri: String): Boolean {
         return withContext(dispatcher) {
-            userRepository.isPlaceLiked(nickname, uri)
+            userRepository.isPlaceLiked(nickname, uri.takeLast(10),)
         }
     }
 }

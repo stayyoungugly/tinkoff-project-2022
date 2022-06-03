@@ -47,6 +47,8 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
         )
     }
 
+    private var liked = true
+
     private val sharedPreferences by lazy {
         requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
@@ -70,15 +72,15 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
         placeInfoViewModel.searchGeoObjectInfo(uriPlace)
+        placeInfoViewModel.isPlaceLiked(uriPlace)
         binding.btnDown.setOnClickListener {
             onButtonClick()
         }
     }
 
-    private fun setMenuButtons(place: Place) {
-        var liked = place.isLiked
+    private fun setMenuButtons() {
         with(binding) {
-            if (liked) {
+            if (liked == true) {
                 btnLike.setImageIcon(Icon.createWithResource(context, R.drawable.ic_liked))
             }
             btnCancel.setOnClickListener {
@@ -86,7 +88,7 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
             }
             btnAdd.setOnClickListener {}
             btnLike.setOnClickListener {
-                liked = if (liked) {
+                liked = if (liked == true) {
                     btnLike.setImageIcon(Icon.createWithResource(context, R.drawable.ic_not_liked))
                     placeInfoViewModel.deleteLike(uriPlace)
                     false
@@ -104,8 +106,12 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
             result.fold(onSuccess = {
                 setPlaceInfo(it)
             }, onFailure = {
-                showMessage("Ошибка! Повторите еще раз")
+                showMessage(getString(R.string.try_again))
             })
+        }
+
+        placeInfoViewModel.isPlaceLiked.observe(viewLifecycleOwner) {
+            liked = it
         }
 
         placeInfoViewModel.error.observe(viewLifecycleOwner) {
@@ -119,7 +125,7 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
             tvCategory.text = place.category
             tvName.text = place.name
         }
-        setMenuButtons(place)
+        setMenuButtons()
     }
 
     private fun showMessage(message: String) {

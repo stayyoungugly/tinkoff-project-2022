@@ -72,14 +72,6 @@ class PlaceInfoViewModel(
     }
 
     private fun generatePlaceModel(uri: String, params: BusinessObjectMetadata): Place {
-        var isPlaceLiked = false
-        try {
-            viewModelScope.launch {
-                isPlaceLiked = isPlaceLikedUseCase(getUserNicknameUseCase(), uri)
-            }
-        } catch (ex: Exception) {
-            _error.value = ex
-        }
         var closed = false
         if (params.closed?.name == "PERMANENT" || params.closed?.name == "TEMPORARY") {
             closed = false
@@ -94,9 +86,22 @@ class PlaceInfoViewModel(
             address = params.address.formattedAddress,
             photoUrl = params.advertisement?.images?.get(1)?.url,
             description = params.advertisement?.about,
-            isLiked = isPlaceLiked
         )
 
+    }
+
+    private val _isPlaceLiked: MutableLiveData<Boolean> = MutableLiveData()
+    val isPlaceLiked: LiveData<Boolean> = _isPlaceLiked
+
+    fun isPlaceLiked(uri: String) {
+        try {
+            viewModelScope.launch {
+                _isPlaceLiked.value = isPlaceLikedUseCase(getUserNicknameUseCase(), uri)
+            }
+        } catch (ex: Exception) {
+            _error.value = ex
+            println(ex.message)
+        }
     }
 
     override fun onSearchError(error: Error) {
@@ -119,6 +124,7 @@ class PlaceInfoViewModel(
                 addUserLikeUseCase(getUserNicknameUseCase(), uriPlace)
             } catch (ex: Exception) {
                 _error.value = Throwable(error.toString())
+                println(ex.message)
             }
         }
     }

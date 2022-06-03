@@ -10,7 +10,7 @@ class DeleteUserLikeUseCase(
 ) {
     suspend operator fun invoke(nickname: String, uri: String) {
         return withContext(dispatcher) {
-            userRepository.deleteUserLike(nickname, uri)
+            userRepository.deleteUserLike(nickname, uri.takeLast(10))
         }
     }
 }

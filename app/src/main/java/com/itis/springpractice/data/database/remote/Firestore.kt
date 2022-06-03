@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.itis.springpractice.data.response.LikeResponse
 import com.itis.springpractice.data.response.ReviewResponse
 import com.itis.springpractice.data.response.UserResponse
 import timber.log.Timber
@@ -29,9 +30,8 @@ class Firestore {
     fun addReviewOnPlace(placeURI: String, placeReview: ReviewResponse): Boolean {
         return try {
             placeReview.authorNickname?.let {
-                placesRef.document(placeURI).collection("reviews").document(
-                    it
-                ).set(placeReview)
+                placesRef.document(placeURI).collection("reviews").document(it).set(placeReview)
+                usersRef.document(it).collection("reviews").document(placeURI).set(placeReview)
             }
             true
         } catch (ex: Exception) {
@@ -40,9 +40,11 @@ class Firestore {
         }
     }
 
-    fun isPlaceLiked(nickname: String, placeURI: String): String {
+    fun getUserReviews(nickname: String) {}
+
+    fun isPlaceLiked(nickname: String, placeURI: String): LikeResponse? {
         val dockRef = usersRef.document(nickname)
-        return await(dockRef.collection("likes").document(placeURI).get()).toString()
+        return await(dockRef.collection("likes").document(placeURI).get()).toObject<LikeResponse>()
     }
 
     fun getLikedPlaces(nickname: String): List<String> {
@@ -60,7 +62,10 @@ class Firestore {
     }
 
     fun addLike(nickname: String, placeURI: String) {
-        usersRef.document(nickname).collection("likes").document(placeURI).set(placeURI)
+        val data = hashMapOf(
+            "uri" to placeURI
+        )
+        usersRef.document(nickname).collection("likes").document(placeURI).set(data)
     }
 
     fun deleteLike(nickname: String, placeURI: String) {

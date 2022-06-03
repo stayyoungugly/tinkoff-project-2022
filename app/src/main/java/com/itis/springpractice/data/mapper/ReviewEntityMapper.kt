@@ -16,7 +16,8 @@ class ReviewEntityMapper(
                     author = it,
                     textReview = review.textReview!!,
                     rating = review.rating!!,
-                    created = review.created!!
+                    created = review.created!!,
+                    uri = review.uri!!
                 )
             }
         } else null
@@ -30,6 +31,7 @@ class ReviewEntityMapper(
             authorNickname = review.author.nickname,
             textReview = review.textReview,
             rating = review.rating,
-            created = review.created
+            created = review.created,
+            uri = review.uri
         )
 }
