@@ -1,18 +1,31 @@
 package com.itis.springpractice.presentation.ui.fragment
 
+import android.content.Context
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentBottomDialogBinding
+import com.itis.springpractice.di.UserAuthContainer
+import com.itis.springpractice.di.UserContainer
+import com.itis.springpractice.di.UserTokenContainer
+import com.itis.springpractice.domain.entity.Place
+import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.fragment.utils.ParentFragmentPagerAdapter
+import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
+import timber.log.Timber
+
 
 class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
 
@@ -22,7 +35,22 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<FrameLayout>
 
-    override fun getTheme() = R.style.AppBottomSheetDialogTheme
+    private var isUp = true
+
+    override fun getTheme(): Int = R.style.BottomSheetDialogTheme
+
+    private val placeInfoViewModel by viewModels<PlaceInfoViewModel> {
+        AuthFactory(
+            UserAuthContainer,
+            UserTokenContainer(sharedPreferences),
+            UserContainer(sharedPreferences)
+        )
+    }
+
+    private val sharedPreferences by lazy {
+        requireActivity().getPreferences(Context.MODE_PRIVATE)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +66,83 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initObservers()
+        placeInfoViewModel.searchGeoObjectInfo(uriPlace)
+        binding.btnDown.setOnClickListener {
+            onButtonClick()
+        }
+    }
+
+    private fun setMenuButtons(place: Place) {
+        var liked = place.isLiked
+        with(binding) {
+            if (liked) {
+                btnLike.setImageIcon(Icon.createWithResource(context, R.drawable.ic_liked))
+            }
+            btnCancel.setOnClickListener {
+                dialog?.dismiss()
+            }
+            btnAdd.setOnClickListener {}
+            btnLike.setOnClickListener {
+                liked = if (liked) {
+                    btnLike.setImageIcon(Icon.createWithResource(context, R.drawable.ic_not_liked))
+                    placeInfoViewModel.deleteLike(uriPlace)
+                    false
+                } else {
+                    btnLike.setImageIcon(Icon.createWithResource(context, R.drawable.ic_liked))
+                    placeInfoViewModel.addLike(uriPlace)
+                    true
+                }
+            }
+        }
+    }
+
+    private fun initObservers() {
+        placeInfoViewModel.place.observe(viewLifecycleOwner) { result ->
+            result.fold(onSuccess = {
+                setPlaceInfo(it)
+            }, onFailure = {
+                showMessage("Ошибка! Повторите еще раз")
+            })
+        }
+
+        placeInfoViewModel.error.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            showMessage(getString(R.string.info_not_found))
+        }
+    }
+
+    private fun setPlaceInfo(place: Place) {
+        with(binding) {
+            tvCategory.text = place.category
+            tvName.text = place.name
+        }
+        setMenuButtons(place)
+    }
+
+    private fun showMessage(message: String) {
+        Snackbar.make(
+            binding.root,
+            message,
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
+
+    private fun onButtonClick() {
+        if (isUp) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            binding.btnDown.setImageIcon(Icon.createWithResource(context, R.drawable.ic_arrow_up))
+            isUp = false
+        } else {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            binding.btnDown.setImageIcon(Icon.createWithResource(context, R.drawable.ic_arrow_down))
+            isUp = true
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         setViewPager()
@@ -46,14 +151,18 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
                 it.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
             bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet).apply {
                 state = BottomSheetBehavior.STATE_EXPANDED
+                it.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                val dm = resources.displayMetrics
+                peekHeight = (dm.density * 110).toInt()
+
                 addBottomSheetCallback(object :
                     BottomSheetBehavior.BottomSheetCallback() {
 
                     override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
                     override fun onStateChanged(bottomSheet: View, newState: Int) {
-                        if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                            state = BottomSheetBehavior.STATE_HIDDEN
+                        if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                            it.dismiss()
                         }
                     }
                 })

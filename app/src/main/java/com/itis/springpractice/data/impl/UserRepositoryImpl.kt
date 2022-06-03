@@ -32,6 +32,18 @@ class UserRepositoryImpl(
         return preferenceManager.getNickname() ?: DEFAULT_VALUE
     }
 
+    override suspend fun addUserLike(nickname: String, uri: String) {
+        firestore.addLike(nickname, uri)
+    }
+
+    override suspend fun isPlaceLiked(nickname: String, uri: String): Boolean {
+        return firestore.isPlaceLiked(nickname, uri).isNotEmpty()
+    }
+
+    override suspend fun deleteUserLike(nickname: String, uri: String) {
+        firestore.deleteLike(nickname, uri)
+    }
+
     override suspend fun deleteNickname() {
         preferenceManager.deleteNickname()
     }

@@ -10,11 +10,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Priority
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
@@ -58,12 +53,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     private val bottomSheetDialogFragment: BottomSheetDialogFragment
         get() = BottomSheetFragment(uri)
 
-    private val glideOptions by lazy {
-        RequestOptions()
-            .priority(Priority.HIGH)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-    }
-
     private val mapView: MapView
         get() = binding.mapCity
 
@@ -76,10 +65,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             isFastTapEnabled = true
             isIndoorEnabled = true
         }
-
-    private val glide: RequestManager by lazy {
-        Glide.with(this)
-    }
 
     private val mapKit
         get() = MapKitFactory.getInstance()
@@ -186,10 +171,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     private fun bottomModify() {
-//            glide.load(url)
-//                .apply(glideOptions)
-//                .into(ivPicture)
-//
         isShowing = true
         bottomSheetDialogFragment.show(parentFragmentManager, bottomSheetDialogFragment.tag)
     }
@@ -305,9 +286,10 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
 
     override fun onObjectTap(event: GeoObjectTapEvent): Boolean {
         selectionGeoObject(event)
-        uri =
-            event.geoObject.metadataContainer.getItem(UriObjectMetadata::class.java)?.uris?.first()?.value.toString()
-        if (uri.isNotEmpty()) {
+        val uriLink =
+            event.geoObject.metadataContainer.getItem(UriObjectMetadata::class.java)?.uris?.first()?.value
+        if (!uriLink.isNullOrEmpty()) {
+            uri = uriLink
             bottomModify()
         }
         return true
@@ -318,11 +300,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             Timber.e(it)
             showMessage(getString(R.string.try_again_error))
         }
-    }
-
-    private fun generateURI(uriCode: String): String {
-        val result = "ymapsbm1://org?oid="
-        return result.plus(uriCode)
     }
 }
 

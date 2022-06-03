@@ -3,11 +3,22 @@ package com.itis.springpractice.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.Place
+import com.itis.springpractice.domain.usecase.user.AddUserLikeUseCase
+import com.itis.springpractice.domain.usecase.user.DeleteUserLikeUseCase
+import com.itis.springpractice.domain.usecase.user.GetUserNicknameUseCase
+import com.itis.springpractice.domain.usecase.user.IsPlaceLikedUseCase
 import com.yandex.mapkit.search.*
 import com.yandex.runtime.Error
+import kotlinx.coroutines.launch
 
-class PlaceInfoViewModel : ViewModel(), Session.SearchListener {
+class PlaceInfoViewModel(
+    private val getUserNicknameUseCase: GetUserNicknameUseCase,
+    private val addUserLikeUseCase: AddUserLikeUseCase,
+    private val deleteUserLikeUseCase: DeleteUserLikeUseCase,
+    private val isPlaceLikedUseCase: IsPlaceLikedUseCase
+) : ViewModel(), Session.SearchListener {
     private lateinit var searchSession: Session
     private lateinit var uri: String
 
@@ -61,8 +72,16 @@ class PlaceInfoViewModel : ViewModel(), Session.SearchListener {
     }
 
     private fun generatePlaceModel(uri: String, params: BusinessObjectMetadata): Place {
-        var closed = true
-        if (params.closed?.name == "UNKNOWN") {
+        var isPlaceLiked = false
+        try {
+            viewModelScope.launch {
+                isPlaceLiked = isPlaceLikedUseCase(getUserNicknameUseCase(), uri)
+            }
+        } catch (ex: Exception) {
+            _error.value = ex
+        }
+        var closed = false
+        if (params.closed?.name == "PERMANENT" || params.closed?.name == "TEMPORARY") {
             closed = false
         }
         return Place(
@@ -74,11 +93,33 @@ class PlaceInfoViewModel : ViewModel(), Session.SearchListener {
             phones = params.phones[0].formattedNumber,
             address = params.address.formattedAddress,
             photoUrl = params.advertisement?.images?.get(1)?.url,
-            description = params.advertisement?.about
+            description = params.advertisement?.about,
+            isLiked = isPlaceLiked
         )
+
     }
 
     override fun onSearchError(error: Error) {
         _error.value = Throwable(error.toString())
+    }
+
+    fun deleteLike(uriPlace: String) {
+        viewModelScope.launch {
+            try {
+                deleteUserLikeUseCase(getUserNicknameUseCase(), uriPlace)
+            } catch (ex: Exception) {
+                _error.value = Throwable(error.toString())
+            }
+        }
+    }
+
+    fun addLike(uriPlace: String) {
+        viewModelScope.launch {
+            try {
+                addUserLikeUseCase(getUserNicknameUseCase(), uriPlace)
+            } catch (ex: Exception) {
+                _error.value = Throwable(error.toString())
+            }
+        }
     }
 }

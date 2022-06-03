@@ -51,4 +51,11 @@
     <string name="your_rating">Оцените это место:</string>
     <string name="your_review">Ваш отзыв</string>
     <string name="no_reviews">Отзывов пока нет! Будьте первым</string>
+    <string name="address">Адрес</string>
+    <string name="hours">xx:xx - xx:xx</string>
+    <string name="open">Открыто</string>
+    <string name="number">+7900000000</string>
+    <string name="place">Place</string>
+    <string name="category">Category</string>
+    <string name="closed">Закрыто</string>
 </resources>

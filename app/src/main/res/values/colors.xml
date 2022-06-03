@@ -13,4 +13,6 @@
     <color name="secondary_text">#757575</color>
     <color name="colorNull">#fafafa</color>
     <color name="gold">#EDC843</color>
+    <color name="green">#74CD0E</color>
+    <color name="red">#CF1818</color>
 </resources>

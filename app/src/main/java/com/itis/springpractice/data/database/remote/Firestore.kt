@@ -40,11 +40,31 @@ class Firestore {
         }
     }
 
+    fun isPlaceLiked(nickname: String, placeURI: String): String {
+        val dockRef = usersRef.document(nickname)
+        return await(dockRef.collection("likes").document(placeURI).get()).toString()
+    }
+
+    fun getLikedPlaces(nickname: String): List<String> {
+        val dockRef = usersRef.document(nickname)
+        return await(dockRef.collection("likes").get()).map { like ->
+            like.toString()
+        } as ArrayList<String>
+    }
+
     fun getReviewsByPlace(placeURI: String): List<ReviewResponse> {
         val placeRef = placesRef.document(placeURI)
         return await(placeRef.collection("reviews").get()).map { review ->
-                review.toObject<ReviewResponse>()
-            } as ArrayList<ReviewResponse>
-        }
+            review.toObject<ReviewResponse>()
+        } as ArrayList<ReviewResponse>
     }
+
+    fun addLike(nickname: String, placeURI: String) {
+        usersRef.document(nickname).collection("likes").document(placeURI).set(placeURI)
+    }
+
+    fun deleteLike(nickname: String, placeURI: String) {
+        usersRef.document(nickname).collection("likes").document(placeURI).delete()
+    }
+}
 
