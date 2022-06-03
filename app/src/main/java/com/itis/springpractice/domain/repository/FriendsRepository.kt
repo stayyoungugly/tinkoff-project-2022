@@ -6,7 +6,7 @@ interface FriendsRepository {
 
     suspend fun addFriend(nickname: String)
 
-    suspend fun getAllFriendsByNickname(): List<User>
+    suspend fun getAllFriendsByNickname(nickname: String): List<User>
 
     suspend fun isUserFriend(nickname: String): Boolean
 }

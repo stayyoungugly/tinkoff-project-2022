@@ -35,4 +35,17 @@ class UserRepositoryImpl(
     override suspend fun deleteNickname() {
         preferenceManager.deleteNickname()
     }
+
+    override suspend fun getNumberOf(nickname: String): HashMap<String, Int> {
+        return firestore.getNumberOf(nickname)
+    }
+
+    override suspend fun updateUser(user: User) {
+        if (user.nickname != preferenceManager.getNickname()) {
+            preferenceManager.deleteNickname()
+            preferenceManager.saveNickname(user.nickname)
+            firestore.update(userModelMapper.mapToUserResponse(user), getUserNickname())
+        }
+        return firestore.updateUser(userModelMapper.mapToUserResponse(user), getUserNickname())
+    }
 }

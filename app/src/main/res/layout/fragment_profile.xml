@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@color/primary"
         android:paddingVertical="20dp"
-        app:layout_constraintBottom_toTopOf="@id/cl_follow"
+        app:layout_constraintBottom_toTopOf="@id/cl_friends"
         app:layout_constraintTop_toTopOf="parent">
 
 
@@ -51,58 +51,104 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_follow"
+        android:id="@+id/cl_friends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="32dp"
         android:paddingVertical="5dp"
+        app:layout_constraintBottom_toTopOf="@id/cl_reviews"
         app:layout_constraintTop_toBottomOf="@id/cl_header">
 
         <TextView
-            android:id="@+id/tv_followers_number"
+            android:id="@+id/tv_friends_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/primary_text"
             android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@id/tv_following_number"
-            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="453" />
+
+        <TextView
+            android:id="@+id/tv_friends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="453K" />
+            tools:text="@string/friends" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="5dp"
+        app:layout_constraintBottom_toTopOf="@id/cl_collections"
+        app:layout_constraintTop_toBottomOf="@id/cl_friends">
 
         <TextView
-            android:id="@+id/tv_followers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="true"
-            android:textColor="@color/primary_text"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="@id/tv_followers_number"
-            app:layout_constraintStart_toStartOf="@id/tv_followers_number"
-            app:layout_constraintTop_toBottomOf="@id/tv_followers_number"
-            tools:text="followers" />
-
-        <TextView
-            android:id="@+id/tv_following_number"
+            android:id="@+id/tv_review_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/primary_text"
             android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_followers_number"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="420K" />
+            tools:text="15" />
 
         <TextView
-            android:id="@+id/tv_following"
+            android:id="@+id/tv_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAllCaps="true"
             android:textColor="@color/primary_text"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="@id/tv_following_number"
-            app:layout_constraintStart_toStartOf="@id/tv_following_number"
-            app:layout_constraintTop_toBottomOf="@id/tv_following_number"
-            tools:text="following" />
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Отзывы" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_collections"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="5dp"
+        app:layout_constraintTop_toBottomOf="@id/cl_reviews">
+
+        <TextView
+            android:id="@+id/tv_collections_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="13" />
+
+        <TextView
+            android:id="@+id/tv_collections"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Коллекции" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

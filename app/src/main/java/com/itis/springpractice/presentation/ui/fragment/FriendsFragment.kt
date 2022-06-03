@@ -8,6 +8,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
@@ -40,13 +41,14 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
+    private val nickname: String? by lazy {
+        arguments?.getString("nickname")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
-        friendsViewModel.onGetFriends()
-        binding.fabAddFriend.setOnClickListener {
-            navigateToAddFriend()
-        }
+        friendsViewModel.onGetFriends(nickname)
     }
 
     private fun initObservers() {
@@ -59,7 +61,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
                     binding.tvZeroFriends.visibility = GONE
                     binding.rvFriends.visibility = VISIBLE
                     friendsAdapter = FriendsAdapter { friendNickname ->
-                        navigateToFriendInfo(friendNickname)
+                        navigateToFriendProfile(friendNickname)
                     }
                     binding.rvFriends.adapter = friendsAdapter
                     friendsAdapter.submitList(it.toMutableList())
@@ -67,6 +69,17 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
             }, onFailure = {
                 showMessage("Проверьте подключение к интернету")
             })
+        }
+        friendsViewModel.isUser.observe(viewLifecycleOwner) {
+            binding.fabAddFriend.apply {
+                if (it) {
+                    setOnClickListener {
+                        navigateToAddFriend()
+                    }
+                } else {
+                    visibility = GONE
+                }
+            }
         }
     }
 
@@ -103,7 +116,10 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         }
     }
 
-    private fun navigateToFriendInfo(friendNickname: String) {
-        TODO("Not yet implemented")
+    private fun navigateToFriendProfile(friendNickname: String) {
+        val bundle = Bundle().apply {
+            putString("nickname", friendNickname)
+        }
+        findNavController().navigate(R.id.action_friendsFragment_to_profileFragment, bundle)
     }
 }

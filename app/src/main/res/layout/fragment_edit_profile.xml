@@ -21,7 +21,7 @@
             android:layout_height="40dp"
             android:layout_gravity="end"
             android:layout_margin="10dp"
-            android:background="@drawable/ic_baseline_logout_24" />
+            android:background="@drawable/ic_baseline_check_24" />
 
         <Button
             android:id="@+id/btn_cancel"
@@ -29,7 +29,7 @@
             android:layout_height="40dp"
             android:layout_gravity="start"
             android:layout_margin="10dp"
-            android:background="@drawable/ic_baseline_edit_24" />
+            android:background="@drawable/ic_baseline_arrow_back_24" />
 
     </androidx.appcompat.widget.Toolbar>
 

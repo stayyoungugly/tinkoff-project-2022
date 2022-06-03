@@ -22,10 +22,19 @@ class FriendsViewModel(
     private var _friends: MutableLiveData<Result<List<User>>> = MutableLiveData()
     val friends: LiveData<Result<List<User>>> = _friends
 
-    fun onGetFriends() {
+    private var _isUser: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val isUser: LiveData<Boolean> = _isUser
+
+    fun onGetFriends(nickname: String?) {
         viewModelScope.launch {
             try {
-                val list = getAllFriendsByNicknameUseCase()
+                val list = if (nickname != null) {
+                    _isUser.value = false
+                    getAllFriendsByNicknameUseCase(nickname)
+                } else {
+                    _isUser.value = true
+                    getAllFriendsByNicknameUseCase(getUserNicknameUseCase())
+                }
                 _friends.value = Result.success(list)
             } catch (ex: Exception) {
                 _friends.value = Result.failure(ex)
@@ -48,7 +57,7 @@ class FriendsViewModel(
                         "Пользователя с таким псевдонимом не существует"
                     else -> {
                         addFriendUseCase(nickname)
-                        val list = getAllFriendsByNicknameUseCase()
+                        val list = getAllFriendsByNicknameUseCase(getUserNicknameUseCase())
                         _friends.value = Result.success(list)
                         _message.value = "OK"
                     }

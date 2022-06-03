@@ -22,8 +22,8 @@ class FriendsRepositoryImpl(
         firestore.addFriend(userNickname, nickname)
     }
 
-    override suspend fun getAllFriendsByNickname(): List<User> {
-        val users = firestore.getFriends(userNickname)
+    override suspend fun getAllFriendsByNickname(nickname: String): List<User> {
+        val users = firestore.getFriends(nickname)
         val userEntities: List<User?> = users.map {
             it?.let { user ->
                 userModelMapper.mapToUser(user)

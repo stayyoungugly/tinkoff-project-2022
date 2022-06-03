@@ -51,6 +51,12 @@ class AuthFactory(
                     friendDi.addFriendUseCase,
                     friendDi.isUserFriendUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
+            modelClass.isAssignableFrom(ProfileViewModel::class.java) ->
+                ProfileViewModel(
+                    userDi.getUserByNicknameUseCase,
+                    userDi.getUserNickname,
+                    userDi.getNumberOfUseCase
+                ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class")
         }

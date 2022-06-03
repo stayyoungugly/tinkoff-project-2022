@@ -6,6 +6,7 @@ import com.itis.springpractice.data.database.remote.Firestore
 import com.itis.springpractice.data.impl.UserRepositoryImpl
 import com.itis.springpractice.data.mapper.UserModelMapper
 import com.itis.springpractice.domain.repository.UserRepository
+import com.itis.springpractice.domain.usecase.friends.GetNumberOfUseCase
 import com.itis.springpractice.domain.usecase.user.AddUserUseCase
 import com.itis.springpractice.domain.usecase.user.DeleteNicknameUseCase
 import com.itis.springpractice.domain.usecase.user.GetUserByNicknameUseCase
@@ -37,6 +38,11 @@ class UserContainer(
     )
 
     val deleteNicknameUseCase: DeleteNicknameUseCase = DeleteNicknameUseCase(
+        userRepository = userRepository,
+        dispatcher = Dispatchers.Default
+    )
+
+    val getNumberOfUseCase: GetNumberOfUseCase = GetNumberOfUseCase(
         userRepository = userRepository,
         dispatcher = Dispatchers.Default
     )

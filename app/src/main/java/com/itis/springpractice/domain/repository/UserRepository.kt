@@ -10,4 +10,8 @@ interface UserRepository {
     suspend fun getUserNickname(): String
 
     suspend fun deleteNickname()
+
+    suspend fun getNumberOf(nickname: String): HashMap<String, Int>
+
+    suspend fun updateUser(user: User)
 }
