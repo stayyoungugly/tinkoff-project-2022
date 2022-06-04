@@ -31,7 +31,7 @@ class PlaceInfoViewModel(
     private val _error: MutableLiveData<Throwable> = MutableLiveData()
     val error: LiveData<Throwable> = _error
 
-    private val _place: MutableLiveData<Result<Place>> = MutableLiveData()
+    private val _place: SingleLiveEvent<Result<Place>> = SingleLiveEvent()
     val place: LiveData<Result<Place>> = _place
 
     fun searchGeoObjectInfo(uriPlace: String) {

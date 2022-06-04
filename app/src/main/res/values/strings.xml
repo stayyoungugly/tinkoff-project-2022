@@ -64,4 +64,10 @@
     <string name="add_friend">Добавить друга</string>
     <string name="friend_nickname">Псевдоним друга</string>
     <string name="not_found">Информация не найдена</string>
+    <string name="enter_place">Введите место</string>
+    <string name="search_places">Поиск доступных мест</string>
+    <string name="find">Найти</string>
+    <string name="cancel">Закрыть</string>
+    <string name="place_no_found">Место не найдено</string>
+    <string name="fail_place_found">Ошибка! Места не найдены</string>
 </resources>
