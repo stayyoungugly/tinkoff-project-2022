@@ -1,9 +1,12 @@
 package com.itis.springpractice.presentation.ui.rv
 
+import android.content.res.Resources
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.itis.springpractice.R
 import com.itis.springpractice.databinding.ItemFriendBinding
 import com.itis.springpractice.domain.entity.User
 
@@ -24,6 +27,13 @@ class FriendsHolder(
         with(binding) {
             tvNickname.text = item.nickname
             tvFullName.text = "${item.firstName} ${item.lastName}"
+            if (item.avatar == null) {
+                val bitmap = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.no_avatar)
+                this.ivPhoto.setImageBitmap(bitmap)
+            } else {
+                val bitmap = BitmapFactory.decodeByteArray(item.avatar, 0, item.avatar.size)
+                this.ivPhoto.setImageBitmap(bitmap)
+            }
         }
     }
 
