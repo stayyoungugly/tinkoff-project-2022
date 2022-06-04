@@ -57,6 +57,12 @@ class AuthFactory(
                     userDi.getUserNickname,
                     userDi.getNumberOfUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
+            modelClass.isAssignableFrom(EditProfileViewModel::class.java) ->
+                EditProfileViewModel(
+                    userDi.getUserByNicknameUseCase,
+                    userDi.getUserNickname,
+                    userDi.updateUserUseCase
+                ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class")
         }

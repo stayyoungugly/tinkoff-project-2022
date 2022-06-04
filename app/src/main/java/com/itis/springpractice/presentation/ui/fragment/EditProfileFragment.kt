@@ -2,8 +2,10 @@ package com.itis.springpractice.presentation.ui.fragment
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -50,13 +52,29 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
             AlertDialog.Builder(requireContext())
                 .setTitle("Отмена")
                 .setMessage("Отменить изменения?")
-                .setPositiveButton("ОК") {_, _ ->
+                .setPositiveButton("ОК") { _, _ ->
                     findNavController().navigate(R.id.action_editProfileFragment_to_authorizedFragment)
                 }
                 .setNegativeButton("Отмена") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()
+        }
+        binding.ivPhoto.setOnClickListener {
+            val imageIntent = Intent().apply {
+                action = Intent.ACTION_PICK
+                type = "image/*"
+            }
+            if (imageIntent.resolveActivity(requireActivity().packageManager) != null) {
+                startActivity(imageIntent)
+            }
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                binding.ivPhoto.setImageURI(uri)
+                //val file = File(uri.path)
+                //TODO("upload image to storage")
+            }.apply {
+                launch("image/*")
+            }
         }
     }
 
@@ -77,5 +95,12 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                 ).show()
             })
         }
+//        editProfileViewModel.message.observe(viewLifecycleOwner) {
+//            if (it.isEmpty()) {
+//                findNavController().navigate(R.id.action_editProfileFragment_to_authorizedFragment)
+//            } else {
+//                binding.etNickname.error = it
+//            }
+//        }
     }
 }

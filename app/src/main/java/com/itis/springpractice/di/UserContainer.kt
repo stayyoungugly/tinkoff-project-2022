@@ -7,10 +7,7 @@ import com.itis.springpractice.data.impl.UserRepositoryImpl
 import com.itis.springpractice.data.mapper.UserModelMapper
 import com.itis.springpractice.domain.repository.UserRepository
 import com.itis.springpractice.domain.usecase.friends.GetNumberOfUseCase
-import com.itis.springpractice.domain.usecase.user.AddUserUseCase
-import com.itis.springpractice.domain.usecase.user.DeleteNicknameUseCase
-import com.itis.springpractice.domain.usecase.user.GetUserByNicknameUseCase
-import com.itis.springpractice.domain.usecase.user.GetUserNicknameUseCase
+import com.itis.springpractice.domain.usecase.user.*
 import kotlinx.coroutines.Dispatchers
 
 class UserContainer(
@@ -43,6 +40,11 @@ class UserContainer(
     )
 
     val getNumberOfUseCase: GetNumberOfUseCase = GetNumberOfUseCase(
+        userRepository = userRepository,
+        dispatcher = Dispatchers.Default
+    )
+
+    val updateUserUseCase: UpdateUserUseCase = UpdateUserUseCase(
         userRepository = userRepository,
         dispatcher = Dispatchers.Default
     )

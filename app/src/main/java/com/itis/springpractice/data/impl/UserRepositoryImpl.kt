@@ -44,8 +44,8 @@ class UserRepositoryImpl(
         if (user.nickname != preferenceManager.getNickname()) {
             preferenceManager.deleteNickname()
             preferenceManager.saveNickname(user.nickname)
-            firestore.update(userModelMapper.mapToUserResponse(user), getUserNickname())
         }
-        return firestore.updateUser(userModelMapper.mapToUserResponse(user), getUserNickname())
+        val userNickname = preferenceManager.getNickname() ?: DEFAULT_VALUE
+        firestore.updateUser(userModelMapper.mapToUserResponse(user), userNickname)
     }
 }

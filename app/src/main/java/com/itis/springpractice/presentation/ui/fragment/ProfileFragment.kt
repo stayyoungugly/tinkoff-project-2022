@@ -59,7 +59,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 with(binding) {
                     this.tvName.text = "${it.firstName} ${it.lastName}"
                     this.tvNickname.text = it.nickname
-                    TODO("set image")
+                    //TODO("set image")
                 }
             }, onFailure = {
                 showMessage("Проверьте подключение к интернету")

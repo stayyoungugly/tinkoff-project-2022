@@ -1,6 +1,7 @@
 package com.itis.springpractice.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.User
@@ -14,8 +15,19 @@ class EditProfileViewModel(
     private val getUserNicknameUseCase: GetUserNicknameUseCase,
     private val updateUserUseCase: UpdateUserUseCase
 ) : ViewModel() {
+
+    private var _message: MutableLiveData<String> = MutableLiveData()
+    val message: LiveData<String> = _message
+
     fun onUpdateUser(firstName: String, lastName: String, nickname: String) {
         viewModelScope.launch {
+//            val nicknameAvailable = getUserByNicknameUseCase(nickname) == null
+//            if (nickname != getUserNicknameUseCase() && !nicknameAvailable) {
+//                _message.value = "Пользователь с таким псевдонимом уже существует"
+//            } else if (nicknameAvailable) {
+//                val user = User(firstName, lastName, nickname)
+//                updateUserUseCase(user)
+//            }
             val user = User(firstName, lastName, nickname)
             updateUserUseCase(user)
         }
