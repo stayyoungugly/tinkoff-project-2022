@@ -26,7 +26,7 @@ class FriendsRepositoryImpl(
         val users = firestore.getFriends(nickname)
         val userEntities: List<User?> = users.map {
             it?.let { user ->
-                val avatar = firestore.downloadAvatar(nickname)
+                val avatar = it.nickname?.let { nickname -> firestore.downloadAvatar(nickname) }
                 userModelMapper.mapToUser(user, avatar)
             }
         }

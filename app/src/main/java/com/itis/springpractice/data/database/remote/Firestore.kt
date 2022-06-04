@@ -49,18 +49,18 @@ class Firestore {
     private val friendsRef = db.collection("friends")
     suspend fun addFriend(userNickname: String, nicknameFriend: String) {
         val friendship = hashMapOf(
-            USER to userNickname,
-            FRIEND to nicknameFriend
+            "nickname_user" to userNickname,
+            "nickname_friend" to nicknameFriend
         )
         friendsRef.add(friendship).await()
     }
 
     private suspend fun friendsNames(userNickname: String): List<String> {
         return friendsRef
-            .whereEqualTo(USER, userNickname)
+            .whereEqualTo("nickname_user", userNickname)
             .get()
             .await()
-            .map { it[FRIEND].toString() }
+            .map { it["nickname_friend"].toString() }
     }
 
     suspend fun getFriends(userNickname: String): List<UserFirestore?> {
