@@ -256,9 +256,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
                 userLocationConfig()
             }
-            else -> {
-                showMessage(getString(R.string.search_will_be_available))
-            }
         }
     }
 
