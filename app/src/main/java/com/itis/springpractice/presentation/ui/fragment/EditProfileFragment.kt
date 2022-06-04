@@ -2,7 +2,8 @@ package com.itis.springpractice.presentation.ui.fragment
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,6 +20,7 @@ import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.EditProfileViewModel
+import java.io.ByteArrayOutputStream
 
 class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     private val binding by viewBinding(FragmentEditProfileBinding::bind)
@@ -43,10 +45,7 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         binding.btnAccept.setOnClickListener {
             val firstName = binding.etFirstName.text.toString()
             val lastName = binding.etLastName.text.toString()
-            val nickname = binding.etNickname.text.toString()
-            //TODO("get image")
-            editProfileViewModel.onUpdateUser(firstName, lastName, nickname)
-            findNavController().navigate(R.id.action_editProfileFragment_to_authorizedFragment)
+            editProfileViewModel.onUpdateUser(firstName, lastName, getAvatar())
         }
         binding.btnCancel.setOnClickListener {
             AlertDialog.Builder(requireContext())
@@ -60,47 +59,44 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                 }
                 .show()
         }
-        binding.ivPhoto.setOnClickListener {
-            val imageIntent = Intent().apply {
-                action = Intent.ACTION_PICK
-                type = "image/*"
-            }
-            if (imageIntent.resolveActivity(requireActivity().packageManager) != null) {
-                startActivity(imageIntent)
-            }
-            registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-                binding.ivPhoto.setImageURI(uri)
-                //val file = File(uri.path)
-                //TODO("upload image to storage")
-            }.apply {
-                launch("image/*")
-            }
+        val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { localUri ->
+            binding.ivPhoto.setImageURI(localUri)
+        }
+//        binding.ivPhoto.setOnClickListener {
+//            getContent.launch("image/*")
+//        }
+    }
+
+    private fun getAvatar(): ByteArray {
+        val bitmap = (binding.ivPhoto.drawable as BitmapDrawable).bitmap
+        return ByteArrayOutputStream().run {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
+            toByteArray()
         }
     }
 
     private fun initObservers() {
-        editProfileViewModel.user.observe(viewLifecycleOwner) {
-            it.fold(onSuccess = {
-                with(binding) {
-                    this.etFirstName.setText(it.firstName)
-                    this.etLastName.setText(it.lastName)
-                    this.etNickname.setText(it.nickname)
-                    //TODO("set image")
-                }
+        editProfileViewModel.error.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                findNavController().navigate(R.id.action_editProfileFragment_to_authorizedFragment)
+            } else showMessage(it)
+        }
+
+        editProfileViewModel.user.observe(viewLifecycleOwner) { result ->
+            result.fold(onSuccess = {
+                binding.etFirstName.setText(it.firstName)
+                binding.etLastName.setText(it.lastName)
             }, onFailure = {
-                Snackbar.make(
-                    binding.root,
-                    "Проверьте подключение к интернету",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                showMessage("Проверьте подключение к интернету")
             })
         }
-//        editProfileViewModel.message.observe(viewLifecycleOwner) {
-//            if (it.isEmpty()) {
-//                findNavController().navigate(R.id.action_editProfileFragment_to_authorizedFragment)
-//            } else {
-//                binding.etNickname.error = it
-//            }
-//        }
+    }
+
+    private fun showMessage(message: String) {
+        Snackbar.make(
+            binding.root,
+            message,
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 }

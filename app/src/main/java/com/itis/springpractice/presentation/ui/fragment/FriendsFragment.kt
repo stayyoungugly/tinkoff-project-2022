@@ -78,6 +78,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
                     }
                 } else {
                     visibility = GONE
+                    binding.tvZeroFriends.text = "У пользователя нет друзей"
                 }
             }
         }

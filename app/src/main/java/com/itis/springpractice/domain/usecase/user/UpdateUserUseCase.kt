@@ -1,6 +1,6 @@
 package com.itis.springpractice.domain.usecase.user
 
-import com.itis.springpractice.domain.entity.User
+import android.net.Uri
 import com.itis.springpractice.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -10,10 +10,12 @@ class UpdateUserUseCase(
     private val dispatcher: CoroutineDispatcher
 ) {
     suspend operator fun invoke(
-        user: User
+        firstName: String,
+        lastName: String,
+        uploadAvatar: ByteArray
     ) {
         return withContext(dispatcher) {
-            userRepository.updateUser(user)
+            userRepository.updateUser(firstName, lastName, uploadAvatar)
         }
     }
 }

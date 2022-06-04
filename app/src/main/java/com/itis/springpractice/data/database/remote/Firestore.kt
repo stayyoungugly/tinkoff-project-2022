@@ -1,8 +1,11 @@
 package com.itis.springpractice.data.database.remote
 
+import android.net.Uri
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import com.itis.springpractice.data.response.UserResponse
 import kotlinx.coroutines.tasks.await
 
@@ -11,10 +14,22 @@ class Firestore {
 
     private val usersRef = db.collection("users")
 
+    private val storageRef = Firebase.storage.reference
+
+    suspend fun uploadAvatar(nickname: String, data: ByteArray) {
+        val avatarRef = storageRef.child("users/${nickname}")
+        avatarRef.putBytes(data).await()
+    }
+
+    fun downloadAvatar(nickname: String): StorageReference {
+        return storageRef.child("users/${nickname}")
+    }
+
     suspend fun addUser(user: UserResponse) {
         user.nickname?.let {
             usersRef.document(it).set(user).await()
         }
+        user.nickname?.let { user.uploadAvatar?.let { it1 -> uploadAvatar(it, it1) } }
     }
 
     suspend fun getUserByNickname(nickname: String): UserResponse? {
@@ -71,19 +86,12 @@ class Firestore {
         )
     }
 
-    suspend fun updateUser(user: UserResponse, userNickname: String) {
-        usersRef.document(userNickname).set(user).await()
-    }
-
-    suspend fun update(user: UserResponse, userNickname: String) {
-        friendsRef.whereEqualTo(USER, userNickname).get().await().map {
-            it.reference.update(USER, user.nickname)
-        }
-
-        friendsRef.whereEqualTo(FRIEND, userNickname).get().await().map {
-            it.reference.update(FRIEND, user.nickname)
-        }
-        //TODO("update for other collections")
+    suspend fun updateUser(userNickname: String, firstName: String, lastName: String, data: ByteArray) {
+        usersRef.document(userNickname).update(
+            "firstName", firstName,
+            "lastName", lastName
+        ).await()
+        uploadAvatar(userNickname, data)
     }
 
     companion object {

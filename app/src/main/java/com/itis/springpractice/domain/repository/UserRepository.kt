@@ -13,5 +13,5 @@ interface UserRepository {
 
     suspend fun getNumberOf(nickname: String): HashMap<String, Int>
 
-    suspend fun updateUser(user: User)
+    suspend fun updateUser(firstName: String, lastName: String, uploadAvatar: ByteArray)
 }

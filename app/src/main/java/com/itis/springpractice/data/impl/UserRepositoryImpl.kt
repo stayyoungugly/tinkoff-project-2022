@@ -23,8 +23,9 @@ class UserRepositoryImpl(
 
     override suspend fun getUserByNickname(nickname: String): User? {
         val userResponse = firestore.getUserByNickname(nickname)
+        val downloadAvatar = firestore.downloadAvatar(nickname)
         return userResponse?.let {
-            userModelMapper.mapToUser(it)
+            userModelMapper.mapToUser(it, downloadAvatar)
         }
     }
 
@@ -40,12 +41,8 @@ class UserRepositoryImpl(
         return firestore.getNumberOf(nickname)
     }
 
-    override suspend fun updateUser(user: User) {
-        if (user.nickname != preferenceManager.getNickname()) {
-            preferenceManager.deleteNickname()
-            preferenceManager.saveNickname(user.nickname)
-        }
+    override suspend fun updateUser(firstName: String, lastName: String, uploadAvatar: ByteArray) {
         val userNickname = preferenceManager.getNickname() ?: DEFAULT_VALUE
-        firestore.updateUser(userModelMapper.mapToUserResponse(user), userNickname)
+        firestore.updateUser(userNickname, firstName, lastName, uploadAvatar)
     }
 }

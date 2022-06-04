@@ -61,7 +61,7 @@ class AuthFactory(
                 EditProfileViewModel(
                     userDi.getUserByNicknameUseCase,
                     userDi.getUserNickname,
-                    userDi.updateUserUseCase
+                    userDi.updateUserUseCase,
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class")
