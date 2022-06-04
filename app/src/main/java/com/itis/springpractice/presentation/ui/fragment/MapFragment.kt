@@ -381,10 +381,10 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     override fun onObjectTap(event: GeoObjectTapEvent): Boolean {
-        selectionGeoObject(event)
         val uriLink =
             event.geoObject.metadataContainer.getItem(UriObjectMetadata::class.java)?.uris?.first()?.value
         if (!uriLink.isNullOrEmpty()) {
+            selectionGeoObject(event)
             uri = uriLink
             placeInfoViewModel.searchGeoObjectInfo(uri)
         }
