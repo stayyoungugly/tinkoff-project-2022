@@ -1,11 +1,10 @@
 package com.itis.springpractice.data.database.remote
 
-import android.net.Uri
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.itis.springpractice.data.response.UserFirestore
 import com.itis.springpractice.data.response.UserResponse
 import kotlinx.coroutines.tasks.await
 
@@ -17,22 +16,29 @@ class Firestore {
     private val storageRef = Firebase.storage.reference
 
     suspend fun uploadAvatar(nickname: String, data: ByteArray) {
-        val avatarRef = storageRef.child("users/${nickname}")
-        avatarRef.putBytes(data).await()
+        storageRef.child("users/${nickname}")
+            .putBytes(data)
+            .await()
     }
 
-    fun downloadAvatar(nickname: String): StorageReference {
+    suspend fun downloadAvatar(nickname: String): ByteArray? {
         return storageRef.child("users/${nickname}")
+            .getBytes(1024 * 1024)
+            .await()
     }
 
     suspend fun addUser(user: UserResponse) {
+        val userFirestore = UserFirestore(
+            user.firstName,
+            user.lastName,
+            user.nickname
+        )
         user.nickname?.let {
-            usersRef.document(it).set(user).await()
+            usersRef.document(it).set(userFirestore).await()
         }
-        user.nickname?.let { user.uploadAvatar?.let { it1 -> uploadAvatar(it, it1) } }
     }
 
-    suspend fun getUserByNickname(nickname: String): UserResponse? {
+    suspend fun getUserByNickname(nickname: String): UserFirestore? {
         return try {
             usersRef.document(nickname).get().await().toObject()
         } catch (e: Exception) {
@@ -57,7 +63,7 @@ class Firestore {
             .map { it[FRIEND].toString() }
     }
 
-    suspend fun getFriends(userNickname: String): List<UserResponse?> {
+    suspend fun getFriends(userNickname: String): List<UserFirestore?> {
         return try {
             usersRef
                 .whereIn("nickname", friendsNames(userNickname))
@@ -86,7 +92,12 @@ class Firestore {
         )
     }
 
-    suspend fun updateUser(userNickname: String, firstName: String, lastName: String, data: ByteArray) {
+    suspend fun updateUser(
+        userNickname: String,
+        firstName: String,
+        lastName: String,
+        data: ByteArray
+    ) {
         usersRef.document(userNickname).update(
             "firstName", firstName,
             "lastName", lastName

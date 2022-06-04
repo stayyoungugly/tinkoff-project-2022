@@ -1,6 +1,5 @@
 package com.itis.springpractice.domain.usecase.user
 
-import android.net.Uri
 import com.itis.springpractice.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext

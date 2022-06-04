@@ -1,6 +1,7 @@
 package com.itis.springpractice.presentation.ui.fragment
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
@@ -59,7 +60,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 with(binding) {
                     this.tvName.text = "${it.firstName} ${it.lastName}"
                     this.tvNickname.text = it.nickname
-                    //TODO("set image")
+                    if (it.avatar == null) {
+                        val bitmap = BitmapFactory.decodeResource(requireContext().resources, R.drawable.no_avatar)
+                        this.ivPhoto.setImageBitmap(bitmap)
+                    } else {
+                        val bitmap = BitmapFactory.decodeByteArray(it.avatar, 0, it.avatar.size)
+                        this.ivPhoto.setImageBitmap(bitmap)
+                    }
                 }
             }, onFailure = {
                 showMessage("Проверьте подключение к интернету")

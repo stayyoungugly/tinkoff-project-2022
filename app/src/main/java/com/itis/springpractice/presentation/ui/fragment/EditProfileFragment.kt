@@ -3,6 +3,7 @@ package com.itis.springpractice.presentation.ui.fragment
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
@@ -62,16 +63,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { localUri ->
             binding.ivPhoto.setImageURI(localUri)
         }
-//        binding.ivPhoto.setOnClickListener {
-//            getContent.launch("image/*")
-//        }
-    }
-
-    private fun getAvatar(): ByteArray {
-        val bitmap = (binding.ivPhoto.drawable as BitmapDrawable).bitmap
-        return ByteArrayOutputStream().run {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
-            toByteArray()
+        binding.ivPhoto.setOnClickListener {
+            getContent.launch("image/*")
         }
     }
 
@@ -86,9 +79,28 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
             result.fold(onSuccess = {
                 binding.etFirstName.setText(it.firstName)
                 binding.etLastName.setText(it.lastName)
+                setAvatar(it.avatar)
             }, onFailure = {
                 showMessage("Проверьте подключение к интернету")
             })
+        }
+    }
+
+    private fun setAvatar(avatar: ByteArray?) {
+        if (avatar == null) {
+            val bitmap = BitmapFactory.decodeResource(requireContext().resources, R.drawable.no_avatar)
+            binding.ivPhoto.setImageBitmap(bitmap)
+        } else {
+            val bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.size)
+            binding.ivPhoto.setImageBitmap(bitmap)
+        }
+    }
+
+    private fun getAvatar(): ByteArray {
+        val bitmap = (binding.ivPhoto.drawable as BitmapDrawable).bitmap
+        return ByteArrayOutputStream().run {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
+            toByteArray()
         }
     }
 

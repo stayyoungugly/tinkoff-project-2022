@@ -7,9 +7,9 @@ import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.domain.repository.FriendsRepository
 
 class FriendsRepositoryImpl(
-    private var firestore: Firestore,
-    private var userModelMapper: UserModelMapper,
-    private var preferenceManager: PreferenceManager
+    private val firestore: Firestore,
+    private val userModelMapper: UserModelMapper,
+    preferenceManager: PreferenceManager
 ) : FriendsRepository {
 
     companion object {
@@ -26,8 +26,8 @@ class FriendsRepositoryImpl(
         val users = firestore.getFriends(nickname)
         val userEntities: List<User?> = users.map {
             it?.let { user ->
-                val downloadAvatar = firestore.downloadAvatar(nickname)
-                userModelMapper.mapToUser(user, downloadAvatar)
+                val avatar = firestore.downloadAvatar(nickname)
+                userModelMapper.mapToUser(user, avatar)
             }
         }
         return userEntities.filterNotNull()

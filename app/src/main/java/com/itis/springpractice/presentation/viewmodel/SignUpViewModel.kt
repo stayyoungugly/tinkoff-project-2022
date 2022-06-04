@@ -1,12 +1,8 @@
 package com.itis.springpractice.presentation.viewmodel
 
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itis.springpractice.R
 import com.itis.springpractice.domain.entity.SignUpError
 import com.itis.springpractice.domain.entity.SignUpSuccess
 import com.itis.springpractice.domain.entity.User
@@ -17,7 +13,6 @@ import com.itis.springpractice.domain.usecase.user.GetUserByNicknameUseCase
 import com.itis.springpractice.presentation.ui.validation.RegistrationValidator
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.ByteArrayOutputStream
 
 class SignUpViewModel(
     private val registerUseCase: RegisterUseCase,
@@ -136,18 +131,12 @@ class SignUpViewModel(
 
     private fun addNewUser(firstName: String, lastName: String, nickname: String, idToken: String) {
         viewModelScope.launch {
-            val bitmap = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.no_avatar)
-            val data = ByteArrayOutputStream().run {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
-                toByteArray()
-            }
             try {
                 addUserUseCase(
                     User(
                         firstName,
                         lastName,
                         nickname,
-                        data,
                         null
                     )
                 )

@@ -22,9 +22,9 @@ class UserRepositoryImpl(
     }
 
     override suspend fun getUserByNickname(nickname: String): User? {
-        val userResponse = firestore.getUserByNickname(nickname)
+        val userFirestore = firestore.getUserByNickname(nickname)
         val downloadAvatar = firestore.downloadAvatar(nickname)
-        return userResponse?.let {
+        return userFirestore?.let {
             userModelMapper.mapToUser(it, downloadAvatar)
         }
     }

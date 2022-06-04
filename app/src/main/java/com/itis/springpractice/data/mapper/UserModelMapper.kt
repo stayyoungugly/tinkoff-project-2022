@@ -1,18 +1,17 @@
 package com.itis.springpractice.data.mapper
 
-import com.google.firebase.storage.StorageReference
+import com.itis.springpractice.data.response.UserFirestore
 import com.itis.springpractice.data.response.UserResponse
 import com.itis.springpractice.domain.entity.User
 
 class UserModelMapper {
-    fun mapToUser(userResponse: UserResponse, downloadAvatar: StorageReference): User? {
-        return if (!(userResponse.firstName.isNullOrEmpty()) && (!userResponse.lastName.isNullOrEmpty()) && (!userResponse.nickname.isNullOrEmpty())) {
+    fun mapToUser(userFirestore: UserFirestore, avatar: ByteArray?): User? {
+        return if (!(userFirestore.firstName.isNullOrEmpty()) && (!userFirestore.lastName.isNullOrEmpty()) && (!userFirestore.nickname.isNullOrEmpty())) {
             User(
-                firstName = userResponse.firstName!!,
-                lastName = userResponse.lastName!!,
-                nickname = userResponse.nickname!!,
-                uploadAvatar = null,
-                downloadAvatar = downloadAvatar
+                firstName = userFirestore.firstName!!,
+                lastName = userFirestore.lastName!!,
+                nickname = userFirestore.nickname!!,
+                avatar = avatar
             )
         } else null
     }
@@ -22,8 +21,7 @@ class UserModelMapper {
             firstName = user.firstName,
             lastName = user.lastName,
             nickname = user.nickname,
-            uploadAvatar = user.uploadAvatar,
-            downloadAvatar = user.downloadAvatar
+            avatar = user.avatar
         )
     }
 }
