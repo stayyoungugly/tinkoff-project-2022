@@ -3,7 +3,6 @@ package com.itis.springpractice.presentation.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
@@ -15,6 +14,7 @@ import com.itis.springpractice.domain.entity.Place
 import com.itis.springpractice.domain.entity.Review
 import com.itis.springpractice.presentation.ui.rv.ReviewsAdapter
 import com.itis.springpractice.presentation.viewmodel.UserReviewsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class ReviewsFragment : Fragment(R.layout.fragment_user_reviews) {
@@ -22,7 +22,7 @@ class ReviewsFragment : Fragment(R.layout.fragment_user_reviews) {
 
     private lateinit var reviewsAdapter: ReviewsAdapter
 
-    private val userReviewsViewModel: UserReviewsViewModel by viewModels()
+    private val userReviewsViewModel: UserReviewsViewModel by viewModel()
 
     private val glide: RequestManager by lazy {
         Glide.with(this)

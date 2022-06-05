@@ -51,6 +51,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         }
     }
 
+    private var oldAvatar: ByteArray? = null
+
     private fun initObservers() {
         editProfileViewModel.error.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
@@ -63,6 +65,7 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                 binding.etFirstName.setText(it.firstName)
                 binding.etLastName.setText(it.lastName)
                 setAvatar(it.avatar)
+                oldAvatar = it.avatar
             }, onFailure = {
                 showMessage("Проверьте подключение к интернету")
             })
@@ -80,7 +83,15 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     }
 
     private fun getAvatar(): ByteArray {
-        val bitmap = (binding.ivPhoto.drawable as BitmapDrawable).bitmap
+        val bitmap = if (binding.ivPhoto.drawable == null) {
+            if (oldAvatar == null) {
+                BitmapFactory.decodeResource(requireContext().resources, R.drawable.no_avatar)
+            } else {
+                BitmapFactory.decodeByteArray(oldAvatar, 0, oldAvatar!!.size)
+            }
+        } else {
+            (binding.ivPhoto.drawable as BitmapDrawable).bitmap
+        }
         return ByteArrayOutputStream().run {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
             toByteArray()
