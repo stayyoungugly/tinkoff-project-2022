@@ -7,10 +7,11 @@ import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.presentation.ui.diffutil.FriendsDiffUtilCallback
 
 class FriendsAdapter(
-    private val selectItem: (String) -> Unit
+    private val selectItem: (String) -> Unit,
+    private val deleteItem: (String) -> Unit
 ) : ListAdapter<User, FriendsHolder>(FriendsDiffUtilCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendsHolder =
-        FriendsHolder.create(parent, selectItem)
+        FriendsHolder.create(parent, selectItem, deleteItem)
 
     override fun onBindViewHolder(holder: FriendsHolder, position: Int) {
         holder.bind(getItem(position))

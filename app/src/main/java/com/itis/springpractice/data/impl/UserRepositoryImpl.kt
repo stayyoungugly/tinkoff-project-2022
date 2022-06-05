@@ -22,9 +22,10 @@ class UserRepositoryImpl(
     }
 
     override suspend fun getUserByNickname(nickname: String): User? {
-        val userResponse = firestore.getUserByNickname(nickname)
-        return userResponse?.let {
-            userModelMapper.mapToUser(it)
+        val userFirestore = firestore.getUserByNickname(nickname)
+        val downloadAvatar = firestore.downloadAvatar(nickname)
+        return userFirestore?.let {
+            userModelMapper.mapToUser(it, downloadAvatar)
         }
     }
 
@@ -48,4 +49,12 @@ class UserRepositoryImpl(
         preferenceManager.deleteNickname()
     }
 
+    override suspend fun getNumberOf(nickname: String): HashMap<String, Int> {
+        return firestore.getNumberOf(nickname)
+    }
+
+    override suspend fun updateUser(firstName: String, lastName: String, uploadAvatar: ByteArray) {
+        val userNickname = preferenceManager.getNickname() ?: DEFAULT_VALUE
+        firestore.updateUser(userNickname, firstName, lastName, uploadAvatar)
+    }
 }

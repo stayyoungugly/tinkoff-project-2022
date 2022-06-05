@@ -7,9 +7,9 @@ import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.domain.repository.FriendsRepository
 
 class FriendsRepositoryImpl(
-    private var firestore: Firestore,
-    private var userModelMapper: UserModelMapper,
-    private var preferenceManager: PreferenceManager
+    private val firestore: Firestore,
+    private val userModelMapper: UserModelMapper,
+    preferenceManager: PreferenceManager
 ) : FriendsRepository {
 
     companion object {
@@ -22,11 +22,16 @@ class FriendsRepositoryImpl(
         firestore.addFriend(userNickname, nickname)
     }
 
-    override suspend fun getAllFriendsByNickname(): List<User> {
-        val users = firestore.getFriends(userNickname)
+    override suspend fun deleteFriend(nickname: String) {
+        firestore.deleteFriend(userNickname, nickname)
+    }
+
+    override suspend fun getAllFriendsByNickname(nickname: String): List<User> {
+        val users = firestore.getFriends(nickname)
         val userEntities: List<User?> = users.map {
             it?.let { user ->
-                userModelMapper.mapToUser(user)
+                val avatar = user.nickname?.let { nick -> firestore.downloadAvatar(nick) }
+                userModelMapper.mapToUser(user, avatar)
             }
         }
         return userEntities.filterNotNull()

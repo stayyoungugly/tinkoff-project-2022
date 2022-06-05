@@ -19,8 +19,6 @@ import kotlinx.coroutines.launch
 import kotlin.math.min
 
 class MapViewModel(
-    private val deleteTokenUseCase: DeleteTokenUseCase,
-    private val deleteNicknameUseCase: DeleteNicknameUseCase
 ) : ViewModel(), SuggestSession.SuggestListener {
 
     private val searchManager by lazy {
@@ -38,17 +36,6 @@ class MapViewModel(
 
     private val _error: MutableLiveData<Throwable> = MutableLiveData()
     val error: LiveData<Throwable> = _error
-
-    fun onDeleteClick() {
-        viewModelScope.launch {
-            try {
-                deleteTokenUseCase()
-                deleteNicknameUseCase()
-            } catch (ex: Exception) {
-                _error.value = ex
-            }
-        }
-    }
 
     fun isPermissionsAllowed(): Boolean {
         var flag = false

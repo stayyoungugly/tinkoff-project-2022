@@ -1,19 +1,18 @@
 package com.itis.springpractice.domain.usecase.friends
 
-import com.itis.springpractice.domain.entity.User
-import com.itis.springpractice.domain.repository.FriendsRepository
+import com.itis.springpractice.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-class GetAllFriendsByNicknameUseCase(
-    private val friendsRepository: FriendsRepository,
+class GetNumberOfUseCase(
+    private val userRepository: UserRepository,
     private val dispatcher: CoroutineDispatcher
 ) {
     suspend operator fun invoke(
         nickname: String
-    ): List<User> {
+    ): HashMap<String, Int> {
         return withContext(dispatcher) {
-            friendsRepository.getAllFriendsByNickname(nickname)
+            userRepository.getNumberOf(nickname)
         }
     }
 }

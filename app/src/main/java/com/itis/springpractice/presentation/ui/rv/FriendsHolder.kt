@@ -1,5 +1,6 @@
 package com.itis.springpractice.presentation.ui.rv
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +10,8 @@ import com.itis.springpractice.domain.entity.User
 
 class FriendsHolder(
     private val binding: ItemFriendBinding,
-    private val selectItem: (String) -> Unit
+    private val selectItem: (String) -> Unit,
+    private val deleteItem: (String) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
     private var friend: User? = null
 
@@ -24,6 +26,13 @@ class FriendsHolder(
         with(binding) {
             tvNickname.text = item.nickname
             tvFullName.text = "${item.firstName} ${item.lastName}"
+            btnDelete.setOnClickListener {
+                friend?.nickname?.also(deleteItem)
+            }
+            if (item.avatar != null) {
+                val bitmap = BitmapFactory.decodeByteArray(item.avatar, 0, item.avatar.size)
+                this.ivPhoto.setImageBitmap(bitmap)
+            }
         }
     }
 
@@ -36,9 +45,11 @@ class FriendsHolder(
     }
 
     companion object {
-        fun create(parent: ViewGroup, selectItem: (String) -> Unit) = FriendsHolder(
-            ItemFriendBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-            selectItem
-        )
+        fun create(parent: ViewGroup, selectItem: (String) -> Unit, deleteItem: (String) -> Unit) =
+            FriendsHolder(
+                ItemFriendBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                selectItem,
+                deleteItem
+            )
     }
 }

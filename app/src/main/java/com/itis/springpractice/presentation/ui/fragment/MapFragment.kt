@@ -148,9 +148,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         mapCity.addInputListener(this)
         mapCity.addTapListener(this)
         initObservers()
-        binding.btnSignOut.setOnClickListener {
-            onSignOutClick()
-        }
         binding.searchFab.setOnClickListener {
             navigateToSearchPlace()
         }
@@ -217,11 +214,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             SearchOptions(),
             this
         )
-    }
-
-    private fun onSignOutClick() {
-        mapViewModel.onDeleteClick()
-        (this.findParent<AuthorizedFragment>() as? Callbacks)?.navigateToSignIn()
     }
 
     private fun createUserLocationLayer() {

@@ -3,6 +3,7 @@ package com.itis.springpractice.data.database.remote
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.itis.springpractice.data.response.LikeResponse
 import com.itis.springpractice.data.response.ReviewResponse
 import com.itis.springpractice.data.response.UserResponse
@@ -15,6 +16,24 @@ class Firestore {
     private val usersRef = db.collection("users")
 
     private val placesRef = db.collection("places")
+
+    private val storageRef = Firebase.storage.reference
+
+    suspend fun uploadAvatar(nickname: String, data: ByteArray) {
+        storageRef.child("users/${nickname}")
+            .putBytes(data)
+            .await()
+    }
+
+    suspend fun downloadAvatar(nickname: String): ByteArray? {
+        return try {
+            storageRef.child("users/${nickname}")
+                .getBytes(1024 * 1024)
+                .await()
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     suspend fun addUser(user: UserResponse) {
         user.nickname?.let {
@@ -61,6 +80,44 @@ class Firestore {
 
     suspend fun isUserFriend(userNickname: String, friendNickname: String): Boolean {
         return friendsNames(userNickname).contains(friendNickname)
+    }
+
+    private suspend fun getNumberOfFriends(userNickname: String): Int {
+        return friendsNames(userNickname).size
+    }
+
+    suspend fun getNumberOf(nickname: String): HashMap<String, Int> {
+        //TODO("methods for reviews and collections number")
+        return hashMapOf(
+            "friends" to getNumberOfFriends(nickname),
+            "reviews" to 0,
+            "collections" to 0
+        )
+    }
+
+    suspend fun updateUser(
+        userNickname: String,
+        firstName: String,
+        lastName: String,
+        data: ByteArray
+    ) {
+        usersRef.document(userNickname).update(
+            "firstName", firstName,
+            "lastName", lastName
+        ).await()
+        uploadAvatar(userNickname, data)
+    }
+
+    suspend fun deleteFriend(userNickname: String, friendNickname: String) {
+        friendsRef.whereEqualTo("nickname_user", userNickname)
+            .whereEqualTo("nickname_friend", friendNickname).get().await().map {
+                it.reference.delete()
+            }
+    }
+
+    companion object {
+        private const val USER = "nickname_user"
+        private const val FRIEND = "nickname_friend"
     }
 
     fun addReviewOnPlace(placeURI: String, placeReview: ReviewResponse): Boolean {

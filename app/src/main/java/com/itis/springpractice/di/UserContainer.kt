@@ -12,6 +12,8 @@ import com.itis.springpractice.domain.repository.UserRepository
 import com.itis.springpractice.domain.usecase.review.AddReviewOnPlaceUseCase
 import com.itis.springpractice.domain.usecase.review.GetReviewsByPlaceUseCase
 import com.itis.springpractice.domain.usecase.user.*
+import com.itis.springpractice.domain.usecase.friends.GetNumberOfUseCase
+import com.itis.springpractice.domain.usecase.user.*
 import kotlinx.coroutines.Dispatchers
 
 class UserContainer(
@@ -68,6 +70,16 @@ class UserContainer(
         dispatcher = Dispatchers.Default
     )
     val isPlaceLikedUseCase: IsPlaceLikedUseCase = IsPlaceLikedUseCase(
+        userRepository = userRepository,
+        dispatcher = Dispatchers.Default
+    )
+
+    val getNumberOfUseCase: GetNumberOfUseCase = GetNumberOfUseCase(
+        userRepository = userRepository,
+        dispatcher = Dispatchers.Default
+    )
+
+    val updateUserUseCase: UpdateUserUseCase = UpdateUserUseCase(
         userRepository = userRepository,
         dispatcher = Dispatchers.Default
     )
