@@ -35,7 +35,8 @@ class UserContainer(
 
     private val reviewRepository: ReviewRepository = ReviewRepositoryImpl(
         firestore = Firestore(),
-        reviewMapper = ReviewEntityMapper(userRepository, PreferenceManager(sharedPreferences))
+        reviewMapper = ReviewEntityMapper(userRepository, PreferenceManager(sharedPreferences)),
+        preferenceManager = PreferenceManager(sharedPreferences)
     )
 
     val getReviewsByPlaceUseCase: GetReviewsByPlaceUseCase = GetReviewsByPlaceUseCase(

@@ -18,7 +18,7 @@ class PlaceReviewViewModel(
     private val getReviewsByPlaceUseCase: GetReviewsByPlaceUseCase,
     private val addReviewOnPlaceUseCase: AddReviewOnPlaceUseCase,
     private val getUserNicknameUseCase: GetUserNicknameUseCase,
-    private val getUserByNicknameUseCase: GetUserByNicknameUseCase
+    private val getUserByNicknameUseCase: GetUserByNicknameUseCase,
 ) : ViewModel() {
 
     private val _error: MutableLiveData<Throwable> = MutableLiveData()
@@ -78,13 +78,19 @@ class PlaceReviewViewModel(
         return author?.let { Review(uri.takeLast(10), it, textReview, rating, formatted) }
     }
 
-    private val _reviewList: MutableLiveData<Result<List<Review>>> = MutableLiveData()
+    private val _reviewList: SingleLiveEvent<Result<List<Review>>> = SingleLiveEvent()
     val reviewList: LiveData<Result<List<Review>>> = _reviewList
 
     fun getReviewsByPlace(uri: String) {
         viewModelScope.launch {
             try {
-                _reviewList.value = Result.success(getReviewsByPlaceUseCase(uri))
+                val reviews = getReviewsByPlaceUseCase(uri)
+                for (review in reviews) {
+                    if (review.author.nickname == getUserNicknameUseCase()) {
+                        review.author.nickname = "${review.author.nickname} (вы)"
+                    }
+                }
+                _reviewList.value = Result.success(reviews)
             } catch (ex: Exception) {
                 _reviewList.value = Result.failure(ex)
                 _error.value = ex

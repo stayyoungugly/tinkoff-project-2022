@@ -85,16 +85,25 @@ class Firestore {
 
     suspend fun getLikedPlaces(nickname: String): List<String> {
         val dockRef = usersRef.document(nickname)
-        return dockRef.collection("likes").get().await().map { like ->
-            like.toString()
-        } as ArrayList<String>
+        return dockRef.collection("likes")
+            .get()
+            .await()
+            .map { like ->
+                like.toString()
+            } as ArrayList<String>
     }
 
-    suspend fun getReviewsByPlace(placeURI: String): List<ReviewResponse> {
+    suspend fun getReviewsByPlace(placeURI: String, userNickname: String): List<ReviewResponse> {
         val placeRef = placesRef.document(placeURI)
-        return placeRef.collection("reviews").get().await().map { review ->
-            review.toObject<ReviewResponse>()
-        } as ArrayList<ReviewResponse>
+        val checkList = friendsNames(userNickname) as ArrayList<String>
+        checkList.add(userNickname)
+        return placeRef.collection("reviews")
+            .whereIn("authorNickname", checkList)
+            .get()
+            .await()
+            .map { review ->
+                review.toObject<ReviewResponse>()
+            } as ArrayList<ReviewResponse>
     }
 
     fun addLike(nickname: String, placeURI: String) {
