@@ -9,6 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
+        android:fontFamily="@font/spot_black"
         android:text="@string/check_amp_point"
         android:textColor="@color/black"
         android:textSize="16pt"
@@ -31,6 +32,7 @@
             android:id="@+id/et_first_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/spot_book"
             android:hint="@string/firstName"
             android:inputType="textPersonName" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -51,6 +53,7 @@
             android:id="@+id/et_last_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/spot_book"
             android:hint="@string/lastName"
             android:inputType="textPersonName" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -71,6 +74,7 @@
             android:id="@+id/et_nickname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/spot_book"
             android:hint="@string/nickname"
             android:inputType="textPersonName" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -91,6 +95,7 @@
             android:id="@+id/et_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/spot_book"
             android:hint="@string/login"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -111,6 +116,7 @@
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/spot_book"
             android:hint="@string/password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -131,6 +137,7 @@
             android:id="@+id/et_password_check"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/spot_book"
             android:hint="@string/check_password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -140,6 +147,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:fontFamily="@font/spot_bold"
         android:text="@string/sign_up"
         app:layout_constraintBottom_toTopOf="@+id/tv_else"
         app:layout_constraintEnd_toEndOf="parent"
@@ -151,10 +159,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:fontFamily="@font/spot_light"
         android:gravity="center"
         android:text="@string/to_login"
-        android:textSize="16sp"
         android:textColor="@color/black"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

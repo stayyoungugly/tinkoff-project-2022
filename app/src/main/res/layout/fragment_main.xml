@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/check_amp_point"
         android:textColor="@color/black"
+        android:fontFamily="@font/spot_black"
         android:textSize="20pt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

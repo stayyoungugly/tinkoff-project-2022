@@ -13,6 +13,7 @@
         android:text="@string/your_rating"
         android:textColor="@color/black"
         android:textSize="20sp"
+        android:fontFamily="@font/spot_bold"
         app:layout_constraintBottom_toTopOf="@id/rb_rating"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:text="@string/comment"
+        android:fontFamily="@font/spot_bold"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/ti_content"
@@ -58,6 +60,7 @@
             android:id="@+id/et_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/spot_book"
             android:hint="@string/your_review"
             android:inputType="textMultiLine"
             android:maxLines="10" />

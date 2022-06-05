@@ -97,7 +97,13 @@ class PlaceReviewViewModel(
         viewModelScope.launch {
             try {
                 deleteReviewUseCase(getUserNicknameUseCase(), uri)
-                _reviewList.value = getReviewsByPlaceUseCase(uri)
+                val list = _reviewList.value as ArrayList<Review>
+                for (item in list) {
+                    if (item.uri == uri) {
+                        list.remove(item)
+                        _reviewList.value = list
+                    }
+                }
             } catch (ex: Exception) {
                 println(ex.message)
                 _error.value = ex

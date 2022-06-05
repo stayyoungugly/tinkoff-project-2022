@@ -32,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:gravity="center"
+        android:fontFamily="@font/spot_book"
         android:text="@string/no_reviews_user"
         android:textColor="@color/black"
         android:visibility="gone"

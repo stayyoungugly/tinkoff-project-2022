@@ -34,6 +34,7 @@
         android:gravity="center"
         android:text="@string/list_empty"
         android:textColor="@color/black"
+        android:fontFamily="@font/spot_book"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
