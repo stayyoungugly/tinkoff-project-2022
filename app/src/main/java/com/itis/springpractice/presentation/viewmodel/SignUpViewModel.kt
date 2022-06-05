@@ -95,6 +95,7 @@ class SignUpViewModel(
                                 firstName,
                                 lastName,
                                 nickname,
+                                email,
                                 it.idToken
                             )
                         }
@@ -129,7 +130,7 @@ class SignUpViewModel(
         }
     }
 
-    private fun addNewUser(firstName: String, lastName: String, nickname: String, idToken: String) {
+    private fun addNewUser(firstName: String, lastName: String, nickname: String, email: String, idToken: String) {
         viewModelScope.launch {
             try {
                 addUserUseCase(
@@ -138,7 +139,8 @@ class SignUpViewModel(
                         lastName,
                         nickname,
                         null
-                    )
+                    ),
+                    email
                 )
                 this@SignUpViewModel.saveToken(idToken)
             } catch (ex: Exception) {

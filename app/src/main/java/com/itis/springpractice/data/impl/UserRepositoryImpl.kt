@@ -16,8 +16,8 @@ class UserRepositoryImpl(
         private const val DEFAULT_VALUE = ""
     }
 
-    override suspend fun addUser(user: User) {
-        firestore.addUser(userModelMapper.mapToUserResponse(user))
+    override suspend fun addUser(user: User, email: String) {
+        firestore.addUser(userModelMapper.mapToUserResponse(user), email)
         preferenceManager.saveNickname(user.nickname)
     }
 
@@ -57,5 +57,9 @@ class UserRepositoryImpl(
     override suspend fun updateUser(firstName: String, lastName: String, uploadAvatar: ByteArray) {
         val userNickname = preferenceManager.getNickname() ?: DEFAULT_VALUE
         firestore.updateUser(userNickname, firstName, lastName, uploadAvatar)
+    }
+
+    override suspend fun updateNickname(email: String) {
+        preferenceManager.saveNickname(firestore.getNicknameByEmail(email))
     }
 }

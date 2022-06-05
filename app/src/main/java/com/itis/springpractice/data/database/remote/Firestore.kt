@@ -1,5 +1,6 @@
 package com.itis.springpractice.data.database.remote
 
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -35,9 +36,15 @@ class Firestore {
         }
     }
 
-    suspend fun addUser(user: UserResponse) {
+    suspend fun addUser(user: UserResponse, email: String) {
         user.nickname?.let {
             usersRef.document(it).set(user).await()
+        }
+        val data = hashMapOf(
+            "email" to email
+        )
+        user.nickname?.let {
+            usersRef.document(it).set(data, SetOptions.merge()).await()
         }
     }
 
@@ -172,6 +179,14 @@ class Firestore {
 
     fun deleteLike(nickname: String, placeURI: String) {
         usersRef.document(nickname).collection("likes").document(placeURI).delete()
+    }
+
+    suspend fun getNicknameByEmail(email: String): String {
+        var nickname = ""
+        usersRef.whereEqualTo("email", email).get().await().map {
+            nickname = it.reference.get().await().get("nickname").toString()
+        }
+        return nickname
     }
 }
 

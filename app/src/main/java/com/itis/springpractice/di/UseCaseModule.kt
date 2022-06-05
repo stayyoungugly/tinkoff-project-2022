@@ -15,40 +15,41 @@ import org.koin.dsl.module
 
 val useCaseModule = module {
     //auth
-    factoryOf (::DeleteUserUseCase)
-    factoryOf (::GetUserInfoUseCase)
-    factoryOf (::LoginUseCase)
-    factoryOf (::RegisterUseCase)
-    factoryOf (::SendVerificationUseCase)
+    factoryOf(::DeleteUserUseCase)
+    factoryOf(::GetUserInfoUseCase)
+    factoryOf(::LoginUseCase)
+    factoryOf(::RegisterUseCase)
+    factoryOf(::SendVerificationUseCase)
 
     //friends
-    factoryOf (::AddFriendUseCase)
-    factoryOf (::DeleteFriendUseCase)
-    factoryOf (::GetAllFriendsByNicknameUseCase)
-    factoryOf (::IsUserFriendUseCase)
+    factoryOf(::AddFriendUseCase)
+    factoryOf(::DeleteFriendUseCase)
+    factoryOf(::GetAllFriendsByNicknameUseCase)
+    factoryOf(::IsUserFriendUseCase)
 
     //review
-    factoryOf (::AddReviewOnPlaceUseCase)
-    factoryOf (::GetReviewsByPlaceUseCase)
+    factoryOf(::AddReviewOnPlaceUseCase)
+    factoryOf(::GetReviewsByPlaceUseCase)
 
     //token
     factoryOf(::DeleteTokenUseCase)
-    factoryOf (::GetRefreshTokenUseCase)
-    factoryOf (::GetTokenUseCase)
-    factoryOf (::RefreshTokenUseCase)
-    factoryOf (::SaveRefreshTokenUseCase)
-    factoryOf (::SaveTokenUseCase)
+    factoryOf(::GetRefreshTokenUseCase)
+    factoryOf(::GetTokenUseCase)
+    factoryOf(::RefreshTokenUseCase)
+    factoryOf(::SaveRefreshTokenUseCase)
+    factoryOf(::SaveTokenUseCase)
 
     //user
-    factoryOf (::AddUserLikeUseCase)
-    factoryOf (::AddUserUseCase)
-    factoryOf (::DeleteNicknameUseCase)
-    factoryOf (::DeleteUserLikeUseCase)
-    factoryOf (::GetNumberOfUseCase)
-    factoryOf (::GetUserByNicknameUseCase)
-    factoryOf (::GetUserNicknameUseCase)
-    factoryOf (::IsPlaceLikedUseCase)
-    factoryOf (::UpdateUserUseCase)
+    factoryOf(::AddUserLikeUseCase)
+    factoryOf(::AddUserUseCase)
+    factoryOf(::DeleteNicknameUseCase)
+    factoryOf(::DeleteUserLikeUseCase)
+    factoryOf(::GetNumberOfUseCase)
+    factoryOf(::GetUserByNicknameUseCase)
+    factoryOf(::GetUserNicknameUseCase)
+    factoryOf(::IsPlaceLikedUseCase)
+    factoryOf(::UpdateUserUseCase)
+    factoryOf(::UpdateNicknameUseCase)
 
     factory { Dispatchers.Default }
 }
