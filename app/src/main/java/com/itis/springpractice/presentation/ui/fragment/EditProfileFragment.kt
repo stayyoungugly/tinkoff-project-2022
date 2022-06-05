@@ -43,15 +43,16 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                 }
                 .show()
         }
-        val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { localUri ->
-            binding.ivPhoto.setImageURI(localUri)
-        }
+        val getContent =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { localUri ->
+                binding.ivPhoto.setImageURI(localUri)
+            }
         binding.ivPhoto.setOnClickListener {
             getContent.launch("image/*")
         }
     }
 
-    private var oldAvatar: ByteArray? = null
+    private lateinit var oldAvatar: Bitmap
 
     private fun initObservers() {
         editProfileViewModel.error.observe(viewLifecycleOwner) {
@@ -65,7 +66,6 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                 binding.etFirstName.setText(it.firstName)
                 binding.etLastName.setText(it.lastName)
                 setAvatar(it.avatar)
-                oldAvatar = it.avatar
             }, onFailure = {
                 showMessage("Проверьте подключение к интернету")
             })
@@ -73,22 +73,21 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     }
 
     private fun setAvatar(avatar: ByteArray?) {
-        if (avatar == null) {
-            val bitmap = BitmapFactory.decodeResource(requireContext().resources, R.drawable.no_avatar)
+        oldAvatar = if (avatar == null) {
+            val bitmap =
+                BitmapFactory.decodeResource(requireContext().resources, R.drawable.no_avatar)
             binding.ivPhoto.setImageBitmap(bitmap)
+            bitmap
         } else {
             val bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.size)
             binding.ivPhoto.setImageBitmap(bitmap)
+            bitmap
         }
     }
 
     private fun getAvatar(): ByteArray {
         val bitmap = if (binding.ivPhoto.drawable == null) {
-            if (oldAvatar == null) {
-                BitmapFactory.decodeResource(requireContext().resources, R.drawable.no_avatar)
-            } else {
-                BitmapFactory.decodeByteArray(oldAvatar, 0, oldAvatar!!.size)
-            }
+            oldAvatar
         } else {
             (binding.ivPhoto.drawable as BitmapDrawable).bitmap
         }
