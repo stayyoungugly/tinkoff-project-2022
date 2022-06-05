@@ -29,14 +29,13 @@ import timber.log.Timber
 
 
 class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
-
     private val uriPlace = uri
 
     private lateinit var binding: FragmentBottomDialogBinding
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<FrameLayout>
 
-    private var isUp = true
+    private var isUp = false
 
     override fun getTheme(): Int = R.style.BottomSheetDialogTheme
 
@@ -158,7 +157,7 @@ class BottomSheetFragment(uri: String) : BottomSheetDialogFragment() {
             val bottomSheet =
                 it.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
             bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet).apply {
-                state = BottomSheetBehavior.STATE_EXPANDED
+                state = BottomSheetBehavior.STATE_COLLAPSED
                 it.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
                 val dm = resources.displayMetrics
                 peekHeight = (dm.density * 110).toInt()
