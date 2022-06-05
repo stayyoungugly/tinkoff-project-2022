@@ -14,7 +14,6 @@
         app:layout_constraintBottom_toTopOf="@id/cl_friends"
         app:layout_constraintTop_toTopOf="parent">
 
-
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_photo"
             android:layout_width="150dp"
@@ -42,7 +41,7 @@
             android:id="@+id/tv_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/light_white"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

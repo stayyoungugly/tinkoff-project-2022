@@ -3,12 +3,11 @@ package com.itis.springpractice.domain.usecase.review
 import com.itis.springpractice.domain.entity.Review
 import com.itis.springpractice.domain.repository.ReviewRepository
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class AddReviewOnPlaceUseCase(
     private val reviewRepository: ReviewRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.Main,
+    private val dispatcher: CoroutineDispatcher
 ) {
     suspend operator fun invoke(
         placeURI: String,
@@ -16,7 +15,7 @@ class AddReviewOnPlaceUseCase(
     ): Boolean {
         return withContext(dispatcher) {
             reviewRepository.addReviewOnPlace(
-                placeURI.takeLast(10),
+                placeURI.drop(19),
                 review
             )
         }

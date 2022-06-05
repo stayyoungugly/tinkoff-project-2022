@@ -98,7 +98,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             with(binding) {
                 this.tvFriendsNumber.text = it["friends"].toString()
                 this.tvReviewNumber.text = it["reviews"].toString()
-                this.tvCollectionsNumber.text = it["collections"].toString()
+                this.tvCollectionsNumber.text = it["likes"].toString()
             }
         }
     }

@@ -17,6 +17,8 @@ interface UserRepository {
 
     suspend fun isPlaceLiked(nickname: String, uri: String): String?
 
+    suspend fun getLikes(nickname: String): List<String>
+
     suspend fun getNumberOf(nickname: String): HashMap<String, Int>
 
     suspend fun updateUser(firstName: String, lastName: String, uploadAvatar: ByteArray)

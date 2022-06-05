@@ -30,7 +30,7 @@ class FriendsViewModel(
     fun onGetFriends(nickname: String?) {
         viewModelScope.launch {
             try {
-                val list = if (nickname != null) {
+                val list = if (nickname != null && nickname != getUserNicknameUseCase()) {
                     _isUser.value = false
                     getAllFriendsByNicknameUseCase(nickname)
                 } else {

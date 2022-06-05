@@ -9,10 +9,10 @@ import com.itis.springpractice.data.mapper.ReviewEntityMapper
 import com.itis.springpractice.data.mapper.UserModelMapper
 import com.itis.springpractice.domain.repository.ReviewRepository
 import com.itis.springpractice.domain.repository.UserRepository
+import com.itis.springpractice.domain.usecase.user.GetNumberOfUseCase
 import com.itis.springpractice.domain.usecase.review.AddReviewOnPlaceUseCase
+import com.itis.springpractice.domain.usecase.review.DeleteReviewUseCase
 import com.itis.springpractice.domain.usecase.review.GetReviewsByPlaceUseCase
-import com.itis.springpractice.domain.usecase.user.*
-import com.itis.springpractice.domain.usecase.friends.GetNumberOfUseCase
 import com.itis.springpractice.domain.usecase.user.*
 import kotlinx.coroutines.Dispatchers
 
@@ -23,6 +23,11 @@ class UserContainer(
         firestore = Firestore(),
         userModelMapper = UserModelMapper(),
         preferenceManager = PreferenceManager(sharedPreferences)
+    )
+
+    val getFavouritePlacesUseCase: GetFavouritePlacesUseCase = GetFavouritePlacesUseCase(
+        userRepository = userRepository,
+        dispatcher = Dispatchers.Default
     )
 
     val addUserUseCase: AddUserUseCase = AddUserUseCase(
@@ -37,11 +42,21 @@ class UserContainer(
 
     private val reviewRepository: ReviewRepository = ReviewRepositoryImpl(
         firestore = Firestore(),
-        reviewMapper = ReviewEntityMapper(userRepository, PreferenceManager(sharedPreferences)),
+        reviewMapper = ReviewEntityMapper(getUserByNicknameUseCase),
         preferenceManager = PreferenceManager(sharedPreferences)
     )
 
     val getReviewsByPlaceUseCase: GetReviewsByPlaceUseCase = GetReviewsByPlaceUseCase(
+        reviewRepository = reviewRepository,
+        dispatcher = Dispatchers.Default
+    )
+
+    val deleteReviewUseCase: DeleteReviewUseCase = DeleteReviewUseCase(
+        reviewRepository = reviewRepository,
+        dispatcher = Dispatchers.Default
+    )
+
+    val getUserReviewsUseCase: GetUserReviewsUseCase = GetUserReviewsUseCase(
         reviewRepository = reviewRepository,
         dispatcher = Dispatchers.Default
     )

@@ -1,4 +1,4 @@
-package com.itis.springpractice.domain.usecase.friends
+package com.itis.springpractice.domain.usecase.user
 
 import com.itis.springpractice.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
