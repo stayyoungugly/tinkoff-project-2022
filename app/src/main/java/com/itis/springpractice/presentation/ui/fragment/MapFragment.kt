@@ -144,16 +144,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapCity.addTapListener(this)
-        binding.btnSignOut.setOnClickListener {
-            onSignOutClick()
-        }
         checkPermission()
         userInterface()
-    }
-
-    private fun onSignOutClick() {
-        mapViewModel.onDeleteClick()
-        (this.findParent<AuthorizedFragment>() as? Callbacks)?.navigateToSignIn()
     }
 
     private fun createUserLocationLayer() {

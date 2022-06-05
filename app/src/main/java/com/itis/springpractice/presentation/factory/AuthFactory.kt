@@ -40,8 +40,6 @@ class AuthFactory(
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             modelClass.isAssignableFrom(MapViewModel::class.java) ->
                 MapViewModel(
-                    tokenDi.deleteTokenUseCase,
-                    userDi.deleteNicknameUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             modelClass.isAssignableFrom(FriendsViewModel::class.java) ->
                 FriendsViewModel(
@@ -56,7 +54,9 @@ class AuthFactory(
                 ProfileViewModel(
                     userDi.getUserByNicknameUseCase,
                     userDi.getUserNickname,
-                    userDi.getNumberOfUseCase
+                    userDi.getNumberOfUseCase,
+                    tokenDi.deleteTokenUseCase,
+                    userDi.deleteNicknameUseCase
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             modelClass.isAssignableFrom(EditProfileViewModel::class.java) ->
                 EditProfileViewModel(

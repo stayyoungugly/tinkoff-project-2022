@@ -82,6 +82,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 binding.fabEdit.setOnClickListener {
                     (this.findParent<AuthorizedFragment>() as? Callbacks)?.navigateToEdit()
                 }
+                binding.btnSignOut.setOnClickListener {
+                    onSignOutClick()
+                }
             }
             else {
                 binding.fabEdit.visibility = GONE
@@ -95,6 +98,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 this.tvCollectionsNumber.text = it["collections"].toString()
             }
         }
+    }
+
+    private fun onSignOutClick() {
+        profileViewModel.onDeleteClick()
+        (this.findParent<AuthorizedFragment>() as? Callbacks)?.navigateToSignIn()
     }
 
     private fun showMessage(message: String) {
