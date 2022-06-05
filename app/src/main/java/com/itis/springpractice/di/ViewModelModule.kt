@@ -15,4 +15,6 @@ val viewModelModule = module {
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)
     viewModelOf(::VerifyEmailViewModel)
+    viewModelOf(::PlacesFavouriteViewModel)
+    viewModelOf(::UserReviewsViewModel)
 }

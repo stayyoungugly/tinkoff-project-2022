@@ -1,10 +1,8 @@
 package com.itis.springpractice.presentation.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
@@ -12,14 +10,10 @@ import com.bumptech.glide.RequestManager
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentFavouritesBinding
-import com.itis.springpractice.di.FriendContainer
-import com.itis.springpractice.di.UserAuthContainer
-import com.itis.springpractice.di.UserContainer
-import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.Place
-import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.rv.PlacesAdapter
 import com.itis.springpractice.presentation.viewmodel.PlacesFavouriteViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class FavouritesFragment : Fragment(R.layout.fragment_favourites) {
@@ -27,21 +21,10 @@ class FavouritesFragment : Fragment(R.layout.fragment_favourites) {
 
     private lateinit var placesAdapter: PlacesAdapter
 
-    private val placesFavouriteViewModel by viewModels<PlacesFavouriteViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences),
-            FriendContainer(sharedPreferences)
-        )
-    }
+    private val placesFavouriteViewModel: PlacesFavouriteViewModel by viewModel()
 
     private val glide: RequestManager by lazy {
         Glide.with(this)
-    }
-
-    private val sharedPreferences by lazy {
-        requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
     private var isUser = false

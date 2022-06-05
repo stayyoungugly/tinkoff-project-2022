@@ -46,7 +46,6 @@ val userAuthModule = module {
             .create(FirebaseAuthApi::class.java)
     }
 
-    //factory { get<Retrofit>().create(FirebaseAuthApi::class.java) }
     factory<UserAuthRepository> {
         (UserAuthRepositoryImpl(
             get(named("AuthRetrofit")),

@@ -45,7 +45,6 @@ val userTokenModule = module {
             .create(FirebaseTokenApi::class.java)
     }
 
-    //factory { get<Retrofit>().create(FirebaseTokenApi::class.java) }
     factory<UserTokenRepository> {
         (UserTokenRepositoryImpl(
             get(named("TokenRetrofit")),

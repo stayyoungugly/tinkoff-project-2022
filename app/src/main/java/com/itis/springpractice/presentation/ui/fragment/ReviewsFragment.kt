@@ -1,6 +1,5 @@
 package com.itis.springpractice.presentation.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -12,13 +11,8 @@ import com.bumptech.glide.RequestManager
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentUserReviewsBinding
-import com.itis.springpractice.di.FriendContainer
-import com.itis.springpractice.di.UserAuthContainer
-import com.itis.springpractice.di.UserContainer
-import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.Place
 import com.itis.springpractice.domain.entity.Review
-import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.ui.rv.ReviewsAdapter
 import com.itis.springpractice.presentation.viewmodel.UserReviewsViewModel
 import timber.log.Timber
@@ -28,21 +22,10 @@ class ReviewsFragment : Fragment(R.layout.fragment_user_reviews) {
 
     private lateinit var reviewsAdapter: ReviewsAdapter
 
-    private val userReviewsViewModel by viewModels<UserReviewsViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences),
-            FriendContainer(sharedPreferences)
-        )
-    }
+    private val userReviewsViewModel: UserReviewsViewModel by viewModels()
 
     private val glide: RequestManager by lazy {
         Glide.with(this)
-    }
-
-    private val sharedPreferences by lazy {
-        requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
     private val nicknameProfile: String? by lazy {
