@@ -43,13 +43,16 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
                 }
                 .show()
         }
-        val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { localUri ->
-            binding.ivPhoto.setImageURI(localUri)
-        }
+        val getContent =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { localUri ->
+                binding.ivPhoto.setImageURI(localUri)
+            }
         binding.ivPhoto.setOnClickListener {
             getContent.launch("image/*")
         }
     }
+
+    private lateinit var oldAvatar: Bitmap
 
     private fun initObservers() {
         editProfileViewModel.error.observe(viewLifecycleOwner) {
@@ -70,17 +73,24 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
     }
 
     private fun setAvatar(avatar: ByteArray?) {
-        if (avatar == null) {
-            val bitmap = BitmapFactory.decodeResource(requireContext().resources, R.drawable.no_avatar)
+        oldAvatar = if (avatar == null) {
+            val bitmap =
+                BitmapFactory.decodeResource(requireContext().resources, R.drawable.no_avatar)
             binding.ivPhoto.setImageBitmap(bitmap)
+            bitmap
         } else {
             val bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.size)
             binding.ivPhoto.setImageBitmap(bitmap)
+            bitmap
         }
     }
 
     private fun getAvatar(): ByteArray {
-        val bitmap = (binding.ivPhoto.drawable as BitmapDrawable).bitmap
+        val bitmap = if (binding.ivPhoto.drawable == null) {
+            oldAvatar
+        } else {
+            (binding.ivPhoto.drawable as BitmapDrawable).bitmap
+        }
         return ByteArrayOutputStream().run {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
             toByteArray()
