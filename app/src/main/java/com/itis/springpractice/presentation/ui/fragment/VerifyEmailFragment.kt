@@ -1,36 +1,23 @@
 package com.itis.springpractice.presentation.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentVerifyEmailBinding
-import com.itis.springpractice.di.UserAuthContainer
-import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.UserInfoError
 import com.itis.springpractice.domain.entity.UserInfoSuccess
-import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.VerifyEmailViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class VerifyEmailFragment : Fragment(R.layout.fragment_verify_email) {
     private val binding by viewBinding(FragmentVerifyEmailBinding::bind)
 
-    private val verifyEmailViewModel by viewModels<VerifyEmailViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
-        )
-    }
-
-    private val sharedPreferences by lazy {
-        requireActivity().getPreferences(Context.MODE_PRIVATE)
-    }
+    private val verifyEmailViewModel: VerifyEmailViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,7 +37,7 @@ class VerifyEmailFragment : Fragment(R.layout.fragment_verify_email) {
     }
 
     private fun initObservers() {
-        verifyEmailViewModel.errorEntity.observe(viewLifecycleOwner) { result ->
+        verifyEmailViewModel.errorModel.observe(viewLifecycleOwner) { result ->
             result.fold(onSuccess = {
                 when (it.message) {
                     "INVALID_ID_TOKEN" -> showMessage("Ошибка запроса, попробуйте еще раз")

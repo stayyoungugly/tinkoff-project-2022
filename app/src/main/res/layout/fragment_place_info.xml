@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_photo"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/no_photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/iv_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_address"
+        app:layout_constraintStart_toStartOf="@id/iv_photo"
+        app:layout_constraintTop_toTopOf="@id/tv_address"
+        app:srcCompat="@drawable/ic_address"
+        app:tint="@color/black"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/spot_bold"
+        android:text="@string/address"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_address"
+        app:layout_constraintTop_toBottomOf="@+id/iv_photo" />
+
+    <ImageView
+        android:id="@+id/iv_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/tv_hours"
+        app:layout_constraintStart_toStartOf="@id/iv_address"
+        app:layout_constraintTop_toTopOf="@id/tv_hours"
+        app:srcCompat="@drawable/ic_hours"
+        app:tint="@color/black"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_hours"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/hours"
+        android:textColor="@color/black"
+        android:fontFamily="@font/spot_bold"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_hours"
+        app:layout_constraintTop_toBottomOf="@+id/tv_address" />
+
+    <ImageView
+        android:id="@+id/iv_closed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/tv_closed"
+        app:layout_constraintStart_toStartOf="@id/iv_hours"
+        app:layout_constraintTop_toTopOf="@id/tv_closed"
+        app:srcCompat="@drawable/ic_closed"
+        app:tint="@color/black"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_closed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/spot_bold"
+        android:layout_marginEnd="24dp"
+        android:text="@string/open"
+        android:textColor="@color/green"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_closed"
+        app:layout_constraintTop_toBottomOf="@+id/tv_hours" />
+
+    <ImageView
+        android:id="@+id/iv_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/tv_phone"
+        app:layout_constraintStart_toStartOf="@id/iv_closed"
+        app:layout_constraintTop_toTopOf="@id/tv_phone"
+        app:srcCompat="@drawable/ic_phone"
+        app:tint="@color/black"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:fontFamily="@font/spot_bold"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/number"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_phone"
+        app:layout_constraintTop_toBottomOf="@+id/tv_closed" />
+</androidx.constraintlayout.widget.ConstraintLayout>

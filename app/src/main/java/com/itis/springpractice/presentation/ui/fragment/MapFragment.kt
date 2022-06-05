@@ -1,32 +1,29 @@
 package com.itis.springpractice.presentation.ui.fragment
 
 import android.Manifest
-import android.content.Context
+import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Priority
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
+import com.itis.springpractice.databinding.DialogSearchPlaceBinding
 import com.itis.springpractice.databinding.FragmentMapBinding
-import com.itis.springpractice.di.UserAuthContainer
-import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.presentation.factory.AuthFactory
-import com.itis.springpractice.presentation.ui.fragment.extension.findParent
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
+import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.StyleType
+import com.yandex.mapkit.geometry.Geometry
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.layers.GeoObjectTapEvent
 import com.yandex.mapkit.layers.GeoObjectTapListener
@@ -38,41 +35,41 @@ import com.yandex.mapkit.map.*
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.search.*
+import com.yandex.mapkit.uri.UriObjectMetadata
 import com.yandex.mapkit.user_location.UserLocationLayer
 import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
 import com.yandex.runtime.Error
 import com.yandex.runtime.i18n.I18nManagerFactory
 import com.yandex.runtime.image.ImageProvider
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 
 class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener, CameraListener,
-    Session.SearchListener,
-    GeoObjectTapListener {
-    private lateinit var searchSession: Session
-    private val binding by viewBinding(FragmentMapBinding::bind)
-
-    private val bottomSheetBehavior
-        get() = BottomSheetBehavior.from(binding.bottomLayout.root).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-            addBottomSheetCallback(object :
-                BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                        state = BottomSheetBehavior.STATE_HIDDEN
-                    }
-                }
-            })
-        }
-
-    private val glideOptions by lazy {
-        RequestOptions()
-            .priority(Priority.HIGH)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-    }
-
+    GeoObjectTapListener, InputListener, Session.SearchListener, MapObjectTapListener {
     private lateinit var userLocationLayer: UserLocationLayer
+    private val binding by viewBinding(FragmentMapBinding::bind)
+    private lateinit var dialogBinding: DialogSearchPlaceBinding
+    private lateinit var uri: String
+    private lateinit var suggestResultView: ListView
+
+    private lateinit var searchSession: Session
+
+    private val searchManager by lazy {
+        SearchFactory.getInstance().createSearchManager(
+            SearchManagerType.COMBINED
+        )
+    }
+    private var latitudeZoom: Double? = null
+    private var longitudeZoom: Double? = null
+    private var uriZoom: String? = null
+
+
+    private var first = true
+
+    private val bottomSheetDialogFragment: BottomSheetDialogFragment
+        get() = BottomSheetFragment(uri)
 
     private val mapView: MapView
         get() = binding.mapCity
@@ -87,40 +84,38 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             isIndoorEnabled = true
         }
 
-    private val glide: RequestManager by lazy {
-        Glide.with(this)
-    }
-
-    private val mapKit by lazy {
-        MapKitFactory.getInstance()
-    }
-
-    private val searchManager by lazy {
-        SearchFactory.getInstance().createSearchManager(
-            SearchManagerType.COMBINED
-        )
-    }
+    private val mapKit
+        get() = MapKitFactory.getInstance()
 
     private var defaultLocation = Point(0.0, 0.0)
     private var routeStartLocation: Point? = defaultLocation
 
+    private var userPoint = defaultLocation
+
     private var permissionLocation = false
     private var followUserLocation = false
+    private var suggestResult = ArrayList<String>()
+
+    private lateinit var resultAdapter: ArrayAdapter<String>
 
     companion object {
-        const val zoomValue = 19.0f
+        const val defaultZoomValue = 19.0f
+        const val mediumZoomValue = 18.0f
+        const val smallZoomValue = 16.0f
+        const val wideZoomValue = 14.0f
         const val zeroFloatValue = 0.0f
         const val durationValue = 1f
         const val widthRatio = 0.5
         const val heightRatio = 0.83
-        const val searchType = 2
+        const val tiltFloatValue = 45.0f
+        const val pointOffset = 0.00015
     }
 
     override fun onStart() {
         super.onStart()
         mapView.onStart()
         MapKitFactory.getInstance().onStart()
-        I18nManagerFactory.setLocale("lang=ru-RU")
+        I18nManagerFactory.setLocale("ru_RU")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,30 +123,92 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         MapKitFactory.initialize(context)
     }
 
-    private val mapViewModel by viewModels<MapViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
-        )
-    }
+    private val mapViewModel: MapViewModel by viewModel()
 
-    private val sharedPreferences by lazy {
-        requireActivity().getPreferences(Context.MODE_PRIVATE)
-    }
+    private val placeInfoViewModel: PlaceInfoViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mapCity.addInputListener(this)
         mapCity.addTapListener(this)
-        binding.btnSignOut.setOnClickListener {
-            onSignOutClick()
+        latitudeZoom = arguments?.getDouble("latitude")
+        longitudeZoom = arguments?.getDouble("longitude")
+        uriZoom = arguments?.getString("uri")
+        arguments?.clear()
+        initObservers()
+        binding.searchFab.setOnClickListener {
+            navigateToSearchPlace()
         }
         checkPermission()
         userInterface()
+        checkZoom()
     }
 
-    private fun onSignOutClick() {
-        mapViewModel.onDeleteTokenClick()
-        (this.findParent<AuthorizedFragment>() as? Callbacks)?.navigateToSignIn()
+    private fun dialogSuggestConfig() {
+        resultAdapter = ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_list_item_1,
+            android.R.id.text1,
+            suggestResult
+        )
+
+        suggestResultView = dialogBinding.lvPlaces
+        suggestResultView.adapter = resultAdapter
+
+        dialogBinding.etPlace.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun afterTextChanged(editable: Editable) {
+                mapViewModel.requestSuggest(
+                    editable.toString(),
+                    mapCity.visibleRegion
+                )
+            }
+        })
+
+        suggestResultView.visibility = View.INVISIBLE
+    }
+
+    private fun navigateToSearchPlace() {
+        DialogSearchPlaceBinding.inflate(layoutInflater).let {
+            dialogBinding = it
+        }
+
+        dialogSuggestConfig()
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.search_places))
+            .setView(dialogBinding.root)
+            .setPositiveButton(getString(R.string.find), null)
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            onSearchPlace(dialogBinding.etPlace.toString())
+            dialog.dismiss()
+        }
+        suggestResultView.setOnItemClickListener { _, _, position, _ ->
+            val itemValue = suggestResultView.getItemAtPosition(position) as String
+            onSearchPlace(itemValue)
+            dialog.dismiss()
+        }
+    }
+
+    private fun onSearchPlace(itemValue: String) {
+        val listener = object : Session.SearchListener {
+            override fun onSearchError(err: Error) {}
+            override fun onSearchResponse(response: Response) {
+                searchSession.setSortByDistance(Geometry.fromPoint(userPoint))
+                searchSession.resubmit(this@MapFragment)
+            }
+        }
+        searchSession = searchManager.submit(
+            itemValue,
+            VisibleRegionUtils.toPolygon(mapView.map.visibleRegion),
+            SearchOptions(),
+            listener
+        )
     }
 
     private fun createUserLocationLayer() {
@@ -165,6 +222,14 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         if (mapViewModel.isPermissionsAllowed()) {
             userLocationConfig()
         } else getLocationPermissions()
+    }
+
+    private fun checkZoom() {
+        if (latitudeZoom != null && longitudeZoom != null && uriZoom != null && first) {
+            uri = uriZoom.toString()
+            placeInfoViewModel.searchGeoObjectInfo(uriZoom!!)
+            //modifyMap(Point(latitudeZoom!!, longitudeZoom!!), true, defaultZoomValue)
+        }
     }
 
     private fun getLocationPermissions() {
@@ -186,9 +251,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
                 userLocationConfig()
             }
-            else -> {
-                showMessage("Скоро будет доступен поиск мест")
-            }
         }
     }
 
@@ -200,22 +262,17 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         userLocationLayer.setObjectListener(this)
     }
 
-    private fun bottomModify(params: BusinessObjectMetadata) {
-        val bottomBinding = binding.bottomLayout
-        with(bottomBinding) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            tvName.text = params.name
-            tvDescription.text = params.address.formattedAddress
-        }
+    private fun bottomModify() {
+        bottomSheetDialogFragment.show(parentFragmentManager, bottomSheetDialogFragment.tag)
     }
 
-    private fun modifyMap(location: Point?, isAnimated: Boolean) {
+    private fun modifyMap(location: Point?, isAnimated: Boolean, zoomValue: Float) {
         if (location != null) {
             val cameraPosition = CameraPosition(
                 Point(location.latitude, location.longitude),
                 zoomValue,
                 zeroFloatValue,
-                zeroFloatValue
+                tiltFloatValue
             )
             if (isAnimated) {
                 mapCity.move(
@@ -234,7 +291,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     private fun userInterface() {
-        val mapLogoAlignment = Alignment(HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM)
+        val mapLogoAlignment = Alignment(HorizontalAlignment.RIGHT, VerticalAlignment.BOTTOM)
         mapCity.logo.setAlignment(mapLogoAlignment)
         binding.userLocationFab.setOnClickListener {
             if (permissionLocation) {
@@ -248,10 +305,14 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
 
     private fun cameraUserPosition(isAnimated: Boolean) {
         if (userLocationLayer.cameraPosition() != null) {
-            routeStartLocation = userLocationLayer.cameraPosition()?.target
-            modifyMap(routeStartLocation, isAnimated)
+            val target = userLocationLayer.cameraPosition()?.target
+            routeStartLocation = target
+            if (target != null) {
+                userPoint = target
+            }
+            modifyMap(routeStartLocation, isAnimated, defaultZoomValue)
         } else {
-            modifyMap(defaultLocation, isAnimated)
+            modifyMap(defaultLocation, isAnimated, defaultZoomValue)
         }
     }
 
@@ -312,36 +373,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         mapCity.selectGeoObject(selectionMetadata.id, selectionMetadata.layerId)
     }
 
-    private fun searchGeoObjectInfo(event: GeoObjectTapEvent) {
-        val point = event.geoObject.geometry[0].point
-        val options = SearchOptions()
-        options.searchTypes = searchType
-        options.snippets = Snippet.PHOTOS.value
-        if (point != null) {
-            startSession(point, options)
-        } else showMessage("Информация о месте не найдена")
-    }
-
-    private fun startSession(
-        point: Point,
-        options: SearchOptions
-    ) {
-        searchSession = searchManager.submit(point, 16, options, this)
-    }
-
-    override fun onSearchResponse(response: Response) {
-        val params = response.collection.children.firstOrNull()?.obj
-            ?.metadataContainer
-            ?.getItem(BusinessObjectMetadata::class.java)
-        if (params != null) {
-            bottomModify(params)
-        }
-    }
-
-    override fun onSearchError(error: Error) {
-        showMessage(error.toString())
-    }
-
     override fun onStop() {
         super.onStop()
         mapView.onStop()
@@ -349,9 +380,99 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     override fun onObjectTap(event: GeoObjectTapEvent): Boolean {
-        selectionGeoObject(event)
-        searchGeoObjectInfo(event)
+        val uriLink =
+            event.geoObject.metadataContainer.getItem(UriObjectMetadata::class.java)?.uris?.first()?.value
+        if (!uriLink.isNullOrEmpty()) {
+            selectionGeoObject(event)
+            uri = uriLink
+            placeInfoViewModel.searchGeoObjectInfo(uri)
+        }
         return true
     }
+
+    private fun initObservers() {
+        mapViewModel.error.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            showMessage(getString(R.string.try_again_error))
+        }
+
+        mapViewModel.suggestResult.observe(viewLifecycleOwner) {
+            suggestResult.clear()
+            suggestResult.addAll(it)
+            resultAdapter.notifyDataSetChanged()
+            suggestResultView.visibility = View.VISIBLE
+        }
+
+        placeInfoViewModel.place.observe(viewLifecycleOwner) { result ->
+            result.fold(onSuccess = {
+                if (it.address.isNotEmpty()) {
+                    bottomModify()
+                }
+            }, onFailure = {
+                showMessage(getString(R.string.not_found))
+            })
+        }
+    }
+
+    override fun onMapTap(map: Map, point: Point) {
+        mapCity.deselectGeoObject()
+    }
+
+    override fun onMapLongTap(map: Map, point: Point) {}
+
+    override fun onSearchResponse(response: Response) {
+        val mapObjects = mapView.map.mapObjects
+        mapObjects.clear()
+        mapObjects.addTapListener(this)
+        for (searchResult in response.collection.children) {
+            val point = searchResult.obj?.geometry?.get(0)?.point
+            val resultLocation = point?.let { Point(it.latitude + pointOffset, it.longitude) }
+            if (resultLocation != null) {
+                mapObjects.addPlacemark(
+                    resultLocation,
+                    ImageProvider.fromResource(requireContext(), R.drawable.search_result)
+                )
+            }
+        }
+        val count = response.collection.children.size
+        showMessage("Найдено мест: $count")
+
+        if (count == 0) {
+            showMessage(getString(R.string.place_no_found))
+        } else {
+            val first = response.collection.children[0].obj?.geometry?.get(0)?.point
+
+            val uriLink =
+                response.collection.children[0].obj?.metadataContainer?.getItem(UriObjectMetadata::class.java)?.uris?.first()?.value
+            if (!uriLink.isNullOrEmpty()) {
+                uri = uriLink
+                placeInfoViewModel.searchGeoObjectInfo(uri)
+            }
+
+            var zoom = defaultZoomValue
+            when {
+                count >= 10 -> {
+                    zoom = wideZoomValue
+                }
+                count >= 5 -> {
+                    zoom = smallZoomValue
+                }
+                count > 1 -> {
+                    zoom = mediumZoomValue
+                }
+            }
+            modifyMap(first, true, zoom)
+        }
+    }
+
+    override fun onSearchError(error: Error) {
+        showMessage(getString(R.string.fail_place_found))
+    }
+
+    override fun onMapObjectTap(mapObject: MapObject, point: Point): Boolean {
+        modifyMap(point, true, defaultZoomValue)
+        return true
+    }
+
 }
 

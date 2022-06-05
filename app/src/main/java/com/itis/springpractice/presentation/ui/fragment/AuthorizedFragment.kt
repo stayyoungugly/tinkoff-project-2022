@@ -13,6 +13,7 @@ import com.itis.springpractice.databinding.FragmentAuthorizedBinding
 
 interface Callbacks {
     fun navigateToSignIn()
+    fun navigateToEdit()
 }
 
 class AuthorizedFragment : Fragment(R.layout.fragment_authorized), Callbacks {
@@ -33,5 +34,9 @@ class AuthorizedFragment : Fragment(R.layout.fragment_authorized), Callbacks {
 
     override fun navigateToSignIn() {
         findNavController().navigate(R.id.action_authorizedFragment_to_signInFragment)
+    }
+
+    override fun navigateToEdit() {
+        findNavController().navigate(R.id.action_authorizedFragment_to_editProfileFragment)
     }
 }

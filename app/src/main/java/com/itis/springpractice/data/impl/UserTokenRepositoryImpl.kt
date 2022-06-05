@@ -1,16 +1,16 @@
 package com.itis.springpractice.data.impl
 
 import com.itis.springpractice.data.api.firebase.FirebaseTokenApi
-import com.itis.springpractice.data.api.mapper.TokenMapper
 import com.itis.springpractice.data.database.local.PreferenceManager
+import com.itis.springpractice.data.mapper.TokenMapper
 import com.itis.springpractice.domain.entity.TokenResult
 import com.itis.springpractice.domain.entity.TokenSuccess
 import com.itis.springpractice.domain.repository.UserTokenRepository
 
 class UserTokenRepositoryImpl(
-    private var api: FirebaseTokenApi,
-    private var mapper: TokenMapper,
-    private var preferenceManager: PreferenceManager
+    private val api: FirebaseTokenApi,
+    private val mapper: TokenMapper,
+    private val preferenceManager: PreferenceManager
 ) : UserTokenRepository {
 
     companion object {

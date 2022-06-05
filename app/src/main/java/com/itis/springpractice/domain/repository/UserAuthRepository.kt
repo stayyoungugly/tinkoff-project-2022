@@ -7,9 +7,9 @@ interface UserAuthRepository {
 
     suspend fun register(email: String, password: String): SignUpResult
 
-    suspend fun sendVerification(idToken: String): ErrorEntity
+    suspend fun sendVerification(idToken: String): ErrorModel
 
     suspend fun getUserInfo(idToken: String): UserInfoResult
 
-    suspend fun deleteUser(idToken: String): ErrorEntity
+    suspend fun deleteUser(idToken: String): ErrorModel
 }

@@ -2,13 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-    <item
-        android:id="@+id/profileFragment"
-        android:title="@string/profile_title"
-        android:icon="@drawable/ic_baseline_account_circle_24"/>
-    <item
-        android:id="@+id/collectionsFragment"
-        android:title="@string/collections_title"
-        android:icon="@drawable/ic_baseline_collections_24"/>
+        <item
+            android:id="@+id/profileFragment"
+            android:icon="@drawable/ic_baseline_account_circle_24"
+            android:title="@string/profile_title" />
+        <item
+            android:id="@+id/friendsFragment"
+            android:icon="@drawable/ic_baseline_people_24"
+            android:title="@string/friends" />
+        <item
+            android:id="@+id/reviewsFragment"
+            android:icon="@drawable/ic_baseline_library_books_24"
+            android:title="@string/reviews" />
+        <item
+            android:id="@+id/favouritesFragment"
+            android:icon="@drawable/ic_baseline_bookmark_24"
+            android:title="@string/favourites" />
     </group>
 </menu>

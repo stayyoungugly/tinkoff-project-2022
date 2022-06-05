@@ -1,23 +1,26 @@
 package com.itis.springpractice.data.impl
 
 import com.itis.springpractice.data.api.firebase.FirebaseAuthApi
-import com.itis.springpractice.data.api.mapper.ErrorMapper
-import com.itis.springpractice.data.api.mapper.SignInMapper
-import com.itis.springpractice.data.api.mapper.SignUpMapper
-import com.itis.springpractice.data.api.mapper.UserInfoMapper
-import com.itis.springpractice.data.request.TokenIdRequest
+import com.itis.springpractice.data.mapper.ErrorMapper
+import com.itis.springpractice.data.mapper.SignInMapper
+import com.itis.springpractice.data.mapper.SignUpMapper
+import com.itis.springpractice.data.mapper.UserInfoMapper
 import com.itis.springpractice.data.request.SendVerificationRequest
 import com.itis.springpractice.data.request.SignInRequest
 import com.itis.springpractice.data.request.SignUpRequest
-import com.itis.springpractice.domain.entity.*
+import com.itis.springpractice.data.request.TokenIdRequest
+import com.itis.springpractice.domain.entity.ErrorModel
+import com.itis.springpractice.domain.entity.SignInResult
+import com.itis.springpractice.domain.entity.SignUpResult
+import com.itis.springpractice.domain.entity.UserInfoResult
 import com.itis.springpractice.domain.repository.UserAuthRepository
 
 class UserAuthRepositoryImpl(
-    private var api: FirebaseAuthApi,
-    private var registerMapper: SignUpMapper,
-    private var loginMapper: SignInMapper,
-    private var errorMapper: ErrorMapper,
-    private var userInfoMapper: UserInfoMapper
+    private val api: FirebaseAuthApi,
+    private val registerMapper: SignUpMapper,
+    private val loginMapper: SignInMapper,
+    private val errorMapper: ErrorMapper,
+    private val userInfoMapper: UserInfoMapper
 ) : UserAuthRepository {
     companion object {
         private const val requestField = "VERIFY_EMAIL"
@@ -45,7 +48,7 @@ class UserAuthRepositoryImpl(
         )
     }
 
-    override suspend fun sendVerification(idToken: String): ErrorEntity {
+    override suspend fun sendVerification(idToken: String): ErrorModel {
         return errorMapper.mapToErrorEntity(
             api.sendVerification(
                 createSendVerificationRequest(idToken)
@@ -61,7 +64,7 @@ class UserAuthRepositoryImpl(
         )
     }
 
-    override suspend fun deleteUser(idToken: String): ErrorEntity {
+    override suspend fun deleteUser(idToken: String): ErrorModel {
         return errorMapper.mapToErrorEntity(
             api.delete(
                 createTokenIdRequest(idToken)

@@ -11,15 +11,59 @@
         <action
             android:id="@+id/action_non_authorized_zone"
             app:destination="@id/authorized_nav_graph" />
+        <action
+            android:id="@+id/action_mapFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.itis.springpractice.presentation.ui.fragment.ProfileFragment"
-        android:label="@string/profile_title" />
+        android:label="@string/profile_title" >
+        <action
+            android:id="@+id/action_profileFragment_to_friendsFragment"
+            app:destination="@id/friendsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_reviewsFragment"
+            app:destination="@id/reviewsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_favouritesFragment2"
+            app:destination="@id/favouritesFragment" />
+    </fragment>
 
     <fragment
-        android:id="@+id/collectionsFragment"
-        android:name="com.itis.springpractice.presentation.ui.fragment.CollectionsFragment"
-        android:label="@string/collections_title" />
+        android:id="@+id/friendsFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.FriendsFragment"
+        android:label="@string/friends" >
+        <action
+            android:id="@+id/action_friendsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favouritesFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.FavouritesFragment"
+        android:label="@string/favourites" >
+        <action
+            android:id="@+id/action_favouritesFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reviewsFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.ReviewsFragment"
+        android:label="@string/reviews" >
+        <action
+            android:id="@+id/action_reviewsFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/placeReviewFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.PlaceReviewFragment"
+        android:label="PlaceReviewFragment" >
+        <action
+            android:id="@+id/action_placeReviewFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>

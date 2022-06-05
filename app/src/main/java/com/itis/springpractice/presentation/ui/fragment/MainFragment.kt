@@ -1,29 +1,16 @@
 package com.itis.springpractice.presentation.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.itis.springpractice.R
-import com.itis.springpractice.di.UserAuthContainer
-import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.MainViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private val mainViewModel by viewModels<MainViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences)
-        )
-    }
-
-    private val sharedPreferences by lazy {
-        requireActivity().getPreferences(Context.MODE_PRIVATE)
-    }
+    private val mainViewModel: MainViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
