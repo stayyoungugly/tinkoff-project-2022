@@ -5,7 +5,9 @@ import com.itis.springpractice.domain.usecase.friends.AddFriendUseCase
 import com.itis.springpractice.domain.usecase.friends.DeleteFriendUseCase
 import com.itis.springpractice.domain.usecase.friends.GetAllFriendsByNicknameUseCase
 import com.itis.springpractice.domain.usecase.friends.IsUserFriendUseCase
-import com.itis.springpractice.domain.usecase.review.*
+import com.itis.springpractice.domain.usecase.review.AddReviewOnPlaceUseCase
+import com.itis.springpractice.domain.usecase.review.DeleteReviewUseCase
+import com.itis.springpractice.domain.usecase.review.GetReviewsByPlaceUseCase
 import com.itis.springpractice.domain.usecase.token.*
 import com.itis.springpractice.domain.usecase.user.*
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +46,7 @@ val useCaseModule = module {
     factoryOf(::AddUserUseCase)
     factoryOf(::DeleteNicknameUseCase)
     factoryOf(::DeleteUserLikeUseCase)
+    factoryOf(::GetFavouritePlacesUseCase)
     factoryOf(::GetNumberOfUseCase)
     factoryOf(::GetUserByNicknameUseCase)
     factoryOf(::GetUserNicknameUseCase)
