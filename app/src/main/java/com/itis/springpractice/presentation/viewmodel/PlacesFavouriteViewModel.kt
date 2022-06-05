@@ -52,7 +52,6 @@ class PlacesFavouriteViewModel(
                     .map { uri -> generateUri(uri) }
                     .forEach { uri -> searchGeoObjectInfo(uri) }
             } catch (ex: Exception) {
-                println(ex.message)
                 _error.value = ex
             }
         }
@@ -65,7 +64,6 @@ class PlacesFavouriteViewModel(
     fun deleteFromLikes(uri: String) {
         viewModelScope.launch {
             try {
-                println(list)
                 deleteUserLikeUseCase(getUserNicknameUseCase(), uri)
                 for (place in list) {
                     if (place.uri == uri) {

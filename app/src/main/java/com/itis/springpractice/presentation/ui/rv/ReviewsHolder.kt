@@ -63,17 +63,13 @@ class ReviewsHolder(
                     BitmapFactory.decodeByteArray(item.author.avatar, 0, item.author.avatar.size)
                 this.ivAvatar.setImageBitmap(bitmap)
             }
-
             val size = nickname.length
-
             if (item.author.nickname.take(size) == nickname) {
                 btnDelete.visibility = View.VISIBLE
                 btnDelete.setOnClickListener {
                     deleteItem(item.uri)
                 }
             }
-            println(item.author.nickname)
-            println(nickname)
         }
     }
 

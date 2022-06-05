@@ -59,7 +59,6 @@ class PlaceReviewViewModel(
                     } catch (ex: Exception) {
                         _reviewAdded.value = "Ошибка! Попробуйте еще раз"
                         _error.value = ex
-                        println(ex.message)
                     }
                 }
             }
@@ -75,7 +74,6 @@ class PlaceReviewViewModel(
             author = getUserByNicknameUseCase(getUserNicknameUseCase())
         } catch (ex: Exception) {
             _error.value = ex
-            println(ex.message)
         }
         return author?.let { Review(null, uri.drop(19), it, textReview, rating, formatted) }
     }
@@ -105,7 +103,6 @@ class PlaceReviewViewModel(
                     }
                 }
             } catch (ex: Exception) {
-                println(ex.message)
                 _error.value = ex
             }
         }

@@ -51,7 +51,6 @@ class UserReviewsViewModel(
                         searchGeoObjectInfo(generateUri(review.uri))
                     }
             } catch (ex: Exception) {
-                println(ex.message)
                 _error.value = ex
             }
         }

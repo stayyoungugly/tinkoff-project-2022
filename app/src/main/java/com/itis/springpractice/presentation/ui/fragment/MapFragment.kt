@@ -385,7 +385,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         if (!uriLink.isNullOrEmpty()) {
             selectionGeoObject(event)
             uri = uriLink
-            println(uri)
             placeInfoViewModel.searchGeoObjectInfo(uri)
         }
         return true
@@ -401,7 +400,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             suggestResult.clear()
             suggestResult.addAll(it)
             resultAdapter.notifyDataSetChanged()
-            println(resultAdapter.count)
             suggestResultView.visibility = View.VISIBLE
         }
 

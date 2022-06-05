@@ -103,7 +103,6 @@ class PlaceInfoViewModel(
             }
         } catch (ex: Exception) {
             _error.value = ex
-            println(ex.message)
         }
     }
 
@@ -127,7 +126,6 @@ class PlaceInfoViewModel(
                 addUserLikeUseCase(getUserNicknameUseCase(), uriPlace)
             } catch (ex: Exception) {
                 _error.value = Throwable(error.toString())
-                println(ex.message)
             }
         }
     }
