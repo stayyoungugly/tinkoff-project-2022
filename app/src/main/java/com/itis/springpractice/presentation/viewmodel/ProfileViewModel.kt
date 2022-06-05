@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.User
-import com.itis.springpractice.domain.usecase.friends.GetNumberOfUseCase
 import com.itis.springpractice.domain.usecase.token.DeleteTokenUseCase
 import com.itis.springpractice.domain.usecase.user.DeleteNicknameUseCase
+import com.itis.springpractice.domain.usecase.user.GetNumberOfUseCase
 import com.itis.springpractice.domain.usecase.user.GetUserByNicknameUseCase
 import com.itis.springpractice.domain.usecase.user.GetUserNicknameUseCase
 import kotlinx.coroutines.launch

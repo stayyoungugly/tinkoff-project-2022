@@ -1,10 +1,8 @@
 package com.itis.springpractice.presentation.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
@@ -14,13 +12,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.FragmentPlaceInfoBinding
-import com.itis.springpractice.di.FriendContainer
-import com.itis.springpractice.di.UserAuthContainer
-import com.itis.springpractice.di.UserContainer
-import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.domain.entity.Place
-import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class PlaceInfoFragment(uri: String) : Fragment(R.layout.fragment_place_info) {
@@ -39,18 +33,7 @@ class PlaceInfoFragment(uri: String) : Fragment(R.layout.fragment_place_info) {
         Glide.with(this)
     }
 
-    private val placeInfoViewModel by viewModels<PlaceInfoViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences),
-            FriendContainer(sharedPreferences)
-        )
-    }
-
-    private val sharedPreferences by lazy {
-        requireActivity().getPreferences(Context.MODE_PRIVATE)
-    }
+    private val placeInfoViewModel: PlaceInfoViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

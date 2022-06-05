@@ -2,7 +2,6 @@ package com.itis.springpractice.presentation.ui.fragment
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
@@ -13,18 +12,12 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.itis.springpractice.R
 import com.itis.springpractice.databinding.DialogSearchPlaceBinding
 import com.itis.springpractice.databinding.FragmentMapBinding
-import com.itis.springpractice.di.FriendContainer
-import com.itis.springpractice.di.UserAuthContainer
-import com.itis.springpractice.di.UserContainer
-import com.itis.springpractice.di.UserTokenContainer
-import com.itis.springpractice.presentation.factory.AuthFactory
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
 import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
 import com.yandex.mapkit.Animation
@@ -49,6 +42,7 @@ import com.yandex.mapkit.user_location.UserLocationView
 import com.yandex.runtime.Error
 import com.yandex.runtime.i18n.I18nManagerFactory
 import com.yandex.runtime.image.ImageProvider
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 
@@ -123,27 +117,9 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         MapKitFactory.initialize(context)
     }
 
-    private val mapViewModel by viewModels<MapViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences),
-            FriendContainer(sharedPreferences)
-        )
-    }
+    private val mapViewModel: MapViewModel by viewModel()
 
-    private val placeInfoViewModel by viewModels<PlaceInfoViewModel> {
-        AuthFactory(
-            UserAuthContainer,
-            UserTokenContainer(sharedPreferences),
-            UserContainer(sharedPreferences),
-            FriendContainer(sharedPreferences)
-        )
-    }
-
-    private val sharedPreferences by lazy {
-        requireActivity().getPreferences(Context.MODE_PRIVATE)
-    }
+    private val placeInfoViewModel: PlaceInfoViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

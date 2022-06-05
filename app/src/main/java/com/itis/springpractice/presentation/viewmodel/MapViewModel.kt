@@ -9,8 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.MyApplication
-import com.itis.springpractice.domain.usecase.token.DeleteTokenUseCase
-import com.itis.springpractice.domain.usecase.user.DeleteNicknameUseCase
 import com.yandex.mapkit.geometry.BoundingBox
 import com.yandex.mapkit.map.VisibleRegion
 import com.yandex.mapkit.search.*

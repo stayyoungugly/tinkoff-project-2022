@@ -30,6 +30,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun getUserNickname(): String {
+        println(preferenceManager.getNickname() ?: DEFAULT_VALUE)
         return preferenceManager.getNickname() ?: DEFAULT_VALUE
     }
 

@@ -2,7 +2,7 @@ package com.itis.springpractice.data.database.local
 
 import android.content.SharedPreferences
 
-class PreferenceManager(
+class PreferenceManager (
     private var sharedPreferences: SharedPreferences
 ) {
 
