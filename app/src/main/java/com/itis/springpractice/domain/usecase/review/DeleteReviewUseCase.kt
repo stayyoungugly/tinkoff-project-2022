@@ -1,19 +1,21 @@
 package com.itis.springpractice.domain.usecase.review
 
-import com.itis.springpractice.domain.entity.Review
 import com.itis.springpractice.domain.repository.ReviewRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-class GetReviewsByPlaceUseCase(
+class DeleteReviewUseCase(
     private val reviewRepository: ReviewRepository,
     private val dispatcher: CoroutineDispatcher
 ) {
     suspend operator fun invoke(
-        placeURI: String
-    ): List<Review> {
+        nickname: String,
+        uri: String,
+    ) {
         return withContext(dispatcher) {
-            reviewRepository.getReviewsByPlace(placeURI.drop(19))
+            reviewRepository.deleteReview(
+                nickname, uri
+            )
         }
     }
 }

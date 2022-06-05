@@ -54,6 +54,10 @@ class UserRepositoryImpl(
         return firestore.getNumberOf(nickname)
     }
 
+    override suspend fun getLikes(nickname: String): List<String> {
+        return firestore.getLikedPlaces(nickname)
+    }
+
     override suspend fun updateUser(firstName: String, lastName: String, uploadAvatar: ByteArray) {
         val userNickname = preferenceManager.getNickname() ?: DEFAULT_VALUE
         firestore.updateUser(userNickname, firstName, lastName, uploadAvatar)

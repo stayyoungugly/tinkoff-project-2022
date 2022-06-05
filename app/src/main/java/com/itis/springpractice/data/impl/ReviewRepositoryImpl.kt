@@ -30,4 +30,13 @@ class ReviewRepositoryImpl(
             .filterNotNull()
     }
 
+    override suspend fun deleteReview(nickname: String, uri: String) {
+        firestore.deleteReview(nickname, uri)
+    }
+
+    override suspend fun getUserReviews(nickname: String): List<Review> {
+        return reviewMapper.mapToReviewList(firestore.getUserReviews(nickname))
+            .filterNotNull()
+    }
+
 }

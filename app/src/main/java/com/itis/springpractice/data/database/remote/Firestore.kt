@@ -73,6 +73,11 @@ class Firestore {
             .map { it["nickname_friend"].toString() }
     }
 
+    suspend fun deleteReview(nickname: String, uri: String) {
+        usersRef.document(nickname).collection("reviews").document(uri).delete()
+        placesRef.document(uri).collection("reviews").document(nickname).delete()
+    }
+
     suspend fun getFriends(userNickname: String): List<UserResponse?> {
         return try {
             usersRef
@@ -94,11 +99,10 @@ class Firestore {
     }
 
     suspend fun getNumberOf(nickname: String): HashMap<String, Int> {
-        //TODO("methods for reviews and collections number")
         return hashMapOf(
             "friends" to getNumberOfFriends(nickname),
-            "reviews" to 0,
-            "collections" to 0
+            "reviews" to getUserReviews(nickname).size,
+            "likes" to getLikedPlaces(nickname).size
         )
     }
 
@@ -140,7 +144,11 @@ class Firestore {
         }
     }
 
-    fun getUserReviews(nickname: String) {}
+    suspend fun getUserReviews(nickname: String): List<ReviewResponse> {
+        return usersRef.document(nickname).collection("reviews").get().await().map { review ->
+            review.toObject<ReviewResponse>()
+        } as ArrayList<ReviewResponse>
+    }
 
     suspend fun isPlaceLiked(nickname: String, placeURI: String): LikeResponse? {
         val dockRef = usersRef.document(nickname)
@@ -152,8 +160,8 @@ class Firestore {
         return dockRef.collection("likes")
             .get()
             .await()
-            .map { like ->
-                like.toString()
+            .map {
+                it["uri"].toString()
             } as ArrayList<String>
     }
 

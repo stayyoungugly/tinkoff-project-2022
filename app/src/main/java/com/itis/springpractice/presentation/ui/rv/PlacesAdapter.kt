@@ -5,24 +5,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.RequestManager
 import com.itis.springpractice.domain.entity.Place
-import com.itis.springpractice.domain.entity.Review
-import com.itis.springpractice.presentation.ui.diffutil.ReviewsDiffUtilCallback
+import com.itis.springpractice.presentation.ui.diffutil.PlaceDiffUtilCallback
 
-class ReviewsAdapter(
+class PlacesAdapter(
     private val glide: RequestManager,
-    private val selectItem: ((Place) -> Unit)?,
+    private val selectItem: (Place) -> Unit,
     private val deleteItem: (String) -> Unit,
-    private val nickname: String,
-) : ListAdapter<Review, ReviewsHolder>(ReviewsDiffUtilCallback()) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewsHolder =
-        ReviewsHolder.create(parent, glide, selectItem, deleteItem, nickname)
+    private val isUser: Boolean
+) : ListAdapter<Place, PlacesHolder>(PlaceDiffUtilCallback()) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacesHolder =
+        PlacesHolder.create(parent, glide, selectItem, deleteItem, isUser)
 
-    override fun onBindViewHolder(holder: ReviewsHolder, position: Int) {
+    override fun onBindViewHolder(holder: PlacesHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
     override fun onBindViewHolder(
-        holder: ReviewsHolder,
+        holder: PlacesHolder,
         position: Int,
         payloads: MutableList<Any>
     ) {
@@ -35,7 +34,7 @@ class ReviewsAdapter(
         }
     }
 
-    override fun submitList(list: MutableList<Review>?) {
+    override fun submitList(list: MutableList<Place>?) {
         super.submitList(if (list == null) null else ArrayList(list))
     }
 }

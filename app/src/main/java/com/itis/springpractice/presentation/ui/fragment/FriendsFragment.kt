@@ -28,9 +28,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         arguments?.getString("nickname")
     }
 
-    private val isUser: Boolean by lazy {
-        nicknameFriend == null
-    }
+    private var isUser: Boolean = nicknameFriend == null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,6 +61,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
             })
         }
         friendsViewModel.isUser.observe(viewLifecycleOwner) {
+            isUser = it
             binding.fabAddFriend.apply {
                 if (it) {
                     setOnClickListener {
@@ -78,7 +77,6 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
 
     private fun deleteFriend(nickname: String) {
         friendsViewModel.onDeleteFriend(nickname)
-        //friendsViewModel.onGetFriends(nicknameFriend)
     }
 
     private fun showMessage(message: String) {

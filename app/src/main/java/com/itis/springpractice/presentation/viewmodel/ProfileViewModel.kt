@@ -27,7 +27,7 @@ class ProfileViewModel(
     fun onGetUserInfo(nickname: String?) {
         viewModelScope.launch {
             try {
-                val user = if (nickname != null) {
+                val user = if (nickname != null && nickname != getUserNicknameUseCase()) {
                     _isUser.value = false
                     getUserByNicknameUseCase(nickname)
                 } else {

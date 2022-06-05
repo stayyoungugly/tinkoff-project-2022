@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.Review
 import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.domain.usecase.review.AddReviewOnPlaceUseCase
+import com.itis.springpractice.domain.usecase.review.DeleteReviewUseCase
 import com.itis.springpractice.domain.usecase.review.GetReviewsByPlaceUseCase
 import com.itis.springpractice.domain.usecase.user.GetUserByNicknameUseCase
 import com.itis.springpractice.domain.usecase.user.GetUserNicknameUseCase
@@ -19,6 +20,7 @@ class PlaceReviewViewModel(
     private val addReviewOnPlaceUseCase: AddReviewOnPlaceUseCase,
     private val getUserNicknameUseCase: GetUserNicknameUseCase,
     private val getUserByNicknameUseCase: GetUserByNicknameUseCase,
+    private val deleteReviewUseCase: DeleteReviewUseCase
 ) : ViewModel() {
 
     private val _error: MutableLiveData<Throwable> = MutableLiveData()
@@ -75,11 +77,36 @@ class PlaceReviewViewModel(
             _error.value = ex
             println(ex.message)
         }
-        return author?.let { Review(uri.takeLast(10), it, textReview, rating, formatted) }
+        return author?.let { Review(null, uri.drop(19), it, textReview, rating, formatted) }
     }
 
-    private val _reviewList: SingleLiveEvent<Result<List<Review>>> = SingleLiveEvent()
-    val reviewList: LiveData<Result<List<Review>>> = _reviewList
+    private val _nickname: SingleLiveEvent<String> = SingleLiveEvent()
+    val nickname: LiveData<String> = _nickname
+
+    fun getUserNickname() {
+        viewModelScope.launch {
+            try {
+                _nickname.value = getUserNicknameUseCase()
+            } catch (ex: Exception) {
+                _error.value = ex
+            }
+        }
+    }
+
+    fun deleteReview(uri: String) {
+        viewModelScope.launch {
+            try {
+                deleteReviewUseCase(getUserNicknameUseCase(), uri)
+                _reviewList.value = getReviewsByPlaceUseCase(uri)
+            } catch (ex: Exception) {
+                println(ex.message)
+                _error.value = ex
+            }
+        }
+    }
+
+    private val _reviewList: SingleLiveEvent<List<Review>> = SingleLiveEvent()
+    val reviewList: LiveData<List<Review>> = _reviewList
 
     fun getReviewsByPlace(uri: String) {
         viewModelScope.launch {
@@ -90,9 +117,8 @@ class PlaceReviewViewModel(
                         review.author.nickname = "${review.author.nickname} (вы)"
                     }
                 }
-                _reviewList.value = Result.success(reviews)
+                _reviewList.value = reviews
             } catch (ex: Exception) {
-                _reviewList.value = Result.failure(ex)
                 _error.value = ex
             }
         }

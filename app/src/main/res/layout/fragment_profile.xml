@@ -14,7 +14,6 @@
         app:layout_constraintBottom_toTopOf="@id/cl_friends"
         app:layout_constraintTop_toTopOf="parent">
 
-
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_photo"
             android:layout_width="150dp"

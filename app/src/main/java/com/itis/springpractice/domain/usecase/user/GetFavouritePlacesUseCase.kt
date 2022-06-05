@@ -4,13 +4,15 @@ import com.itis.springpractice.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-class IsPlaceLikedUseCase(
+class GetFavouritePlacesUseCase(
     private val userRepository: UserRepository,
     private val dispatcher: CoroutineDispatcher
 ) {
-    suspend operator fun invoke(nickname: String, uri: String): String? {
+    suspend operator fun invoke(
+        name: String
+    ): List<String> {
         return withContext(dispatcher) {
-            userRepository.isPlaceLiked(nickname, uri.drop(19))
+            userRepository.getLikes(name)
         }
     }
 }

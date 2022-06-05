@@ -91,7 +91,6 @@ class PlaceInfoViewModel(
             photoUrl = params.advertisement?.images?.get(1)?.url,
             description = params.advertisement?.about,
         )
-
     }
 
     private val _isPlaceLiked: MutableLiveData<String> = MutableLiveData()

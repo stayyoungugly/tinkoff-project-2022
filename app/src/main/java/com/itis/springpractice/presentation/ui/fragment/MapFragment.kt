@@ -61,6 +61,12 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             SearchManagerType.COMBINED
         )
     }
+    private var latitudeZoom: Double? = null
+    private var longitudeZoom: Double? = null
+    private var uriZoom: String? = null
+
+
+    private var first = true
 
     private val bottomSheetDialogFragment: BottomSheetDialogFragment
         get() = BottomSheetFragment(uri)
@@ -125,13 +131,17 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         super.onViewCreated(view, savedInstanceState)
         mapCity.addInputListener(this)
         mapCity.addTapListener(this)
+        latitudeZoom = arguments?.getDouble("latitude")
+        longitudeZoom = arguments?.getDouble("longitude")
+        uriZoom = arguments?.getString("uri")
+        arguments?.clear()
         initObservers()
         binding.searchFab.setOnClickListener {
             navigateToSearchPlace()
         }
         checkPermission()
         userInterface()
-
+        checkZoom()
     }
 
     private fun dialogSuggestConfig() {
@@ -212,6 +222,14 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         if (mapViewModel.isPermissionsAllowed()) {
             userLocationConfig()
         } else getLocationPermissions()
+    }
+
+    private fun checkZoom() {
+        if (latitudeZoom != null && longitudeZoom != null && uriZoom != null && first) {
+            uri = uriZoom.toString()
+            placeInfoViewModel.searchGeoObjectInfo(uriZoom!!)
+            //modifyMap(Point(latitudeZoom!!, longitudeZoom!!), true, defaultZoomValue)
+        }
     }
 
     private fun getLocationPermissions() {
@@ -367,6 +385,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         if (!uriLink.isNullOrEmpty()) {
             selectionGeoObject(event)
             uri = uriLink
+            println(uri)
             placeInfoViewModel.searchGeoObjectInfo(uri)
         }
         return true

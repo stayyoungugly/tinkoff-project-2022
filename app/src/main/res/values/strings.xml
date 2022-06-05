@@ -75,4 +75,8 @@
     <string name="no_friends">У пользователя нет подписок</string>
     <string name="reviews">Отзывы</string>
     <string name="collections">Коллекции</string>
+    <string name="place_name">Название</string>
+    <string name="list_empty">Список мест пуст</string>
+    <string name="favourites_not_found">Закладки не найдены</string>
+    <string name="no_reviews_user">Отзывов нет</string>
 </resources>
