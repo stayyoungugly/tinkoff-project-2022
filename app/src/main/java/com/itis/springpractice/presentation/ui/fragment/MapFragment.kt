@@ -25,12 +25,12 @@ import com.itis.springpractice.di.UserAuthContainer
 import com.itis.springpractice.di.UserContainer
 import com.itis.springpractice.di.UserTokenContainer
 import com.itis.springpractice.presentation.factory.AuthFactory
-import com.itis.springpractice.presentation.ui.fragment.extension.findParent
 import com.itis.springpractice.presentation.viewmodel.MapViewModel
 import com.itis.springpractice.presentation.viewmodel.PlaceInfoViewModel
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.StyleType
+import com.yandex.mapkit.geometry.Geometry
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.layers.GeoObjectTapEvent
 import com.yandex.mapkit.layers.GeoObjectTapListener
@@ -89,6 +89,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
 
     private var defaultLocation = Point(0.0, 0.0)
     private var routeStartLocation: Point? = defaultLocation
+
+    private var userPoint = defaultLocation
 
     private var permissionLocation = false
     private var followUserLocation = false
@@ -208,11 +210,18 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     private fun onSearchPlace(itemValue: String) {
+        val listener = object : Session.SearchListener {
+            override fun onSearchError(err: Error) {}
+            override fun onSearchResponse(response: Response) {
+                searchSession.setSortByDistance(Geometry.fromPoint(userPoint))
+                searchSession.resubmit(this@MapFragment)
+            }
+        }
         searchSession = searchManager.submit(
             itemValue,
             VisibleRegionUtils.toPolygon(mapView.map.visibleRegion),
             SearchOptions(),
-            this
+            listener
         )
     }
 
@@ -288,7 +297,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     }
 
     private fun userInterface() {
-        val mapLogoAlignment = Alignment(HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM)
+        val mapLogoAlignment = Alignment(HorizontalAlignment.RIGHT, VerticalAlignment.BOTTOM)
         mapCity.logo.setAlignment(mapLogoAlignment)
         binding.userLocationFab.setOnClickListener {
             if (permissionLocation) {
@@ -302,7 +311,11 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
 
     private fun cameraUserPosition(isAnimated: Boolean) {
         if (userLocationLayer.cameraPosition() != null) {
-            routeStartLocation = userLocationLayer.cameraPosition()?.target
+            val target = userLocationLayer.cameraPosition()?.target
+            routeStartLocation = target
+            if (target != null) {
+                userPoint = target
+            }
             modifyMap(routeStartLocation, isAnimated, defaultZoomValue)
         } else {
             modifyMap(defaultLocation, isAnimated, defaultZoomValue)
@@ -429,6 +442,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             }
         }
         val count = response.collection.children.size
+        showMessage("Найдено мест: $count")
+
         if (count == 0) {
             showMessage(getString(R.string.place_no_found))
         } else {
@@ -454,7 +469,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
                 }
             }
             modifyMap(first, true, zoom)
-            showMessage("Найдено мест: $count")
         }
     }
 

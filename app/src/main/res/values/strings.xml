@@ -70,8 +70,9 @@
     <string name="cancel">Закрыть</string>
     <string name="place_no_found">Место не найдено</string>
     <string name="fail_place_found">Ошибка! Места не найдены</string>
-    <string name="reviews">Отзывы</string>
     <string name="favourites">Избранное</string>
     <string name="change_avatar">Изменить фотографию</string>
     <string name="no_friends">У пользователя нет подписок</string>
+    <string name="reviews">Отзывы</string>
+    <string name="collections">Коллекции</string>
 </resources>

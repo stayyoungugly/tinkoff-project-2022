@@ -95,7 +95,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
 
     private fun deleteFriend(nickname: String) {
         friendsViewModel.onDeleteFriend(nickname)
-        friendsViewModel.onGetFriends(nicknameFriend)
+        //friendsViewModel.onGetFriends(nicknameFriend)
     }
 
     private fun showMessage(message: String) {
@@ -108,7 +108,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
 
     private fun navigateToAddFriend() {
         val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Поиск друзей")
+            .setTitle("Подписаться")
             .setView(DialogAddFriendBinding.inflate(layoutInflater).let {
                 dialogBinding = it
                 it.root
