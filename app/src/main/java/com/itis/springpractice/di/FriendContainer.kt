@@ -6,6 +6,7 @@ import com.itis.springpractice.data.database.remote.Firestore
 import com.itis.springpractice.data.impl.FriendsRepositoryImpl
 import com.itis.springpractice.data.mapper.UserModelMapper
 import com.itis.springpractice.domain.usecase.friends.AddFriendUseCase
+import com.itis.springpractice.domain.usecase.friends.DeleteFriendUseCase
 import com.itis.springpractice.domain.usecase.friends.GetAllFriendsByNicknameUseCase
 import com.itis.springpractice.domain.usecase.friends.IsUserFriendUseCase
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +30,11 @@ class FriendContainer(
         Dispatchers.Default
     )
     val isUserFriendUseCase = IsUserFriendUseCase(
+        friendsRepository,
+        Dispatchers.Default
+    )
+
+    val deleteFriendUseCase = DeleteFriendUseCase(
         friendsRepository,
         Dispatchers.Default
     )

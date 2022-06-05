@@ -4,7 +4,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.itis.springpractice.data.response.UserFirestore
 import com.itis.springpractice.data.response.UserResponse
 import kotlinx.coroutines.tasks.await
 
@@ -22,23 +21,22 @@ class Firestore {
     }
 
     suspend fun downloadAvatar(nickname: String): ByteArray? {
-        return storageRef.child("users/${nickname}")
-            .getBytes(1024 * 1024)
-            .await()
-    }
-
-    suspend fun addUser(user: UserResponse) {
-        val userFirestore = UserFirestore(
-            user.firstName,
-            user.lastName,
-            user.nickname
-        )
-        user.nickname?.let {
-            usersRef.document(it).set(userFirestore).await()
+        return try {
+            storageRef.child("users/${nickname}")
+                .getBytes(1024 * 1024)
+                .await()
+        } catch (e: Exception) {
+            null
         }
     }
 
-    suspend fun getUserByNickname(nickname: String): UserFirestore? {
+    suspend fun addUser(user: UserResponse) {
+        user.nickname?.let {
+            usersRef.document(it).set(user).await()
+        }
+    }
+
+    suspend fun getUserByNickname(nickname: String): UserResponse? {
         return try {
             usersRef.document(nickname).get().await().toObject()
         } catch (e: Exception) {
@@ -63,7 +61,7 @@ class Firestore {
             .map { it["nickname_friend"].toString() }
     }
 
-    suspend fun getFriends(userNickname: String): List<UserFirestore?> {
+    suspend fun getFriends(userNickname: String): List<UserResponse?> {
         return try {
             usersRef
                 .whereIn("nickname", friendsNames(userNickname))
@@ -103,6 +101,13 @@ class Firestore {
             "lastName", lastName
         ).await()
         uploadAvatar(userNickname, data)
+    }
+
+    suspend fun deleteFriend(userNickname: String, friendNickname: String) {
+        friendsRef.whereEqualTo("nickname_user", userNickname)
+            .whereEqualTo("nickname_friend", friendNickname).get().await().map {
+                it.reference.delete()
+            }
     }
 
     companion object {

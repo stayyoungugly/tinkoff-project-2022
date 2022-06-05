@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itis.springpractice.domain.entity.User
 import com.itis.springpractice.domain.usecase.friends.AddFriendUseCase
+import com.itis.springpractice.domain.usecase.friends.DeleteFriendUseCase
 import com.itis.springpractice.domain.usecase.friends.GetAllFriendsByNicknameUseCase
 import com.itis.springpractice.domain.usecase.friends.IsUserFriendUseCase
 import com.itis.springpractice.domain.usecase.user.GetUserByNicknameUseCase
@@ -17,9 +18,10 @@ class FriendsViewModel(
     private val getUserNicknameUseCase: GetUserNicknameUseCase,
     private val getUserByNicknameUseCase: GetUserByNicknameUseCase,
     private val addFriendUseCase: AddFriendUseCase,
-    private val isUserFriendUseCase: IsUserFriendUseCase
+    private val isUserFriendUseCase: IsUserFriendUseCase,
+    private val deleteFriendUseCase: DeleteFriendUseCase
 ) : ViewModel() {
-    private var _friends: MutableLiveData<Result<List<User>>> = MutableLiveData()
+    private var _friends: SingleLiveEvent<Result<List<User>>> = SingleLiveEvent()
     val friends: LiveData<Result<List<User>>> = _friends
 
     private var _isUser: SingleLiveEvent<Boolean> = SingleLiveEvent()
@@ -63,7 +65,19 @@ class FriendsViewModel(
                     }
                 }
             } catch (ex: Exception) {
-                _message.value = "Произошла ошибка"
+                _message.value = "Произошла ошибка добавления"
+            }
+        }
+    }
+
+    fun onDeleteFriend(nickname: String) {
+        viewModelScope.launch {
+            try {
+                deleteFriendUseCase(nickname)
+                val list = getAllFriendsByNicknameUseCase(getUserNicknameUseCase())
+                _friends.value = Result.success(list)
+            } catch (ex: Exception) {
+                _message.value = "Произошла ошибка удаления"
             }
         }
     }

@@ -39,4 +39,6 @@
     <string name="zero_friends">Пора завести друзей</string>
     <string name="add_friend">Добавить друга</string>
     <string name="friend_nickname">Псевдоним друга</string>
+    <string name="reviews">Отзывы</string>
+    <string name="favourites">Избранное</string>
 </resources>

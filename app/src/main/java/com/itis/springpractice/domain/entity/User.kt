@@ -4,5 +4,5 @@ data class User (
     val firstName: String,
     val lastName: String,
     val nickname: String,
-    val avatar: ByteArray?,
+    val avatar: ByteArray?
 )

@@ -23,6 +23,12 @@
         <action
             android:id="@+id/action_profileFragment_to_collectionsFragment"
             app:destination="@id/collectionsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_reviewsFragment"
+            app:destination="@id/reviewsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
     </fragment>
 
     <fragment
@@ -38,4 +44,12 @@
             android:id="@+id/action_friendsFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/favouritesFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.FavouritesFragment"
+        android:label="@string/favourites" />
+    <fragment
+        android:id="@+id/reviewsFragment"
+        android:name="com.itis.springpractice.presentation.ui.fragment.ReviewsFragment"
+        android:label="@string/reviews" />
 </navigation>

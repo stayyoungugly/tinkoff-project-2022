@@ -1,16 +1,15 @@
 package com.itis.springpractice.data.mapper
 
-import com.itis.springpractice.data.response.UserFirestore
 import com.itis.springpractice.data.response.UserResponse
 import com.itis.springpractice.domain.entity.User
 
 class UserModelMapper {
-    fun mapToUser(userFirestore: UserFirestore, avatar: ByteArray?): User? {
-        return if (!(userFirestore.firstName.isNullOrEmpty()) && (!userFirestore.lastName.isNullOrEmpty()) && (!userFirestore.nickname.isNullOrEmpty())) {
+    fun mapToUser(userResponse: UserResponse, avatar: ByteArray?): User? {
+        return if (!(userResponse.firstName.isNullOrEmpty()) && (!userResponse.lastName.isNullOrEmpty()) && (!userResponse.nickname.isNullOrEmpty())) {
             User(
-                firstName = userFirestore.firstName!!,
-                lastName = userFirestore.lastName!!,
-                nickname = userFirestore.nickname!!,
+                firstName = userResponse.firstName!!,
+                lastName = userResponse.lastName!!,
+                nickname = userResponse.nickname!!,
                 avatar = avatar
             )
         } else null
@@ -21,7 +20,6 @@ class UserModelMapper {
             firstName = user.firstName,
             lastName = user.lastName,
             nickname = user.nickname,
-            avatar = user.avatar
         )
     }
 }

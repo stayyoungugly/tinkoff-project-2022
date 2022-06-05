@@ -22,11 +22,15 @@ class FriendsRepositoryImpl(
         firestore.addFriend(userNickname, nickname)
     }
 
+    override suspend fun deleteFriend(nickname: String) {
+        firestore.deleteFriend(userNickname, nickname)
+    }
+
     override suspend fun getAllFriendsByNickname(nickname: String): List<User> {
         val users = firestore.getFriends(nickname)
         val userEntities: List<User?> = users.map {
             it?.let { user ->
-                val avatar = it.nickname?.let { nickname -> firestore.downloadAvatar(nickname) }
+                val avatar = user.nickname?.let { nick -> firestore.downloadAvatar(nick) }
                 userModelMapper.mapToUser(user, avatar)
             }
         }

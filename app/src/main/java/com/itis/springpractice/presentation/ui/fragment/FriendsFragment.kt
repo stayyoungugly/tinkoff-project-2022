@@ -41,14 +41,14 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         requireActivity().getPreferences(Context.MODE_PRIVATE)
     }
 
-    private val nickname: String? by lazy {
+    private val nicknameFriend: String? by lazy {
         arguments?.getString("nickname")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
-        friendsViewModel.onGetFriends(nickname)
+        friendsViewModel.onGetFriends(nicknameFriend)
     }
 
     private fun initObservers() {
@@ -60,9 +60,12 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
                 } else {
                     binding.tvZeroFriends.visibility = GONE
                     binding.rvFriends.visibility = VISIBLE
-                    friendsAdapter = FriendsAdapter { friendNickname ->
-                        navigateToFriendProfile(friendNickname)
-                    }
+                    friendsAdapter = FriendsAdapter(
+                        { nickname ->
+                            navigateToFriendProfile(nickname)
+                        },
+                        { nickname -> deleteFriend(nickname) }
+                    )
                     binding.rvFriends.adapter = friendsAdapter
                     friendsAdapter.submitList(it.toMutableList())
                 }
@@ -82,6 +85,11 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
                 }
             }
         }
+    }
+
+    private fun deleteFriend(nickname: String) {
+        friendsViewModel.onDeleteFriend(nickname)
+        friendsViewModel.onGetFriends(nicknameFriend)
     }
 
     private fun showMessage(message: String) {

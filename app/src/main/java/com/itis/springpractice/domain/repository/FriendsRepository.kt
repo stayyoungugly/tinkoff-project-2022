@@ -9,4 +9,6 @@ interface FriendsRepository {
     suspend fun getAllFriendsByNickname(nickname: String): List<User>
 
     suspend fun isUserFriend(nickname: String): Boolean
+
+    suspend fun deleteFriend(nickname: String)
 }

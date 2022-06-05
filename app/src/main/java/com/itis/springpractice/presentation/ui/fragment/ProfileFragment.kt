@@ -45,13 +45,18 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         initObservers()
         profileViewModel.onGetUserInfo(nickname)
         profileViewModel.onGetNumberOf(nickname)
+        val bundle = Bundle().apply {
+            putString("nickname", nickname)
+        }
         binding.clFriends.setOnClickListener {
-            val bundle = Bundle().apply {
-                putString("nickname", nickname)
-            }
             findNavController().navigate(R.id.action_profileFragment_to_friendsFragment, bundle)
         }
-        //TODO("click and navigate to reviews and collections")
+        binding.clReviews.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_reviewsFragment, bundle)
+        }
+        binding.clCollections.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_collectionsFragment, bundle)
+        }
     }
 
     private fun initObservers() {
