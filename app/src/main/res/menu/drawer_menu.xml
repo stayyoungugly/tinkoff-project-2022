@@ -11,10 +11,6 @@
             android:icon="@drawable/ic_baseline_people_24"
             android:title="@string/friends" />
         <item
-            android:id="@+id/collectionsFragment"
-            android:icon="@drawable/ic_baseline_collections_24"
-            android:title="@string/collections_title" />
-        <item
             android:id="@+id/reviewsFragment"
             android:icon="@drawable/ic_baseline_library_books_24"
             android:title="@string/reviews" />

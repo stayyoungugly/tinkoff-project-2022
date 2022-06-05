@@ -24,13 +24,13 @@
             android:id="@+id/action_profileFragment_to_friendsFragment"
             app:destination="@id/friendsFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_collectionsFragment"
-            app:destination="@id/collectionsFragment" />
-        <action
             android:id="@+id/action_profileFragment_to_reviewsFragment"
             app:destination="@id/reviewsFragment" />
         <action
             android:id="@+id/action_profileFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_favouritesFragment2"
             app:destination="@id/favouritesFragment" />
     </fragment>
 

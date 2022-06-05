@@ -141,7 +141,7 @@
             android:id="@+id/tv_collections"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/collections"
+            android:text="@string/favourites"
             android:textAllCaps="true"
             android:textColor="@color/primary_text"
             android:textSize="16sp"

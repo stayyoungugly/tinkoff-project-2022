@@ -38,7 +38,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             findNavController().navigate(R.id.action_profileFragment_to_reviewsFragment, bundle)
         }
         binding.clCollections.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_collectionsFragment, bundle)
+            findNavController().navigate(R.id.action_profileFragment_to_favouritesFragment, bundle)
         }
     }
 
