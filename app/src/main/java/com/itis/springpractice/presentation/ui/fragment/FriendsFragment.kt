@@ -45,6 +45,11 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         arguments?.getString("nickname")
     }
 
+    private val isUser: Boolean by lazy {
+        nicknameFriend == null
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
@@ -64,7 +69,8 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
                         { nickname ->
                             navigateToFriendProfile(nickname)
                         },
-                        { nickname -> deleteFriend(nickname) }
+                        { nickname -> deleteFriend(nickname) },
+                        isUser
                     )
                     binding.rvFriends.adapter = friendsAdapter
                     friendsAdapter.submitList(it.toMutableList())
@@ -81,7 +87,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
                     }
                 } else {
                     visibility = GONE
-                    binding.tvZeroFriends.text = "У пользователя нет друзей"
+                    binding.tvZeroFriends.text = context.getString(R.string.no_friends)
                 }
             }
         }

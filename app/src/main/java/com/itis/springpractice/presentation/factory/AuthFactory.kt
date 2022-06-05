@@ -53,7 +53,7 @@ class AuthFactory(
             modelClass.isAssignableFrom(ProfileViewModel::class.java) ->
                 ProfileViewModel(
                     userDi.getUserByNicknameUseCase,
-                    userDi.getUserNickname,
+                    userDi.getUserNicknameUseCase,
                     userDi.getNumberOfUseCase,
                     tokenDi.deleteTokenUseCase,
                     userDi.deleteNicknameUseCase
@@ -61,7 +61,7 @@ class AuthFactory(
             modelClass.isAssignableFrom(EditProfileViewModel::class.java) ->
                 EditProfileViewModel(
                     userDi.getUserByNicknameUseCase,
-                    userDi.getUserNickname,
+                    userDi.getUserNicknameUseCase,
                     userDi.updateUserUseCase,
                 ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             modelClass.isAssignableFrom(PlaceInfoViewModel::class.java) ->
@@ -77,8 +77,6 @@ class AuthFactory(
                     userDi.addReviewOnPlaceUseCase,
                     userDi.getUserNicknameUseCase,
                     userDi.getUserByNicknameUseCase,
-
-
                     ) as? T ?: throw IllegalArgumentException("Unknown ViewModel class")
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class")

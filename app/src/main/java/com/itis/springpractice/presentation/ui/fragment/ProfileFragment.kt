@@ -66,7 +66,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     this.tvName.text = "${it.firstName} ${it.lastName}"
                     this.tvNickname.text = it.nickname
                     if (it.avatar == null) {
-                        val bitmap = BitmapFactory.decodeResource(requireContext().resources, R.drawable.no_avatar)
+                        val bitmap = BitmapFactory.decodeResource(
+                            requireContext().resources,
+                            R.drawable.no_avatar
+                        )
                         this.ivPhoto.setImageBitmap(bitmap)
                     } else {
                         val bitmap = BitmapFactory.decodeByteArray(it.avatar, 0, it.avatar.size)
@@ -85,9 +88,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 binding.btnSignOut.setOnClickListener {
                     onSignOutClick()
                 }
-            }
-            else {
+            } else {
                 binding.fabEdit.visibility = GONE
+                binding.btnSignOut.visibility = GONE
             }
         }
 

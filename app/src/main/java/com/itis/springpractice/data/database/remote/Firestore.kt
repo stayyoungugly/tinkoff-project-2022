@@ -19,7 +19,7 @@ class Firestore {
 
     private val storageRef = Firebase.storage.reference
 
-    suspend fun uploadAvatar(nickname: String, data: ByteArray) {
+    private suspend fun uploadAvatar(nickname: String, data: ByteArray) {
         storageRef.child("users/${nickname}")
             .putBytes(data)
             .await()

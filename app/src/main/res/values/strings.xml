@@ -20,12 +20,12 @@
     <string name="map_fragment_label">Карта</string>
     <string name="firstName">Имя</string>
     <string name="lastName">Фамилия</string>
-    <string name="nickname">Псевдоним</string>
+    <string name="nickname">Никнейм</string>
     <string name="email_error">Введите корректный Email</string>
     <string name="password_error">Пароль должен состоять из 6 символов, иметь одну букву и одну цифру</string>
     <string name="first_name_error">Имя должно содержать от 2 до 15 символов и не иметь цифр</string>
     <string name="last_name_error">Фамилия должна содержать от 2 до 15 символов и не иметь цифр</string>
-    <string name="nickname_error">Псевдоним должен содержать от 2 до 15 символов</string>
+    <string name="nickname_error">Никнейм должен содержать от 2 до 15 символов</string>
     <string name="check_password_error">Пароли не совпадают</string>
     <string name="sign_up_error">Ошибка регистрации</string>
     <string name="nickname_exists">Никнейм уже существует</string>
@@ -59,10 +59,10 @@
     <string name="closed">Закрыто</string>
     <string name="try_again">Ошибка! Повторите еще раз</string>
     <string name="full_name">Имя Фамилия</string>
-    <string name="friends">Друзья</string>
-    <string name="zero_friends">Пора завести друзей</string>
-    <string name="add_friend">Добавить друга</string>
-    <string name="friend_nickname">Псевдоним друга</string>
+    <string name="friends">Подписки</string>
+    <string name="zero_friends">Пора на кого-нибудь подписаться</string>
+    <string name="add_friend">Подписаться</string>
+    <string name="friend_nickname">Никнейм</string>
     <string name="not_found">Информация не найдена</string>
     <string name="enter_place">Введите место</string>
     <string name="search_places">Поиск доступных мест</string>
@@ -73,4 +73,5 @@
     <string name="reviews">Отзывы</string>
     <string name="favourites">Избранное</string>
     <string name="change_avatar">Изменить фотографию</string>
+    <string name="no_friends">У пользователя нет подписок</string>
 </resources>
