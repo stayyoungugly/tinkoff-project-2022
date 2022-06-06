@@ -19,25 +19,31 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private val profileViewModel: ProfileViewModel by viewModel()
 
-    private val nickname: String? by lazy {
+    private val nicknameProfile: String? by lazy {
         arguments?.getString("nickname")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
-        profileViewModel.onGetUserInfo(nickname)
-        profileViewModel.onGetNumberOf(nickname)
-        val bundle = Bundle().apply {
-            putString("nickname", nickname)
-        }
+        profileViewModel.onGetUserInfo(nicknameProfile)
+        profileViewModel.onGetNumberOf(nicknameProfile)
         binding.clFriends.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("nickname", nicknameProfile)
+            }
             findNavController().navigate(R.id.action_profileFragment_to_friendsFragment, bundle)
         }
         binding.clReviews.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("nickname", nicknameProfile)
+            }
             findNavController().navigate(R.id.action_profileFragment_to_reviewsFragment, bundle)
         }
         binding.clCollections.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("nickname", nicknameProfile)
+            }
             findNavController().navigate(R.id.action_profileFragment_to_favouritesFragment, bundle)
         }
     }

@@ -24,9 +24,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
 
     private val friendsViewModel: FriendsViewModel by viewModel()
 
-    private val nicknameFriend: String? by lazy {
-        arguments?.getString("nickname")
-    }
+    private var nicknameFriend: String? = ""
 
     private var isUser: Boolean = nicknameFriend == null
 
@@ -34,6 +32,8 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
+        nicknameFriend = arguments?.getString("nickname")
+        println(nicknameFriend)
         friendsViewModel.onGetFriends(nicknameFriend)
     }
 
