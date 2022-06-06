@@ -21,8 +21,8 @@ class SignInViewModel(
     fun onLoginClick(email: String, password: String) {
         viewModelScope.launch {
             try {
-                _signInResult.value = Result.success(loginUseCase(email, password))
                 updateNicknameUseCase(email)
+                _signInResult.value = Result.success(loginUseCase(email, password))
             } catch (ex: Exception) {
                 _signInResult.value = Result.failure(ex)
             }
