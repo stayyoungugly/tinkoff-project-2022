@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     app:behavior_hideable="true"
     app:behavior_peekHeight="0dp"
+    android:focusableInTouchMode="true"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <TextView

@@ -2,6 +2,7 @@ package com.itis.springpractice.presentation.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
@@ -37,6 +38,9 @@ class PlaceInfoFragment(uri: String) : Fragment(R.layout.fragment_place_info) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
+        );
         initObservers()
         placeInfoViewModel.searchGeoObjectInfo(uriPlace)
     }
