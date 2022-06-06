@@ -65,9 +65,6 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
     private var longitudeZoom: Double? = null
     private var uriZoom: String? = null
 
-
-    private var first = true
-
     private val bottomSheetDialogFragment: BottomSheetDialogFragment
         get() = BottomSheetFragment(uri)
 
@@ -108,7 +105,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         const val widthRatio = 0.5
         const val heightRatio = 0.83
         const val tiltFloatValue = 45.0f
-        const val pointOffset = 0.00015
+        const val pointOffset = 0.00012
     }
 
     override fun onStart() {
@@ -122,6 +119,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         super.onCreate(savedInstanceState)
         MapKitFactory.initialize(context)
     }
+
+    private var notFound = true
 
     private val mapViewModel: MapViewModel by viewModel()
 
@@ -137,11 +136,19 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         arguments?.clear()
         initObservers()
         binding.searchFab.setOnClickListener {
-            navigateToSearchPlace()
+            if (notFound) {
+                navigateToSearchPlace()
+                binding.searchFab.setImageResource(R.drawable.ic_cancel)
+            } else {
+                mapCity.mapObjects.clear()
+                binding.searchFab.setImageResource(R.drawable.ic_search)
+                notFound = true
+            }
         }
-        checkPermission()
+        if (!checkZoom()) {
+            checkPermission()
+        }
         userInterface()
-        checkZoom()
     }
 
     private fun dialogSuggestConfig() {
@@ -185,8 +192,12 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
             .show()
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            onSearchPlace(dialogBinding.etPlace.toString())
-            dialog.dismiss()
+            if (dialogBinding.etPlace.text?.length!! <= 1) {
+                showMessage("Выберите место")
+            } else {
+                onSearchPlace(dialogBinding.etPlace.toString())
+                dialog.dismiss()
+            }
         }
         suggestResultView.setOnItemClickListener { _, _, position, _ ->
             val itemValue = suggestResultView.getItemAtPosition(position) as String
@@ -224,12 +235,13 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         } else getLocationPermissions()
     }
 
-    private fun checkZoom() {
-        if (latitudeZoom != null && longitudeZoom != null && uriZoom != null && first) {
+    private fun checkZoom(): Boolean {
+        return if (latitudeZoom != null && longitudeZoom != null && uriZoom != null) {
             uri = uriZoom.toString()
             placeInfoViewModel.searchGeoObjectInfo(uriZoom!!)
-            //modifyMap(Point(latitudeZoom!!, longitudeZoom!!), true, defaultZoomValue)
-        }
+            modifyMap(Point(latitudeZoom!!, longitudeZoom!!), true, defaultZoomValue)
+            true
+        } else false
     }
 
     private fun getLocationPermissions() {
@@ -409,7 +421,7 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
                     bottomModify()
                 }
             }, onFailure = {
-                showMessage(getString(R.string.not_found))
+                Timber.e(it)
             })
         }
     }
@@ -440,8 +452,8 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         if (count == 0) {
             showMessage(getString(R.string.place_no_found))
         } else {
+            notFound = false
             val first = response.collection.children[0].obj?.geometry?.get(0)?.point
-
             val uriLink =
                 response.collection.children[0].obj?.metadataContainer?.getItem(UriObjectMetadata::class.java)?.uris?.first()?.value
             if (!uriLink.isNullOrEmpty()) {
@@ -465,14 +477,11 @@ class MapFragment : Fragment(R.layout.fragment_map), UserLocationObjectListener,
         }
     }
 
-    override fun onSearchError(error: Error) {
-        showMessage(getString(R.string.fail_place_found))
-    }
+    override fun onSearchError(error: Error) {}
 
     override fun onMapObjectTap(mapObject: MapObject, point: Point): Boolean {
         modifyMap(point, true, defaultZoomValue)
         return true
     }
-
 }
 

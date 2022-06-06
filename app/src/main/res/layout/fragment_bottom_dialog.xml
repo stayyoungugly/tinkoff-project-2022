@@ -7,6 +7,7 @@
     android:background="@color/white"
     android:paddingBottom="16dp"
     app:behavior_hideable="true"
+    android:focusableInTouchMode="true"
     app:behavior_peekHeight="110dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
