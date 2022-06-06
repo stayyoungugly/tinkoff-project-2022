@@ -66,6 +66,7 @@ class PlaceInfoFragment(uri: String) : Fragment(R.layout.fragment_place_info) {
             tvHours.text = place.workingHours
             tvPhone.text = place.phones
             if (place.closed) {
+                ivClosed.setImageResource(R.drawable.ic_closed)
                 tvClosed.text = getString(R.string.closed)
                 tvClosed.setTextColor(resources.getColor(R.color.red, activity?.theme))
             }
