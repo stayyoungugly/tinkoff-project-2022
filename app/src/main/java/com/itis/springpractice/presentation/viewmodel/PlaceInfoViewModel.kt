@@ -60,6 +60,27 @@ class PlaceInfoViewModel(
             val paramsInfo = response.collection.children.firstOrNull()?.obj
                 ?.metadataContainer
                 ?.getItem(BusinessObjectMetadata::class.java)
+
+            val params = response.collection.children.firstOrNull()?.obj
+                ?.metadataContainer
+                ?.getItem(BusinessImagesObjectMetadata::class.java)
+
+            val params1 = response.collection.children.firstOrNull()?.obj
+                ?.metadataContainer
+                ?.getItem(BusinessPhotoObjectMetadata::class.java)
+
+            if (params1 != null) {
+                println(params1.photos[0].links.last().uri)
+            }
+            if (params1 != null) {
+                println(params1.photos[0].links[1].type)
+            }
+            if (params != null) {
+                println(params.logo?.urlTemplate)
+            }
+
+
+
             if (paramsInfo != null) {
                 _place.value = Result.success(
                     generatePlaceModel(uri, paramsInfo)
