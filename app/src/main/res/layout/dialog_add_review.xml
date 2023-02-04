@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="24dp"
+    android:paddingVertical="32dp"
+    android:focusableInTouchMode="true">
+
+    <TextView
+        android:id="@+id/tv_rating_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/spot_bold"
+        android:text="@string/your_rating"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/rb_rating"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RatingBar
+        android:id="@+id/rb_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:numStars="5"
+        android:progressBackgroundTint="@color/secondary_text"
+        android:progressTint="@color/gold"
+        android:rating="0"
+        android:stepSize="0.5"
+        app:layout_constraintBottom_toTopOf="@id/tv_content_title"
+        app:layout_constraintStart_toStartOf="@id/tv_rating_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_rating_title" />
+
+    <TextView
+        android:id="@+id/tv_content_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:fontFamily="@font/spot_bold"
+        android:text="@string/comment"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/ti_content"
+        app:layout_constraintStart_toStartOf="@id/rb_rating"
+        app:layout_constraintTop_toBottomOf="@id/rb_rating" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ti_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_content_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_content_title">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/spot_book"
+            android:hint="@string/your_review"
+            android:inputType="textMultiLine"
+            android:maxLines="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
